@@ -1,76 +1,41 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 0 0% 3.9%;
+.theme-custom {
+  /* Name: custom color palette
+       Author: Ilias Ism
+       URL: https://gradient.page */
 
-      --card: 0 0% 100%;
-      --card-foreground: 0 0% 3.9%;
+  /* CSS: .bg-gradient { background: var(--gradient) } */
+  --gradient: #70e1f5;
 
-      --popover: 0 0% 100%;
-      --popover-foreground: 0 0% 3.9%;
+  --background: 201 56.55% 5.6%;
+  --foreground: 201 8.7% 98.5%;
 
-      --primary: 0 0% 9%;
-      --primary-foreground: 0 0% 98%;
+  --muted: 201 43.5% 21%;
+  --muted-foreground: 201 8.7% 57%;
 
-      --secondary: 0 0% 96.1%;
-      --secondary-foreground: 0 0% 9%;
+  --popover: 201 47.6% 9.1%;
+  --popover-foreground: 201 8.7% 98.5%;
 
-      --muted: 0 0% 96.1%;
-      --muted-foreground: 0 0% 45.1%;
+  --card: 201 47.6% 9.1%;
+  --card-foreground: 201 8.7% 98.5%;
 
-      --accent: 0 0% 96.1%;
-      --accent-foreground: 0 0% 9%;
+  --border: 201 43.5% 21%;
+  --input: 201 43.5% 21%;
 
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
+  --primary: 201 87% 70%;
+  --primary-foreground: 201 8.7% 7%;
 
-      --border: 0 0% 89.8%;
-      --input: 0 0% 89.8%;
-      --ring: 0 0% 3.9%;
+  --secondary: 201 43.5% 21%;
+  --secondary-foreground: 201 8.7% 98.5%;
 
-      --radius: 0.5rem;
-    }
+  --accent: 201 43.5% 21%;
+  --accent-foreground: 201 8.7% 98.5%;
 
-    .dark {
-      --background: 0 0% 3.9%;
-      --foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 201 8.7% 98.5%;
 
-      --card: 0 0% 3.9%;
-      --card-foreground: 0 0% 98%;
-
-      --popover: 0 0% 3.9%;
-      --popover-foreground: 0 0% 98%;
-
-      --primary: 0 0% 98%;
-      --primary-foreground: 0 0% 9%;
-
-      --secondary: 0 0% 14.9%;
-      --secondary-foreground: 0 0% 98%;
-
-      --muted: 0 0% 14.9%;
-      --muted-foreground: 0 0% 63.9%;
-
-      --accent: 0 0% 14.9%;
-      --accent-foreground: 0 0% 98%;
-
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 0 0% 98%;
-
-      --border: 0 0% 14.9%;
-      --input: 0 0% 14.9%;
-      --ring: 0 0% 83.1%;
-    }
-  }
-
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
-  }
+  --ring: 201 87% 70%;
+}
