@@ -7,9 +7,9 @@ export const env = createEnv({
     // See https://next-auth.js.org/deployment.
     NEXTAUTH_URL: z.string().url().optional(),
     AUTH_SECRET: z.string().min(1),
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
-    GITHUB_OAUTH_TOKEN: z.string().min(1),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    GITHUB_OAUTH_TOKEN: z.string(),
     DATABASE_URL: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
     EMAIL_FROM: z.string().min(1),
