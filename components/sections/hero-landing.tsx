@@ -69,25 +69,6 @@ export default async function HeroLanding() {
             <span>Go Pricing</span>
             <Icons.arrowRight className="size-4" />
           </Link>
-          <Link
-            href={siteConfig.links.github}
-            target="_blank"
-            rel="noreferrer"
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                size: "lg",
-                rounded: "full",
-              }),
-              "px-5",
-            )}
-          >
-            <Icons.gitHub className="mr-2 size-4" />
-            <p>
-              <span className="hidden sm:inline-block">Star on</span> GitHub{" "}
-              <span className="font-semibold">{nFormatter(stars)}</span>
-            </p>
-          </Link>
         </div>
       </div>
     </section>
