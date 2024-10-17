@@ -31,6 +31,7 @@ import {
   Trash,
   User,
   X,
+  MessagesSquareIcon
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -40,6 +41,7 @@ export const Icons = {
   arrowRight: ArrowRight,
   arrowUpRight: ArrowUpRight,
   billing: CreditCard,
+  interviews: MessagesSquareIcon,
   bookOpen: BookOpen,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
