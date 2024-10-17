@@ -31,7 +31,7 @@ export default async function PricingPage() {
           You are an {user.role}. Back to{" "}
           <Link
             href="/admin"
-            className="text-muted-foreground underline underline-offset-4 hover:text-purple-500"
+            className="text-muted-foreground underline underline-offset-4 hover:text-cyan-500"
           >
             Dashboard
           </Link>

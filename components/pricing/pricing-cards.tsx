@@ -38,7 +38,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
         className={cn(
           "relative flex flex-col overflow-hidden rounded-3xl border shadow-sm",
           offer.title.toLocaleLowerCase() === "pro"
-            ? "-m-0.5 border-2 border-purple-400"
+            ? "-m-0.5 border-2 border-cyan-400"
             : "",
         )}
         key={offer.title}
@@ -80,7 +80,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
           <ul className="space-y-2 text-left text-sm font-medium leading-normal">
             {offer.benefits.map((feature) => (
               <li className="flex items-start gap-x-3" key={feature}>
-                <Icons.check className="size-5 shrink-0 text-purple-500" />
+                <Icons.check className="size-5 shrink-0 text-cyan-500" />
                 <p>{feature}</p>
               </li>
             ))}
