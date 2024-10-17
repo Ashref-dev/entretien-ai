@@ -11,11 +11,11 @@ import Link from "next/link";
 import { BLOG_CATEGORIES } from "@/config/blog";
 import { getTableOfContents } from "@/lib/toc";
 import {
-  cn,
-  constructMetadata,
-  formatDate,
-  getBlurDataURL,
-  placeholderBlurhash,
+    cn,
+    constructMetadata,
+    formatDate,
+    getBlurDataURL,
+    placeholderBlurhash,
 } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import Author from "@/components/content/author";
@@ -42,7 +42,7 @@ export async function generateMetadata({
   const { title, description, image } = post;
 
   return constructMetadata({
-    title: `${title} – SaaS Starter`,
+    title: `${title} – Entretien AI`,
     description: description,
     image,
   });
