@@ -20,6 +20,7 @@ function SignInModal({
   setShowSignInModal: Dispatch<SetStateAction<boolean>>;
 }) {
   const [signInClicked, setSignInClicked] = useState(false);
+  const [signInWithGitHubClicked, setSignInWithGitHubClicked] = useState(false);
 
   return (
     <Modal showModal={showSignInModal} setShowModal={setShowSignInModal}>
@@ -54,6 +55,27 @@ function SignInModal({
               <Icons.google className="mr-2 size-4" />
             )}{" "}
             Sign In with Google
+          </Button>
+
+          {/* GitHub sign-in button */}
+          <Button
+            variant="default"
+            disabled={signInWithGitHubClicked}
+            onClick={() => {
+              setSignInWithGitHubClicked(true);
+              signIn("github", { redirect: false }).then(() =>
+                setTimeout(() => {
+                  setShowSignInModal(false);
+                }, 400),
+              );
+            }}
+          >
+            {signInWithGitHubClicked ? (
+              <Icons.spinner className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Icons.gitHub className="mr-2 size-4" />
+            )}{" "}
+            Sign In with GitHub
           </Button>
         </div>
       </div>
