@@ -47,13 +47,35 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
 
     if (!signInResult?.ok) {
       return toast.error("Something went wrong.", {
-        description: "Your sign in request failed. Please try again.",
+        description: "Your sign-in request failed. Please try again.",
       });
     }
 
     return toast.success("Check your email", {
       description: "We sent you a login link. Be sure to check your spam too.",
     });
+  }
+
+  async function handleOAuthSignIn(provider: string) {
+    setIsLoading(true);
+
+    const signInResult = await signIn(provider, {
+      redirect: false,
+      callbackUrl: searchParams?.get("from") || "/dashboard",
+    });
+
+    setIsLoading(false);
+    if (signInResult?.error === "OAuthAccountNotLinked") {
+      return toast.error("Account with this email already exists.", {
+        description: "Would you like to link your account instead?",
+      });
+    }
+
+    if (!signInResult?.ok) {
+      return toast.error("Something went wrong.", {
+        description: "Sign-in failed. Please try again.",
+      });
+    }
   }
 
   return (
@@ -71,7 +93,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading || isGoogleLoading}
+              disabled={isLoading || isGoogleLoading || isGitHubLoading}
               {...register("email")}
             />
             {errors?.email && (
@@ -103,7 +125,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         className={cn(buttonVariants({ variant: "outline" }))}
         onClick={() => {
           setIsGoogleLoading(true);
-          signIn("google");
+          handleOAuthSignIn("google").finally(() => setIsGoogleLoading(false));
         }}
         disabled={isLoading || isGoogleLoading}
       >
@@ -114,13 +136,12 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         )}{" "}
         Google
       </button>
-      {/* GitHub */}
       <button
         type="button"
         className={cn(buttonVariants({ variant: "outline" }))}
         onClick={() => {
           setIsGitHubLoading(true);
-          signIn("github");
+          handleOAuthSignIn("github").finally(() => setIsGitHubLoading(false));
         }}
         disabled={isLoading || isGitHubLoading}
       >
