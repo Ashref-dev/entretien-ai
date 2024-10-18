@@ -78,3 +78,32 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
 }
+
+model Interview {
+  id             String         @id @default(cuid())
+  jobTitle       String
+  jobDescription String
+  interviewScore Float
+  interviewData  InterviewData[]
+
+  createdAt      DateTime @default(now()) @map(name: "created_at")
+  updatedAt      DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "interviews")
+}
+
+model InterviewData {
+  id            String   @id @default(cuid())
+  interviewId   String
+  aiQuestion    String
+  aiAnswer      String
+  userAnswer    String
+
+  interview     Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "interview_data")
+  @@index([interviewId])
+}
