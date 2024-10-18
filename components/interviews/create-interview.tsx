@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 
@@ -9,7 +10,11 @@ import { CreateInterviewModal } from "./create-interview-modal";
 const CreateInterview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleCreateInterview = (data: { jobTitle: string; jobDescription: string; resume: File | null }) => {
+  const handleCreateInterview = (data: {
+    jobTitle: string;
+    jobDescription: string;
+    resume: File | null;
+  }) => {
     // Handle the interview creation logic here
     console.log("Creating interview with data:", data);
     // You would typically send this data to your API
