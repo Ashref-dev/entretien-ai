@@ -12,19 +12,21 @@ export const sidebarLinks: SidebarNavItem[] = [
         title: "Admin Panel",
         authorizeOnly: UserRole.ADMIN,
       },
-      { href: "/dashboard", icon: "dashboard", title: "Dashboard" },
-      {
-        href: "/dashboard/billing",
-        icon: "billing",
-        title: "Billing",
-        authorizeOnly: UserRole.USER,
-      },
       {
         href: "/dashboard/interviews",
         icon: "interviews",
         title: "interviews",
         authorizeOnly: UserRole.USER,
       },
+      { href: "/dashboard", icon: "dashboard", title: "Dashboard" },
+     
+      {
+        href: "/dashboard/billing",
+        icon: "billing",
+        title: "Billing",
+        authorizeOnly: UserRole.USER,
+      },
+     
       { href: "/dashboard/charts", icon: "lineChart", title: "Charts" },
       {
         href: "/admin/orders",

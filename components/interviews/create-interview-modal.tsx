@@ -34,14 +34,42 @@ export function CreateInterviewModal({
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState<File | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+
+  // const [files, setFiles] = useState<File[]>([]);
+
+  // const handleFileUpload = (files: File[]) => {
+  //   setFiles(files);
+  //   console.log(files);
+  // };
+
   const handleFileUpload = (files: File[]) => {
-    setFiles(files);
-    console.log(files);
+    console.log("Files received from FileUpload:", files);
+    // Set the first uploaded file as the resume
+    if (files.length > 0) {
+      setResume(files[0]);
+    } else {
+      setResume(null);
+    }
   };
+
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   onCreateInterview({ jobTitle, jobDescription, resume });
+  //   onOpenChange(false);
+  //   // Reset form fields
+  //   setJobTitle("");
+  //   setJobDescription("");
+  //   setResume(null);
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Resume before submitting:", resume);
+    if (!resume) {
+      alert("Please upload a resume before submitting.");
+      return;
+    }
     onCreateInterview({ jobTitle, jobDescription, resume });
     onOpenChange(false);
     // Reset form fields
@@ -84,7 +112,8 @@ export function CreateInterviewModal({
             <div className="mt-4 flex-1 space-y-2 md:mt-0">
               <Label htmlFor="resume hidden">Upload Resume</Label>
               <div className="min-h-[300px] w-full rounded-lg border border-dashed border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
-                <FileUpload onChange={handleFileUpload} />
+                <FileUpload   onChange={handleFileUpload} />
+               
               </div>
             </div>
           </div>
