@@ -75,9 +75,9 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
                 {isSidebarExpanded ? <ProjectSwitcher /> : null}
 
                 <Button
-                  variant="ghost"
+                  
                   size="icon"
-                  className="ml-auto size-9 lg:size-8"
+                  className="ml-auto"
                   onClick={toggleSidebar}
                 >
                   {isSidebarExpanded ? (

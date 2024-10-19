@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
 
+import BottomGradientButton from "../ui/bottom-gradient-button";
+
 export default async function HeroLanding() {
   const { stargazers_count: stars } = await fetch(
     "https://api.github.com/repos/mickasmt/next-saas-stripe-starter",
@@ -53,22 +55,14 @@ export default async function HeroLanding() {
           Resend, React Email, Shadcn/ui, Stripe.
         </p>
 
-        <div
-          className="flex justify-center space-x-2 md:space-x-4"
-          style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}
-        >
-          <Link
-            href="/pricing"
-            prefetch={true}
-            className={cn(
-              buttonVariants({ size: "lg", rounded: "full" }),
-              "gap-2",
-            )}
-          >
-            <span>Go Pricing</span>
-            <Icons.arrowRight className="size-4" />
-          </Link>
-        </div>
+        <Link href="/pricing" prefetch={true}>
+          <BottomGradientButton className="px-16">
+            <div className="inline-flex items-center gap-2">
+              Start now
+              <Icons.arrowRight className="size-4" />
+            </div>
+          </BottomGradientButton>
+        </Link>
       </div>
     </section>
   );
