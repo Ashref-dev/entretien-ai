@@ -8,7 +8,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 text-gray-800 dark:text-white",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -43,6 +44,23 @@ const buttonVariants = cva(
   },
 );
 
+const BottomGradient: React.FC<{ className?: string }> = ({ className }) => (
+  <>
+    <span
+      className={cn(
+        "absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100",
+        className,
+      )}
+    />
+    <span
+      className={cn(
+        "absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100",
+        className,
+      )}
+    />
+  </>
+);
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {}
@@ -51,13 +69,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, rounded, ...props }, ref) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, rounded, className }))}
+        className={cn(
+          buttonVariants({ variant, size, rounded, className }),
+          "group/btn relative h-10 rounded-md font-medium",
+          "bg-gradient-to-br from-gray-100 to-gray-200",
+          "dark:from-black dark:to-neutral-800",
+          "shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]",
+          "dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]",
+        )}
         ref={ref}
         {...props}
-      />
+      >
+        {props.children}
+        <BottomGradient />
+      </button>
     );
   },
 );
+
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
