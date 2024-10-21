@@ -1,22 +1,28 @@
-import { Plus } from "lucide-react";
-
 import { getCurrentUser } from "@/lib/session";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MovingBorderButton } from "@/components/ui/moving-border";
 import { DashboardHeader } from "@/components/dashboard/header";
 import CreateInterview from "@/components/interviews/create-interview";
+import { EmptyPlaceholder } from "@/components/shared/empty-placeholder";
 
 const page = async () => {
   const user = await getCurrentUser();
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="">
       <DashboardHeader
         heading="Interviews"
         text={`Current Role: ${user?.role} — Change your role in settings.`}
       />
 
-{/* // interview creation section  */}
-      <CreateInterview />
+      <EmptyPlaceholder>
+        <EmptyPlaceholder.Icon name="post" />
+        <EmptyPlaceholder.Title>No content created</EmptyPlaceholder.Title>
+        <EmptyPlaceholder.Description>
+          You don&apos;t have any content yet. Start creating content.
+        </EmptyPlaceholder.Description>
+
+        {/* // interview creation section  */}
+        <CreateInterview />
+      </EmptyPlaceholder>
 
       <div>
         <h3 className="mb-4 text-2xl font-semibold">Past Mock Interviews</h3>

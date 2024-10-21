@@ -41,15 +41,15 @@ export function SearchCommand({ links }: { links: SidebarNavItem[] }) {
       <Button
         variant="outline"
         className={cn(
-          "relative h-9 w-full justify-start rounded-md bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-72",
+          "relative w-full items-center justify-start rounded-md bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-72",
         )}
         onClick={() => setOpen(true)}
       >
         <span className="inline-flex">
           Search
-          <span className="hidden sm:inline-flex">&nbsp;documentation</span>...
+          <span className="hidden sm:inline-flex">&nbsp;pages</span>...
         </span>
-        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.45rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.6rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
