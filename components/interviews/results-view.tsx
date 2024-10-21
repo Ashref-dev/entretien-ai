@@ -1,9 +1,12 @@
 "use client";
+
 import { useState } from "react";
-import { useInterview } from "./interview-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { useInterview } from "./interview-context";
 
 type InterviewQuestion = {
   id: string;
@@ -21,7 +24,8 @@ export default function ResultsView() {
     return null;
   }
 
-  const questions: InterviewQuestion[] = interviewData.apiResponse.interviewData;
+  const questions: InterviewQuestion[] =
+    interviewData.apiResponse.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleNext = () => {
@@ -57,9 +61,11 @@ export default function ResultsView() {
               <h3 className="mb-2 font-semibold text-primary">Question:</h3>
               <p className="text-lg">{currentQuestion.aiQuestion}</p>
             </div>
-            
+
             <div>
-              <h3 className="mb-2 font-semibold text-primary">Sample Answer:</h3>
+              <h3 className="mb-2 font-semibold text-primary">
+                Sample Answer:
+              </h3>
               <p className="rounded-lg bg-muted/50 p-4 text-sm">
                 {currentQuestion.aiAnswer}
               </p>
@@ -67,7 +73,9 @@ export default function ResultsView() {
 
             {currentQuestion.userAnswer && (
               <div>
-                <h3 className="mb-2 font-semibold text-primary">Your Answer:</h3>
+                <h3 className="mb-2 font-semibold text-primary">
+                  Your Answer:
+                </h3>
                 <p className="rounded-lg bg-muted/50 p-4 text-sm">
                   {currentQuestion.userAnswer}
                 </p>
@@ -87,19 +95,6 @@ export default function ResultsView() {
           <ChevronLeft className="mr-2 h-4 w-4" />
           Previous
         </Button>
-        
-        <Button
-          variant="outline"
-          onClick={handleNext}
-          disabled={currentQuestionIndex === questions.length - 1}
-          className="w-[100px]"
-        >
-          Next
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-
-      <div className="mt-8">
         <div className="flex items-center space-x-2">
           {questions.map((_, index) => (
             <Button
@@ -110,8 +105,17 @@ export default function ResultsView() {
             >
               {index + 1}
             </Button>
-          ))} 
+          ))}
         </div>
+        <Button
+          variant="outline"
+          onClick={handleNext}
+          disabled={currentQuestionIndex === questions.length - 1}
+          className="w-[100px]"
+        >
+          Next
+          <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
