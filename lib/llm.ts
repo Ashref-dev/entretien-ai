@@ -1,8 +1,9 @@
 import Together from "together-ai";
-import { env }  from "@/env.mjs";
 
-const key=env.AI_API_KEY
-const together = new Together({ apiKey:key });
+import { env } from "@/env.mjs";
+
+const key = env.AI_API_KEY;
+const together = new Together({ apiKey: key });
 
 export async function callAIWithPrompt(prompt: string): Promise<any> {
   if (!key) {
@@ -13,7 +14,8 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
     // Send the prompt to Together AI and get the response
     const response = await together.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+      // model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+      model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
     });
 
     // Extract the AI response content

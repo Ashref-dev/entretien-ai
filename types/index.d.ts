@@ -100,3 +100,10 @@ export type TestimonialType = {
   image: string;
   review: string;
 };
+export type InterviewStep = 'initial' | 'processing' | 'results';
+export type InterviewData = {
+  jobTitle: string;
+  jobDescription: string;
+  resume: File | null;
+  apiResponse?: any;
+};
