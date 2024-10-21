@@ -1,6 +1,5 @@
 "use client";;
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,20 +31,61 @@ export function CreateInterviewModal({
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState<File | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleFileUpload = (files: File[]) => {
-    setFiles(files);
-    console.log(files);
+    if (files.length > 0) {
+      setResume(files[0]);
+    } else {
+      setResume(null);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateInterview({ jobTitle, jobDescription, resume });
-    onOpenChange(false);
-    // Reset form fields
-    setJobTitle("");
-    setJobDescription("");
-    setResume(null);
+    setIsLoading(true);
+
+    if (!resume) {
+      alert("Please upload a resume before submitting.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Create FormData
+      const formData = new FormData();
+      formData.append("pdf", resume);
+      formData.append("jobTitle", jobTitle);
+      formData.append("jobDescription", jobDescription);
+
+      // Make API call
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("OpenAI Generated Interview Data:", data);
+
+      // Call the original onCreateInterview callback
+      onCreateInterview({ jobTitle, jobDescription, resume });
+      
+      // Reset form
+      setJobTitle("");
+      setJobDescription("");
+      setResume(null);
+      onOpenChange(false);
+
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Error creating interview. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -80,14 +120,14 @@ export function CreateInterviewModal({
               </div>
             </div>
             <div className="mt-4 flex-1 space-y-2 md:mt-0">
-              <Label htmlFor="resume hidden">Upload Resume</Label>
+              <Label htmlFor="resume" className="hidden">Upload Resume</Label>
               <div className="min-h-[300px] w-full rounded-lg border border-dashed border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
                 <FileUpload onChange={handleFileUpload} />
               </div>
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            Create Interview
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Creating Interview..." : "Create Interview"}
           </Button>
         </form>
       </DialogContent>

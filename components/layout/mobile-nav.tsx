@@ -88,11 +88,11 @@ export function NavMobile() {
 
               <li className="py-3">
                 <Link
-                  href="/dashboard"
+                  href="/interviews"
                   onClick={() => setOpen(false)}
                   className="flex w-full font-medium capitalize"
                 >
-                  Dashboard
+                  interviews
                 </Link>
               </li>
             </>
@@ -107,16 +107,6 @@ export function NavMobile() {
                   Login
                 </Link>
               </li>
-
-              <li className="py-3">
-                <Link
-                  href="/register"
-                  onClick={() => setOpen(false)}
-                  className="flex w-full font-medium capitalize"
-                >
-                  Sign up
-                </Link>
-              </li>
             </>
           )}
         </ul>
@@ -128,10 +118,7 @@ export function NavMobile() {
         ) : null}
 
         <div className="mt-5 flex items-center justify-end space-x-4">
-          <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
-            <Icons.gitHub className="size-6" />
-            <span className="sr-only">GitHub</span>
-          </Link>
+          
           <ModeToggle />
         </div>
       </nav>
