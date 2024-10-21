@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     Resume content:
     ${texts.join("\n")}
     
-    Important: Respond ONLY with a JSON object in this exact format, no other text:
+    Respond ONLY with a JSON array of objects in this exact format, no other text:
     {
       "interviewData": [
         {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     3. Each answer should be comprehensive
     4. Focus on technical skills mentioned in the resume
     5. Strictly follow the JSON format above
-    6. Include ONLY the JSON in your response`;
+    6. Include ONLY JSON in your response`;
 
     // Use the utility function to call Together AI with the prompt
     const aiResponse = await callAIWithPrompt(prompt);

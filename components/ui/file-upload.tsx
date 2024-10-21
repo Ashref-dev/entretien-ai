@@ -46,6 +46,7 @@ export const FileUpload = ({
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,
     noClick: true,
+    accept: { 'application/pdf': [] }, // Accept only PDF files
     onDrop: handleFileChange,
     onDropRejected: (error) => {
       console.log(error);
@@ -74,7 +75,7 @@ export const FileUpload = ({
             Upload file
           </p>
           <p className="relative z-20 mt-2 font-sans text-base font-normal text-neutral-400 dark:text-neutral-400">
-            Drag or drop your file here or click to upload
+            Drag or drop your PDF file here or click to upload
           </p>
           <div className="relative mx-auto mt-10 w-full max-w-xl">
             {file ? (

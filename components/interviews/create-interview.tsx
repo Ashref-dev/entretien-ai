@@ -5,20 +5,21 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 
 import DynamicLottie from "../lottie";
+import { CreateInterviewModal } from "../modals/create-interview-modal";
 import { MovingBorderButton } from "../ui/moving-border";
-import { CreateInterviewModal } from "./create-interview-modal";
+import { useInterview } from "./interview-context";
 
 const CreateInterview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setCurrentStep, setInterviewData } = useInterview();
 
   const handleCreateInterview = (data: {
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
   }) => {
-    // Handle the interview creation logic here
-    console.log("Creating interview with data:", data);
-    // You would typically send this data to your API
+    setInterviewData(data);
+    setCurrentStep("processing");
   };
 
   return (
@@ -33,7 +34,6 @@ const CreateInterview = () => {
           <DynamicLottie
             animationData={() => import("@/assets/lotties/docEdit.json")}
             playMode="hover"
-         
             className="dark:brightness-75 dark:hue-rotate-180 dark:invert"
           />
           {/* className="dark:brightness-75 dark:hue-rotate-180 dark:invert" */}
