@@ -25,31 +25,62 @@ export async function POST(req: NextRequest) {
     const texts = selectedDocuments.map((doc) => doc.pageContent);
     const interviewId = uuidv4();
 
-    const prompt = `You are an expert technical interviewer. Based on the following resume content, job title "${jobTitle}", and job description "${jobDescription}", generate 5 relevant technical interview questions and their expected answers. 
+    const prompt = `
+  You are an expert technical interviewer. Based on the following resume content, job title "${jobTitle}", and job description:
+   "${jobDescription}".
 
-    Resume content:
-    ${texts.join("\n")}
-    
-    Respond ONLY with a JSON array of objects in this exact format, no other text:
+   Generate 5 relevant technical interview questions along with their expected answers.
+  Resume content:
+  ${texts.join("\n")}
+
+Respond ONLY with a JSON object in this exact format, without any additional text:
+{
+  "interviewData": [
     {
-      "interviewData": [
-        {
-          "id": "unique-id-1",
-          "interviewId": "${interviewId}",
-          "aiQuestion": "detailed technical question 1",
-          "aiAnswer": "detailed expected answer 1",
-          "userAnswer": ""
-        }
-      ]
+      "id": "unique-id-1",
+      "interviewId": "${interviewId}",
+      "aiQuestion": "detailed technical question 1",
+      "aiAnswer": "detailed expected answer 1",
+      "userAnswer": ""
+    },
+    {
+      "id": "unique-id-2",
+      "interviewId": "${interviewId}",
+      "aiQuestion": "detailed technical question 2",
+      "aiAnswer": "detailed expected answer 2",
+      "userAnswer": ""
+    },
+    {
+      "id": "unique-id-3",
+      "interviewId": "${interviewId}",
+      "aiQuestion": "detailed technical question 3",
+      "aiAnswer": "detailed expected answer 3",
+      "userAnswer": ""
+    },
+    {
+      "id": "unique-id-4",
+      "interviewId": "${interviewId}",
+      "aiQuestion": "detailed technical question 4",
+      "aiAnswer": "detailed expected answer 4",
+      "userAnswer": ""
+    },
+    {
+      "id": "unique-id-5",
+      "interviewId": "${interviewId}",
+      "aiQuestion": "detailed technical question 5",
+      "aiAnswer": "detailed expected answer 5",
+      "userAnswer": ""
     }
+  ]
+}
 
-    Requirements:
-    1. Generate exactly 5 questions
-    2. Each question should be detailed and technical
-    3. Each answer should be comprehensive
-    4. Focus on technical skills mentioned in the resume
-    5. Strictly follow the JSON format above
-    6. Include ONLY JSON in your response`;
+Requirements:
+1. Generate exactly 5 questions.
+2. Each question should be detailed and technical.
+3. Each answer should be comprehensive.
+4. Focus on technical skills mentioned in the resume.
+5. Strictly follow the JSON format above.
+6. Include ONLY JSON in your response.`;
 
     // Use the utility function to call Together AI with the prompt
     const aiResponse = await callAIWithPrompt(prompt);
