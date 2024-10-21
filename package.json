@@ -75,6 +75,7 @@
     "react-dropzone": "^14.2.9",
     "react-email": "^1.10.1",
     "react-hook-form": "^7.52.1",
+    "react-lottie-player": "^2.1.0",
     "react-textarea-autosize": "^8.5.3",
     "recharts": "^2.12.7",
     "resend": "^3.5.0",

@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-import BottomGradientButton from "../ui/bottom-gradient-button";
 import { FileUpload } from "../ui/file-upload";
 
 interface CreateInterviewModalProps {
@@ -91,12 +89,6 @@ export function CreateInterviewModal({
           <Button type="submit" className="w-full">
             Create Interview
           </Button>
-          <BottomGradientButton
-            onClick={() => console.log("Clicked!")}
-            className="text-sm"
-          >
-            Create Interview
-          </BottomGradientButton>
         </form>
       </DialogContent>
     </Dialog>

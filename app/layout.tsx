@@ -16,12 +16,8 @@ interface RootLayoutProps {
 
 export const metadata = constructMetadata();
 
-import setupLocatorUI from "@locator/runtime";
 export default function RootLayout({ children }: RootLayoutProps) {
 
-if (process.env.NODE_ENV === "development") {
-  setupLocatorUI();
-}
   return (
     <html lang="en" >
       <head />
