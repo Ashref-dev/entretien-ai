@@ -5,7 +5,18 @@
 
 <p align="center">
   Start at full speed with Entretien AI !
+ 
+
 </p>
+
+### Todo:
+
+  - Integrate "react hot toast" 
+  - Optimize LLm prompt
+  - make sure only PDF files can be uploaded
+  - add lottie nimations to dashboard icons
+  - add expressive loading tothe process page when the llm is generating the responses.
+  - add the user answer using microphone feature for reach question.
 
 <p align="center">
   <a href="https://twitter.com/miickasmt">

@@ -92,7 +92,7 @@ export default function ResultsView() {
           disabled={currentQuestionIndex === 0}
           className="w-[100px]"
         >
-          <ChevronLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 size-4" />
           Previous
         </Button>
         <div className="flex items-center space-x-2">
@@ -100,7 +100,7 @@ export default function ResultsView() {
             <Button
               key={index}
               variant={index === currentQuestionIndex ? "default" : "outline"}
-              className="h-8 w-8 p-0"
+              className="size-8 p-0"
               onClick={() => setCurrentQuestionIndex(index)}
             >
               {index + 1}
@@ -114,7 +114,7 @@ export default function ResultsView() {
           className="w-[100px]"
         >
           Next
-          <ChevronRight className="ml-2 h-4 w-4" />
+          <ChevronRight className="ml-2 size-4" />
         </Button>
       </div>
     </div>
