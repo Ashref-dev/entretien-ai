@@ -83,13 +83,13 @@ export async function POST(req: NextRequest) {
    5. Strictly follow the JSON format above.
    6. Include ONLY JSON in your response.
    
-   responde in json format.`;
+   respond in json format.`;
 
     // Use the utility function to call Together AI with the prompt
     const aiResponseContent = await callAIWithPrompt(prompt);
 
     // Validate that the response is a valid JSON
-    let aiResponse;
+    let aiResponse: { interviewData: any[] };
     try {
       aiResponse = JSON.parse(aiResponseContent);
 

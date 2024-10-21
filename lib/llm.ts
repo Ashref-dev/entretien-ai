@@ -15,8 +15,8 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
     const response = await together.chat.completions.create({
       temperature: 0.4,
       messages: [{ role: "user", content: prompt }],
-      // model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
-      model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+      model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+      // model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
     });
 
     // Extract the AI response content
@@ -26,7 +26,7 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
     }
 
     // Parse the AI response as JSON
-    return JSON.parse(aiResponseContent);
+    return aiResponseContent;
   } catch (error) {
     console.error("Error calling Together AI:", error);
     throw new Error("Failed to get a valid response from Together AI");
