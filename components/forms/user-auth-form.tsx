@@ -80,7 +80,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -109,8 +109,8 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             {type === "register" ? "Sign Up with Email" : "Sign In with Email"}
           </button>
         </div>
-      </form>
-      <div className="relative">
+      </form> */}
+      {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
@@ -119,7 +119,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             Or continue with
           </span>
         </div>
-      </div>
+      </div> */}
       <button
         type="button"
         className={cn(buttonVariants({ variant: "outline" }))}

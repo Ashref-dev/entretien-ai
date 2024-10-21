@@ -106,7 +106,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
       {session ? (
         <Link
-          href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"}
+          href={session.user.role === "ADMIN" ? "/admin" : "/interviews"}
           className="hidden md:block"
         >
           <Button
@@ -115,7 +115,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
             size="sm"
             rounded="full"
           >
-            <span>Dashboard</span>
+            <span>interviews</span>
           </Button>
         </Link>
       ) : status === "unauthenticated" ? (
