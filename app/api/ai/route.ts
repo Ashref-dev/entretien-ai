@@ -81,7 +81,9 @@ export async function POST(req: NextRequest) {
    3. Each answer should be comprehensive.
    4. Focus on technical skills mentioned in the resume.
    5. Strictly follow the JSON format above.
-   6. Include ONLY JSON in your response.`;
+   6. Include ONLY JSON in your response.
+   
+   responde in json format.`;
 
     // Use the utility function to call Together AI with the prompt
     const aiResponseContent = await callAIWithPrompt(prompt);
