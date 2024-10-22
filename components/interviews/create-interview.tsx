@@ -36,7 +36,6 @@ const CreateInterview = () => {
             playMode="hover"
             className="dark:brightness-75 dark:hue-rotate-180 dark:invert"
           />
-          {/* className="dark:brightness-75 dark:hue-rotate-180 dark:invert" */}
         </div>
         <motion.h2
           initial={{ opacity: 0 }}

@@ -1,5 +1,7 @@
-"use client";;
+"use client";
+
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -73,13 +75,12 @@ export function CreateInterviewModal({
 
       // Call the original onCreateInterview callback
       onCreateInterview({ jobTitle, jobDescription, resume });
-      
+
       // Reset form
       setJobTitle("");
       setJobDescription("");
       setResume(null);
       onOpenChange(false);
-
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Error creating interview. Please try again.");
@@ -120,7 +121,9 @@ export function CreateInterviewModal({
               </div>
             </div>
             <div className="mt-4 flex-1 space-y-2 md:mt-0">
-              <Label htmlFor="resume" className="hidden">Upload Resume</Label>
+              <Label htmlFor="resume" className="hidden">
+                Upload Resume
+              </Label>
               <div className="min-h-[300px] w-full rounded-lg border border-dashed border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
                 <FileUpload onChange={handleFileUpload} />
               </div>
