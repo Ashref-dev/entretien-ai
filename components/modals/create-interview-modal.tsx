@@ -72,6 +72,7 @@ export function CreateInterviewModal({
 
       const data = await response.json();
       console.log("OpenAI Generated Interview Data:", data);
+    
 
       // Call the original onCreateInterview callback
       onCreateInterview({ jobTitle, jobDescription, resume });

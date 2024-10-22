@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     // Use the utility function to call Together AI with the prompt
     const aiResponseContent = await callAIWithPrompt(prompt);
-
+console.log(texts.join("\n"));
     // Validate that the response is a valid JSON
     let aiResponse: { interviewData: any[] };
     try {
