@@ -7,7 +7,7 @@
     "url": "https://ashref.tn"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "turbo": "next dev --turbo",
     "start": "next start",
