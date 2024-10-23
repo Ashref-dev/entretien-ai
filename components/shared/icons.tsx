@@ -9,6 +9,7 @@ import {
   Copy,
   CreditCard,
   File,
+  FileClock,
   FileText,
   HelpCircle,
   Home,
@@ -20,6 +21,7 @@ import {
   LucideIcon,
   LucideProps,
   MessagesSquare,
+  MessagesSquareIcon,
   Moon,
   MoreVertical,
   Package,
@@ -31,7 +33,6 @@ import {
   Trash,
   User,
   X,
-  MessagesSquareIcon
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -103,6 +104,7 @@ export const Icons = {
   ),
   help: HelpCircle,
   home: Home,
+  history: FileClock,
   laptop: Laptop,
   lineChart: LineChart,
   logo: Puzzle,
