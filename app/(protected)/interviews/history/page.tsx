@@ -34,8 +34,6 @@ const Page = async () => {
   //   },
   // });
 
-  const revealClasses = "opacity-0 animate-fade-in-up";
-  
   return (
     <>
       <DashboardHeader
@@ -44,10 +42,10 @@ const Page = async () => {
       />
 
       <InterviewCards
-        interviews={sampleInterviews.map((interview, index) => ({
+        interviews={sampleInterviews.map((interview) => ({
           ...interview,
           updatedAt: interview.createdAt,
-          className: `${revealClasses} animation-delay-${index * 100}`,
+          className: `opacity-0 animate-fade-in-up animation-delay-600`,
         }))}
       />
     </>
@@ -55,4 +53,3 @@ const Page = async () => {
 };
 
 export default Page;
-
