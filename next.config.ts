@@ -2,8 +2,7 @@ const { withContentlayer } = require("next-contentlayer2");
 
 import("./env.mjs");
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: import("next").NextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
@@ -22,9 +21,10 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
-  },
+
+
+
+  serverComponentsExternalPackages: ["@prisma/client"],
 };
 
 module.exports = withContentlayer(nextConfig);

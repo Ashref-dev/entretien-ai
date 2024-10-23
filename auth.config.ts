@@ -1,10 +1,10 @@
-import type NextAuthConfig from "next-auth";
-import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
-import Resend from "next-auth/providers/resend"
+import Google from "next-auth/providers/google";
+import Resend from "next-auth/providers/resend";
 
 import { env } from "@/env.mjs";
-import { sendVerificationRequest } from "@/lib/email";
+
+// import { sendVerificationRequest } from "@/lib/email";
 
 export default {
   providers: [

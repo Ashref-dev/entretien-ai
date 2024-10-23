@@ -73,7 +73,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           buttonVariants({ variant, size, rounded, className }),
           "group/btn relative h-10 rounded-md font-medium",
           "bg-gradient-to-br from-gray-100 to-gray-200",
-          "dark:from-black dark:to-neutral-800",
+          "dark:from-neutral-900 dark:to-neutral-800",
           "shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]",
           "dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]",
         )}

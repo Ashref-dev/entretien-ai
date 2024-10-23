@@ -3,6 +3,7 @@
 import { useContext } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
+import { LogIn } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { docsConfig } from "@/config/docs";
@@ -115,7 +116,8 @@ export function NavBar({ scroll = false }: NavBarProps) {
                 size="sm"
                 rounded="full"
               >
-                <span>interviews</span>
+                <span>Interviews</span>
+                <LogIn className="size-4" />
               </Button>
             </Link>
           ) : status === "unauthenticated" ? (

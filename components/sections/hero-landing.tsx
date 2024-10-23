@@ -2,10 +2,8 @@ import Link from "next/link";
 
 import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
-
-import BottomGradientButton from "../ui/bottom-gradient-button";
 
 export default async function HeroLanding() {
   const { stargazers_count: stars } = await fetch(
@@ -56,12 +54,12 @@ export default async function HeroLanding() {
         </p>
 
         <Link href="/pricing" prefetch={true}>
-          <BottomGradientButton className="px-16">
+          <Button className="px-16">
             <div className="inline-flex items-center gap-2">
               Start now
               <Icons.arrowRight className="size-4" />
             </div>
-          </BottomGradientButton>
+          </Button>
         </Link>
       </div>
     </section>
