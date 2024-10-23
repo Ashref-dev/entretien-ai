@@ -18,16 +18,21 @@ export const sidebarLinks: SidebarNavItem[] = [
         title: "interviews",
         authorizeOnly: UserRole.USER,
       },
-      { href: "/dashboard", icon: "dashboard", title: "Dashboard" },
-     
+      {
+        href: "/interviews/history",
+        icon: "history",
+        title: "History",
+        authorizeOnly: UserRole.USER,
+      },
+
       {
         href: "/billing",
         icon: "billing",
         title: "Billing",
         authorizeOnly: UserRole.USER,
       },
-     
-      { href: "/charts", icon: "lineChart", title: "Charts" },
+
+      // { href: "/charts", icon: "lineChart", title: "Charts" },
       {
         href: "/admin/orders",
         icon: "package",
@@ -35,23 +40,23 @@ export const sidebarLinks: SidebarNavItem[] = [
         badge: 2,
         authorizeOnly: UserRole.ADMIN,
       },
-      {
-        href: "#/dashboard/posts",
-        icon: "post",
-        title: "User Posts",
-        authorizeOnly: UserRole.USER,
-        disabled: true,
-      },
+      // {
+      //   href: "#/dashboard/posts",
+      //   icon: "post",
+      //   title: "User Posts",
+      //   authorizeOnly: UserRole.USER,
+      //   disabled: true,
+      // },
     ],
   },
   {
     title: "OPTIONS",
     items: [
       { href: "/settings", icon: "settings", title: "Settings" },
-      { href: "/", icon: "home", title: "Homepage" },
-      { href: "/docs", icon: "bookOpen", title: "Documentation" },
+      // { href: "/", icon: "home", title: "Homepage" },
+      // { href: "/docs", icon: "bookOpen", title: "Documentation" },
       {
-        href: "#",
+        href: "/support",
         icon: "messages",
         title: "Support",
         authorizeOnly: UserRole.USER,
