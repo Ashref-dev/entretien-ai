@@ -1,19 +1,19 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { InterviewStep, InterviewData } from "@/types";
+import { InterviewStep, Interview } from "@/types";
 
 type InterviewContextType = {
   currentStep: InterviewStep;
   setCurrentStep: (step: InterviewStep) => void;
-  interviewData: InterviewData | null;
-  setInterviewData: (data: InterviewData | null) => void;
+  interviewData: Interview | null;
+  setInterviewData: (data: Interview | null) => void;
 };
 
 const InterviewContext = createContext<InterviewContextType | undefined>(undefined);
 
 export function InterviewProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState<InterviewStep>("initial");
-  const [interviewData, setInterviewData] = useState<InterviewData | null>(null);
+  const [interviewData, setInterviewData] = useState<Interview | null>(null);
 
   return (
     <InterviewContext.Provider

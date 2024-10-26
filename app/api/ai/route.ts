@@ -39,35 +39,30 @@ export async function POST(req: NextRequest) {
   "interviewData": [
     {
       "id": "unique-id-1",
-      "interviewId": "${interviewId}",
       "aiQuestion": "detailed technical question 1",
       "aiAnswer": "detailed expected answer 1",
       "userAnswer": ""
     },
     {
       "id": "unique-id-2",
-      "interviewId": "${interviewId}",
       "aiQuestion": "detailed technical question 2",
       "aiAnswer": "detailed expected answer 2",
       "userAnswer": ""
     },
     {
       "id": "unique-id-3",
-      "interviewId": "${interviewId}",
       "aiQuestion": "detailed technical question 3",
       "aiAnswer": "detailed expected answer 3",
       "userAnswer": ""
     },
     {
       "id": "unique-id-4",
-      "interviewId": "${interviewId}",
       "aiQuestion": "detailed technical question 4",
       "aiAnswer": "detailed expected answer 4",
       "userAnswer": ""
     },
     {
       "id": "unique-id-5",
-      "interviewId": "${interviewId}",
       "aiQuestion": "detailed technical question 5",
       "aiAnswer": "detailed expected answer 5",
       "userAnswer": ""
@@ -87,7 +82,7 @@ export async function POST(req: NextRequest) {
 
     // Use the utility function to call Together AI with the prompt
     const aiResponseContent = await callAIWithPrompt(prompt);
-console.log(texts.join("\n"));
+    console.log(texts.join("\n"));
     // Validate that the response is a valid JSON
     let aiResponse: { interviewData: any[] };
     try {

@@ -1,5 +1,4 @@
 import { User } from "@prisma/client";
-import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/shared/icons";
 
@@ -100,10 +99,19 @@ export type TestimonialType = {
   image: string;
   review: string;
 };
-export type InterviewStep = 'initial' | 'processing' | 'results';
-export type InterviewData = {
+export type InterviewStep = "initial" | "processing" | "results";
+
+export type Interview = {
   jobTitle: string;
   jobDescription: string;
   resume: File | null;
-  apiResponse?: any;
+  interviewScore: number;
+  interviewData: {
+    id: string;
+    aiQuestion: string;
+    aiAnswer: string;
+    userAnswer: string;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
 };

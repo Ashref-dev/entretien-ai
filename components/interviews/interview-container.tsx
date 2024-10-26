@@ -1,5 +1,7 @@
 "use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
+
 import CreateInterview from "./create-interview";
 import { useInterview } from "./interview-context";
 import ProcessingView from "./processing-view";
