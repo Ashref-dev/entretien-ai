@@ -1,6 +1,8 @@
 "use client";
+
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+
 import { useInterview } from "./interview-context";
 
 export default function ProcessingView() {
@@ -27,12 +29,20 @@ export default function ProcessingView() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const apiResponse = await response.json();
-        setInterviewData({ ...interviewData, apiResponse });
+        const aiGeneratedDataArray = await response.json();
+        console.log(
+          "🚀 ~ processInterview ~ aiGeneratedDataArray:",
+          aiGeneratedDataArray,
+        );
+
+        setInterviewData({
+          ...interviewData,
+          interviewData: aiGeneratedDataArray.interviewData,
+        });
+
         setCurrentStep("results");
       } catch (error) {
         console.error("Error processing interview:", error);
-        // Handle error appropriately
       }
     };
 
@@ -41,7 +51,7 @@ export default function ProcessingView() {
 
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center">
-      <Loader2 className="mb-4 h-12 w-12 animate-spin" />
+      <Loader2 className="mb-4 size-12 animate-spin" />
       <h2 className="text-2xl font-bold">Creating Your Interview...</h2>
       <p className="mt-2 text-muted-foreground">
         Please wait while we process your information
