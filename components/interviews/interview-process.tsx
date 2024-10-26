@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Interview } from "@/types";
 import {
+    Check,
     ChevronLeft,
     ChevronRight,
     Mic,
@@ -54,16 +56,23 @@ export default function InterviewProcess({
 }: {
   interview: Interview;
 }) {
+  const router = useRouter();
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [transcripts, setTranscripts] = useState<string[]>([]);
+  const [isLastQuestion, setIsLastQuestion] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
+
+  useEffect(() => {
+    setIsLastQuestion(currentQuestionIndex === questions.length - 1);
+  }, [currentQuestionIndex, questions.length]);
 
   useEffect(() => {
     if (videoRef.current && isVideoOn) {
@@ -120,6 +129,8 @@ export default function InterviewProcess({
       if (isRecording) {
         toggleRecording();
       }
+    } else {
+      finishInterview();
     }
   };
 
@@ -157,6 +168,44 @@ export default function InterviewProcess({
   };
 
   const toggleVideo = () => setIsVideoOn(!isVideoOn);
+
+  const finishInterview = async () => {
+    // Stop recording if it's still ongoing
+    if (isRecording) {
+      toggleRecording();
+    }
+
+    // Prepare the updated interview data
+    const updatedInterviewData = questions.map((question, index) => ({
+      ...question,
+      userAnswer: transcripts[index] || "",
+    }));
+
+    try {
+      // Call the API to save the interview data
+      const response = await fetch(`/api/interviews/${interview.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ interviewData: updatedInterviewData }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save interview data");
+      }
+
+      // Handle successful save
+      console.log("Interview data saved successfully");
+
+      // Route to the interview result page
+      router.push(`/interviews/${interview.id}/results`);
+    } catch (error) {
+      console.error("Error saving interview data:", error);
+      // Handle error (e.g., show an error message to the user)
+      // You might want to add a toast or alert here to inform the user
+    }
+  };
 
   return (
     <div className="container mx-auto space-y-6 p-4">
@@ -260,14 +309,18 @@ export default function InterviewProcess({
             </Button>
           ))}
         </div>
-        <Button
-          variant="outline"
-          onClick={handleNext}
-          disabled={currentQuestionIndex === questions.length - 1}
-          className="w-[100px]"
-        >
-          Next
-          <ChevronRight className="ml-2 size-4" />
+        <Button variant="outline" onClick={handleNext} className="w-[100px]">
+          {isLastQuestion ? (
+            <>
+              Finish
+              <Check className="ml-2 size-4" />
+            </>
+          ) : (
+            <>
+              Next
+              <ChevronRight className="ml-2 size-4" />
+            </>
+          )}
         </Button>
       </div>
     </div>

@@ -102,6 +102,7 @@ export type TestimonialType = {
 export type InterviewStep = "initial" | "processing" | "results";
 
 export type Interview = {
+  id: string;
   jobTitle: string;
   jobDescription: string;
   resume?: File | null;
