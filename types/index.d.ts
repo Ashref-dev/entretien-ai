@@ -104,8 +104,8 @@ export type InterviewStep = "initial" | "processing" | "results";
 export type Interview = {
   jobTitle: string;
   jobDescription: string;
-  resume: File | null;
-  interviewScore: number;
+  resume?: File | null;
+  interviewScore?: number | null;
   interviewData: {
     id: string;
     aiQuestion: string;
