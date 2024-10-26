@@ -4,11 +4,24 @@ import { prisma } from "@/lib/db";
 import { callAIWithPrompt } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
 
-async function scoreMe(question: string, aiAnswer: string, userAnswer: string) {
+async function scoreMe(
+  question: string,
+  aiAnswer: string,
+  userAnswer: string,
+): Promise<number> {
+  console.log("question", question);
+  console.log("aiAnswer", aiAnswer);
+  console.log("userAnswer", userAnswer);
+
+  if (!userAnswer) {
+    return 0;
+  }
+
   const prompt = `
     You are an expert technical interviewer.
     You are given a question, the expected answer, and the user's answer.
     Score the user's answer based on how well it matches the expected answer.
+    If there is no user answer, return the score as 0.
     Question: ${question}
     Expected Answer: ${aiAnswer}
     User's Answer: ${userAnswer}
@@ -19,7 +32,7 @@ async function scoreMe(question: string, aiAnswer: string, userAnswer: string) {
   const response = await callAIWithPrompt(prompt);
   console.log("ai response", response);
 
-  return response;
+  return parseInt(response) || 0;
 }
 
 export async function PUT(
@@ -32,7 +45,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { interviewId } = params;
+    const { interviewId } = await params;
     const { interviewData } = await req.json();
 
     if (!interviewData || !Array.isArray(interviewData)) {
@@ -55,7 +68,7 @@ export async function PUT(
     // Calculate the interview score
     const totalQuestions = interviewData.length;
 
-    const scores = await Promise.all(
+    const scores: number[] = await Promise.all(
       interviewData.map(async (item) => {
         const score = await scoreMe(
           item.aiQuestion,
