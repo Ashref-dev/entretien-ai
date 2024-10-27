@@ -8,7 +8,7 @@ export async function saveInterviewData(interviewData: any) {
       data: {
         jobTitle: interviewData.jobTitle,
         jobDescription: interviewData.jobDescription,
-        interviewScore: interviewData.interviewScore,
+        interviewScore: interviewData.interviewScore || 0,
         interviewData: {
           create: interviewData.interviewData.map((item: any) => ({
             aiQuestion: item.aiQuestion,

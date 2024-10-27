@@ -66,6 +66,7 @@ export default function InterviewProcess({
   const [isLastQuestion, setIsLastQuestion] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
 
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
@@ -73,6 +74,10 @@ export default function InterviewProcess({
   useEffect(() => {
     setIsLastQuestion(currentQuestionIndex === questions.length - 1);
   }, [currentQuestionIndex, questions.length]);
+
+  useEffect(() => {
+    setHasRecorded(new Array(questions.length).fill(false));
+  }, [questions.length]);
 
   useEffect(() => {
     if (videoRef.current && isVideoOn) {
@@ -94,8 +99,8 @@ export default function InterviewProcess({
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = "";
-        let finalTranscript = "";
+        let interimTranscript = " ";
+        let finalTranscript = " ";
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
@@ -108,7 +113,7 @@ export default function InterviewProcess({
         setTranscripts((prev) => {
           const newTranscripts = [...prev];
           newTranscripts[currentQuestionIndex] =
-            (newTranscripts[currentQuestionIndex] || "") +
+            (newTranscripts[currentQuestionIndex] || " ") +
             finalTranscript +
             interimTranscript;
           return newTranscripts;
@@ -124,7 +129,7 @@ export default function InterviewProcess({
   }, [isVideoOn, currentQuestionIndex]);
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1 ) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       if (isRecording) {
         toggleRecording();
@@ -153,6 +158,11 @@ export default function InterviewProcess({
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
+      setHasRecorded(prev => {
+        const newHasRecorded = [...prev];
+        newHasRecorded[currentQuestionIndex] = true;
+        return newHasRecorded;
+      });
     }
   };
 
@@ -205,6 +215,10 @@ export default function InterviewProcess({
       // Handle error (e.g., show an error message to the user)
       // You might want to add a toast or alert here to inform the user
     }
+  };
+
+  const isAnswerValid = (index: number) => {
+    return hasRecorded[index] && transcripts[index]?.trim().length > 0;
   };
 
   return (
@@ -309,7 +323,12 @@ export default function InterviewProcess({
             </Button>
           ))}
         </div>
-        <Button variant="outline" onClick={handleNext} className="w-[100px]">
+        <Button 
+          variant="outline" 
+          onClick={handleNext} 
+          className="w-[100px]"
+          disabled={!isAnswerValid(currentQuestionIndex)}
+        >
           {isLastQuestion ? (
             <>
               Finish

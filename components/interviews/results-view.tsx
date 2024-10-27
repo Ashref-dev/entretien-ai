@@ -15,6 +15,7 @@ export default function ResultsView() {
   const router = useRouter();
 
   const handleSaveInterviewData = async () => {
+    console.log("interviewData", interviewData);
     if (!interviewData) return;
 
     setIsLoading(true);
