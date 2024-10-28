@@ -1,4 +1,4 @@
-  import { createEnv } from "@t3-oss/env-nextjs";
+import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
@@ -9,8 +9,8 @@ export const env = createEnv({
     AUTH_SECRET: z.string().min(1),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    AUTH_GITHUB_SECRET :z.string(),
-    AUTH_GITHUB_ID : z.string(),
+    AUTH_GITHUB_SECRET: z.string(),
+    AUTH_GITHUB_ID: z.string(),
     GITHUB_OAUTH_TOKEN: z.string(),
     DATABASE_URL: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
@@ -18,7 +18,6 @@ export const env = createEnv({
     STRIPE_API_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     AI_API_KEY: z.string().min(1),
-    
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().min(1),
@@ -26,15 +25,14 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID: z.string().min(1),
     NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID: z.string().min(1),
     NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID: z.string().min(1),
-    
   },
   runtimeEnv: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    AUTH_GITHUB_ID : process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET:process.env.AUTH_GITHUB_SECRET,
+    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     GITHUB_OAUTH_TOKEN: process.env.GITHUB_OAUTH_TOKEN,
     AI_API_KEY: process.env.AI_API_KEY,
     DATABASE_URL: process.env.DATABASE_URL,

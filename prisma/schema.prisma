@@ -40,6 +40,11 @@ model Session {
   @@map("sessions")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id                     String    @id @default(cuid())
   name                   String?
@@ -69,32 +74,31 @@ model VerificationToken {
 }
 
 model Interview {
-  id             String          @id @default(cuid())
-  jobTitle       String
-  jobDescription String
-  interviewScore Float?
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @default(now()) @map("updated_at")
-  interviewData  InterviewData[]
+  id              String          @id @default(cuid())
+  jobTitle        String
+  jobDescription  String
+  interviewScore  Float?
+  targetCompany   String?
+  overAllFeedback String?
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @default(now()) @map("updated_at")
+  interviewData   InterviewData[]
 
   @@map("interviews")
 }
 
 model InterviewData {
-  id          String    @id @default(cuid())
-  interviewId String
-  aiQuestion  String
-  aiAnswer    String
-  userAnswer  String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @map("updated_at")
-  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  id               String    @id @default(cuid())
+  interviewId      String
+  aiQuestion       String
+  aiAnswer         String
+  userAnswer       String
+  questionsScore   Int?
+  questionFeedback String?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @default(now()) @map("updated_at")
+  interview        Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
 
   @@index([interviewId])
   @@map("interview_data")
-}
-
-enum UserRole {
-  ADMIN
-  USER
 }

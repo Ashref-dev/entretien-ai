@@ -1,8 +1,9 @@
-const { withContentlayer } = require("next-contentlayer2");
+import type { NextConfig } from "next";
+import { withContentlayer } from "next-contentlayer2";
 
-import("./env.mjs");
+import "./env.mjs";
 
-const nextConfig: import("next").NextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -19,8 +20,8 @@ const nextConfig: import("next").NextConfig = {
       },
     ],
   },
-
-  serverComponentsExternalPackages: ["@prisma/client"],
+  serverExternalPackages: ["@prisma/client"],
+  // serverComponentsExternalPackages: ["@prisma/client"],
 };
 
 module.exports = withContentlayer(nextConfig);
