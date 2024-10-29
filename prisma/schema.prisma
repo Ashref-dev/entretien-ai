@@ -58,6 +58,7 @@ model User {
   stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
   stripePriceId          String?   @map("stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+  interviews             Interview[]
   accounts               Account[]
   sessions               Session[]
 
@@ -80,11 +81,13 @@ model Interview {
   interviewScore  Float?
   targetCompany   String?
   overAllFeedback String?
+  userId          String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @default(now()) @map("updated_at")
   interviewData   InterviewData[]
-
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("interviews")
+  @@index([userId])
 }
 
 model InterviewData {
