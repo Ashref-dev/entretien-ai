@@ -8,9 +8,11 @@ export async function saveInterviewData(interviewData: any) {
     const savedInterview = await prisma.interview.create({
 
       data: {
+        resume: interviewData.resume.name,
         jobTitle: interviewData.jobTitle,
         jobDescription: interviewData.jobDescription,
         interviewScore: interviewData.interviewScore || 0,
+
         user: {
           connect: {
             id: user?.id

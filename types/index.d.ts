@@ -105,7 +105,7 @@ export type Interview = {
   id: string;
   jobTitle: string;
   jobDescription: string;
-  resume?: File | null;
+  resume?: string | null;
   interviewScore?: number | null;
   interviewData: {
     id: string;
