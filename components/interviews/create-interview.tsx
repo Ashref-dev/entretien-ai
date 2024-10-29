@@ -4,8 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 
-import DynamicLottie from "../lottie";
 import { CreateInterviewModal } from "../modals/create-interview-modal";
+import { AnimatedIcon } from "../shared/animated-icon";
 import { MovingBorderButton } from "../ui/moving-border";
 import { useInterview } from "./interview-context";
 
@@ -31,11 +31,7 @@ const CreateInterview = () => {
         className="flex h-[40vh] flex-col items-center justify-center text-center"
       >
         <div className="mb-8 size-16">
-          <DynamicLottie
-            animationData={() => import("@/assets/lotties/docEdit.json")}
-            playMode="hover"
-            className="dark:brightness-75 dark:hue-rotate-180 dark:invert"
-          />
+          <AnimatedIcon icon="speech" />
         </div>
         <motion.h2
           initial={{ opacity: 0 }}
