@@ -35,6 +35,35 @@ async function scoreMe(
   return parseInt(response) || 0;
 }
 
+async function generateFeedback(
+  question: string,
+  aiAnswer: string,
+  userAnswer: string,
+): Promise<string> {
+  if (!userAnswer) {
+    return "No answer provided to give feedback on.";
+  }
+
+  const prompt = `
+    You are an expert technical interviewer.
+    Analyze the following technical interview response and provide constructive feedback.
+    
+    Question: ${question}
+    Expected Answer: ${aiAnswer}
+    User's Answer: ${userAnswer}
+
+    Provide concise, constructive feedback that:
+    1. Highlights what was done well
+    2. Points out any missing key points
+    3. Suggests areas for improvement
+    
+    Return only the feedback text, no additional formatting or labels.
+  `;
+
+  const response = await callAIWithPrompt(prompt);
+  return response.toString();
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { interviewId: string } },
@@ -45,7 +74,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { interviewId } = await params;
+    const { interviewId } = params;
     const { interviewData } = await req.json();
 
     if (!interviewData || !Array.isArray(interviewData)) {
@@ -59,28 +88,33 @@ export async function PUT(
     });
 
     if (!existingInterview) {
-      return NextResponse.json(
-        { error: "Interview not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Interview not found" }, { status: 404 });
     }
 
-    // Calculate the interview score
-    const totalQuestions = interviewData.length;
-
-    const scores: number[] = await Promise.all(
+    // Calculate scores and generate feedback for each question
+    const processedData = await Promise.all(
       interviewData.map(async (item) => {
         const score = await scoreMe(
           item.aiQuestion,
           item.aiAnswer,
           item.userAnswer,
         );
-        return score;
+        const feedback = await generateFeedback(
+          item.aiQuestion,
+          item.aiAnswer,
+          item.userAnswer,
+        );
+        return {
+          ...item,
+          score,
+          feedback,
+        };
       }),
     );
 
+    // Calculate overall interview score
     const interviewScore =
-      scores.reduce((acc, curr) => acc + curr, 0) / scores.length;
+      processedData.reduce((acc, curr) => acc + curr.score, 0) / processedData.length;
 
     // Update the interview and its data
     const updatedInterview = await prisma.interview.update({
@@ -89,10 +123,12 @@ export async function PUT(
         interviewScore,
         interviewData: {
           deleteMany: {}, // Delete existing interview data
-          create: interviewData.map((item: any) => ({
+          create: processedData.map((item) => ({
             aiQuestion: item.aiQuestion,
             aiAnswer: item.aiAnswer,
             userAnswer: item.userAnswer,
+            questionFeedback: item.feedback,
+            questionsScore: item.score,
           })),
         },
       },

@@ -23,6 +23,8 @@ export async function saveInterviewData(interviewData: any) {
             aiQuestion: item.aiQuestion,
             aiAnswer: item.aiAnswer,
             userAnswer: item.userAnswer,
+            questionFeedback: item.questionFeedback,
+            questionsScore: item.questionsScore || 0,
           })),
         },
       },

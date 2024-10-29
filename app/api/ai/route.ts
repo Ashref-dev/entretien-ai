@@ -41,31 +41,36 @@ export async function POST(req: NextRequest) {
       "id": "unique-id-1",
       "aiQuestion": "detailed technical question 1",
       "aiAnswer": "detailed expected answer 1",
-      "userAnswer": ""
+      "userAnswer": "",
+      "questionFeedback": "Detailed feedback for the answer 1"
     },
     {
       "id": "unique-id-2",
       "aiQuestion": "detailed technical question 2",
       "aiAnswer": "detailed expected answer 2",
-      "userAnswer": ""
+      "userAnswer": "",
+      "questionFeedback": "Detailed feedback for the answer 2"
     },
     {
       "id": "unique-id-3",
       "aiQuestion": "detailed technical question 3",
       "aiAnswer": "detailed expected answer 3",
-      "userAnswer": ""
+      "userAnswer": "",
+      "questionFeedback": "Detailed feedback for the answer 3"
     },
     {
       "id": "unique-id-4",
       "aiQuestion": "detailed technical question 4",
       "aiAnswer": "detailed expected answer 4",
-      "userAnswer": ""
+      "userAnswer": "",
+      "questionFeedback": "Detailed feedback for the answer 4"
     },
     {
       "id": "unique-id-5",
       "aiQuestion": "detailed technical question 5",
       "aiAnswer": "detailed expected answer 5",
-      "userAnswer": ""
+      "userAnswer": "",
+      "questionFeedback": "Detailed feedback for the answer 5"
     }
   ]
 }
@@ -107,6 +112,7 @@ export async function POST(req: NextRequest) {
             aiQuestion: item.aiQuestion || `Question ${index + 1}`,
             aiAnswer: item.aiAnswer || "Expected answer not provided",
             userAnswer: "",
+            questionFeedback: item.questionFeedback || "Detailed feedback for the answer not provided",
           })),
       };
 
@@ -118,6 +124,7 @@ export async function POST(req: NextRequest) {
           aiQuestion: `Additional Question ${formattedData.interviewData.length + 1}`,
           aiAnswer: "Expected answer not provided",
           userAnswer: "",
+          questionFeedback: "Detailed feedback for the answer not provided",
         });
       }
 
