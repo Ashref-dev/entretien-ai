@@ -12,18 +12,24 @@ interface DynamicLottieProps {
 
 const DynamicLottie: React.FC<DynamicLottieProps> = ({
   animationData: initialAnimationData,
-  playMode = "loop",
+  playMode = "hover",
   className,
-  hoverDuration = 3000,
+  hoverDuration = 2000,
 }) => {
   const [animationData, setAnimationData] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(playMode === "loop");
+  const [isPlaying, setIsPlaying] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [key, setKey] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const lottieRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (playMode === "loop") {
+      setIsPlaying(true);
+    }
+  }, [playMode]);
 
   useEffect(() => {
     const loadAnimationData = async () => {
@@ -71,7 +77,6 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
 
   const handleMouseEnter = () => {
     if (isPlaying) return;
-
     if (playMode === "hover") {
       setIsPlaying(true);
       if (timerRef.current) {
@@ -83,12 +88,14 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
     }
   };
 
-  const handleMouseLeave = () => {
-    // Optionally, you can reset the animation immediately on mouse leave
-    // resetAnimation();
-    // Or keep the current behavior:
-    // Do nothing on mouse leave, let the timer handle stopping the animation
-  };
+  // const handleMouseLeave = () => {
+  //   if (playMode === "hover") {
+  //     resetAnimation();
+  //     if (timerRef.current) {
+  //       clearTimeout(timerRef.current);
+  //     }
+  //   }
+  // };
 
   const handleComplete = () => {
     if (playMode === "oneTime") {
@@ -104,12 +111,12 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
     <div
       className={clsx("dynamic-lottie-container", className)}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      // onMouseLeave={handleMouseLeave}
     >
       <Lottie
         key={key}
         ref={lottieRef}
-        loop={false}
+        loop={playMode === "loop"}
         animationData={animationData}
         play={isPlaying}
         onComplete={handleComplete}
