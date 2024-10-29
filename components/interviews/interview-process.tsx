@@ -90,18 +90,18 @@ export default function InterviewProcess({
         })
         .catch((err) => console.error("Error accessing webcam:", err));
     }
-
+  
     const SpeechRecognitionAPI =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-
+  
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = " ";
-        let finalTranscript = " ";
-
+        let finalTranscript = "";  // Store only finalized text here
+        let interimTranscript = ""; // Clear interim text each cycle
+  
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript + " ";
@@ -109,24 +109,28 @@ export default function InterviewProcess({
             interimTranscript += event.results[i][0].transcript;
           }
         }
-
+  
+        // Only update state once per result, adding a space before appending finalTranscript
         setTranscripts((prev) => {
           const newTranscripts = [...prev];
           newTranscripts[currentQuestionIndex] =
-            (newTranscripts[currentQuestionIndex] || " ") +
-            finalTranscript +
-            interimTranscript;
+            (newTranscripts[currentQuestionIndex] || "").trim() +
+            " " +
+            finalTranscript.trim(); // Add a space before the new final text
           return newTranscripts;
         });
+  
+        // Optionally: Set interimTranscript to state if you need a real-time view
       };
     }
-
+  
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
   }, [isVideoOn, currentQuestionIndex]);
+  
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1 ) {
