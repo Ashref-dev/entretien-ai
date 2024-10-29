@@ -31,7 +31,7 @@ export function InterviewCards({ interviews }: InterviewCardsProps) {
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
                 <FileIcon className="mr-1 size-4" />
-                {interview.jobTitle.toLowerCase().replace(/\s+/g, '_')}_resume.pdf
+                {interview.resume?.toLowerCase().replace(/\s+/g, '_')}.pdf
               </div>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">

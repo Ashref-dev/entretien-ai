@@ -40,26 +40,21 @@ model Session {
   @@map("sessions")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 model User {
-  id                     String    @id @default(cuid())
+  id                     String      @id @default(cuid())
   name                   String?
-  email                  String?   @unique
+  email                  String?     @unique
   emailVerified          DateTime?
   image                  String?
-  createdAt              DateTime  @default(now()) @map("created_at")
-  updatedAt              DateTime  @default(now()) @map("updated_at")
-  role                   UserRole  @default(USER)
-  stripeCustomerId       String?   @unique @map("stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
-  stripePriceId          String?   @map("stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
-  interviews             Interview[]
+  createdAt              DateTime    @default(now()) @map("created_at")
+  updatedAt              DateTime    @default(now()) @map("updated_at")
+  role                   UserRole    @default(USER)
+  stripeCustomerId       String?     @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?     @unique @map("stripe_subscription_id")
+  stripePriceId          String?     @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime?   @map("stripe_current_period_end")
   accounts               Account[]
+  interviews             Interview[]
   sessions               Session[]
 
   @@map("users")
@@ -81,13 +76,15 @@ model Interview {
   interviewScore  Float?
   targetCompany   String?
   overAllFeedback String?
+  resume          String?
   userId          String
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @default(now()) @map("updated_at")
   interviewData   InterviewData[]
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@map("interviews")
+
   @@index([userId])
+  @@map("interviews")
 }
 
 model InterviewData {
@@ -104,4 +101,9 @@ model InterviewData {
 
   @@index([interviewId])
   @@map("interview_data")
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
