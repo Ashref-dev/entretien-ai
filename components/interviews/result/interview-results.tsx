@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Interview } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, X, MessageSquare } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,51 +71,65 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 </CardContent>
               </Card>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      Your Answer <X className="ml-2 text-red-500" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {interview.interviewData[currentQuestionIndex].userAnswer ||
-                      "No answer provided"}
-                  </CardContent>
-                </Card>
+              <div className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        Your Answer <X className="ml-2 text-red-500" />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {interview.interviewData[currentQuestionIndex].userAnswer ||
+                        "No answer provided"}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        AI Answer <Check className="ml-2 text-green-500" />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {interview.interviewData[currentQuestionIndex].aiAnswer}
+                    </CardContent>
+                  </Card>
+                </div>
 
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
-                      AI Answer <Check className="ml-2 text-green-500" />
+                      AI Feedback <MessageSquare className="ml-2 text-blue-500" />
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {interview.interviewData[currentQuestionIndex].aiAnswer}
+                    {interview.interviewData[currentQuestionIndex].questionFeedback || 
+                      "No feedback provided"}
                   </CardContent>
                 </Card>
               </div>
+
+              <div className="mt-6 flex justify-between">
+                <Button
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                  variant="outline"
+                >
+                  <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                </Button>
+                <Button
+                  onClick={handleNext}
+                  disabled={
+                    currentQuestionIndex === interview.interviewData.length - 1
+                  }
+                  variant="outline"
+                >
+                  Next <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </motion.div>
           </AnimatePresence>
-
-          <div className="mt-6 flex justify-between">
-            <Button
-              onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
-              variant="outline"
-            >
-              <ChevronLeft className="mr-2 h-4 w-4" /> Previous
-            </Button>
-            <Button
-              onClick={handleNext}
-              disabled={
-                currentQuestionIndex === interview.interviewData.length - 1
-              }
-              variant="outline"
-            >
-              Next <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>
