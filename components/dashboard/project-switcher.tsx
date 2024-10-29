@@ -19,20 +19,6 @@ type ProjectType = {
   color: string;
 };
 
-const projects: ProjectType[] = [
-  {
-    title: "Project 1",
-    slug: "project-number-one",
-    color: "bg-red-500",
-  },
-  {
-    title: "Project 2",
-    slug: "project-number-two",
-    color: "bg-blue-500",
-  },
-];
-const selected: ProjectType = projects[1];
-
 export default function ProjectSwitcher({
   large = false,
 }: {
@@ -41,25 +27,47 @@ export default function ProjectSwitcher({
   const { data: session, status } = useSession();
   const [openPopover, setOpenPopover] = useState(false);
 
-  if (!projects || status === "loading") {
+  if (status === "loading") {
     return <ProjectSwitcherPlaceholder />;
   }
+
+  if (!session) {
+    return (
+      <div className="text-sm text-muted-foreground">
+        Please sign in to view projects
+      </div>
+    );
+  }
+
+  const projects: ProjectType[] = [
+    {
+      title: `${session.user?.name?.split(" ")[0]}'s Project`,
+      slug: `${session.user?.name?.toLowerCase().split(" ")[0]}-project`,
+      color: "bg-blue-500",
+    },
+  ];
+
+  const selected: ProjectType = projects[0];
 
   return (
     <div>
       <Popover open={openPopover} onOpenChange={setOpenPopover}>
         <PopoverTrigger>
-          <Button
-            className="h-8 px-2"
-            variant={openPopover ? "secondary" : "ghost"}
+          <div
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "inline-flex select-none items-center justify-center text-sm font-medium ring-offset-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+              "group/btn relative h-10 rounded-md",
+              "bg-gradient-to-br from-gray-100 to-gray-200",
+              "dark:from-neutral-900 dark:to-neutral-800",
+              "shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]",
+              "dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]",
+            )}
             onClick={() => setOpenPopover(!openPopover)}
           >
-            <div className="flex items-center space-x-3 pr-2">
+            <div className="flex items-center space-x-3">
               <div
-                className={cn(
-                  "size-3 shrink-0 rounded-full",
-                  selected.color,
-                )}
+                className={cn("size-3 rounded-full", selected.color)}
               />
               <div className="flex items-center space-x-3">
                 <span
@@ -68,7 +76,7 @@ export default function ProjectSwitcher({
                     large ? "w-full" : "max-w-[80px]",
                   )}
                 >
-                  {selected.slug}
+                  {selected.title}
                 </span>
               </div>
             </div>
@@ -76,7 +84,8 @@ export default function ProjectSwitcher({
               className="size-4 text-muted-foreground"
               aria-hidden="true"
             />
-          </Button>
+            <BottomGradient />
+          </div>
         </PopoverTrigger>
         <PopoverContent align="start" className="max-w-60 p-2">
           <ProjectList
@@ -149,3 +158,20 @@ function ProjectSwitcherPlaceholder() {
     </div>
   );
 }
+
+const BottomGradient: React.FC<{ className?: string }> = ({ className }) => (
+  <>
+    <span
+      className={cn(
+        "absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100",
+        className,
+      )}
+    />
+    <span
+      className={cn(
+        "absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100",
+        className,
+      )}
+    />
+  </>
+);
