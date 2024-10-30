@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -72,7 +73,6 @@ export function CreateInterviewModal({
 
       const data = await response.json();
       console.log("OpenAI Generated Interview Data:", data);
-    
 
       // Call the original onCreateInterview callback
       onCreateInterview({ jobTitle, jobDescription, resume });
@@ -95,6 +95,12 @@ export function CreateInterviewModal({
       <DialogContent className="sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Create New Interview</DialogTitle>
+          <DialogDescription className="text-pretty text-xs opacity-70">
+            <p>
+              Using your resume and job description, we&apos;ll craft the
+              perfect interview answers for the most popular questions.
+            </p>
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col md:flex-row md:space-x-4">

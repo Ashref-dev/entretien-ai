@@ -18,6 +18,7 @@ const CreateInterview = () => {
     jobDescription: string;
     resume: File | null;
   }) => {
+    console.log("data", data);
     setInterviewData(data);
     setCurrentStep("processing");
   };
@@ -66,6 +67,7 @@ const CreateInterview = () => {
       </motion.div>
 
       <CreateInterviewModal
+      
         onCreateInterview={handleCreateInterview}
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
