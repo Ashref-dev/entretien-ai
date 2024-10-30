@@ -7,7 +7,8 @@ interface InterviewCardsProps {
 }
 
 export function InterviewCards({ interviews }: InterviewCardsProps) {
-  const getScoreColor = (score: number) => {
+  const getScoreColor = (score: number | null) => {
+    if (!score) return "text-gray-500";
     if (score < 50) return "text-red-500";
     if (score < 75) return "text-yellow-500";
     return "text-green-500";
@@ -26,8 +27,8 @@ export function InterviewCards({ interviews }: InterviewCardsProps) {
           </CardHeader>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className={`text-3xl font-bold ${getScoreColor(interview.interviewScore)}`}>
-                {Math.round(interview.interviewScore)}%
+            <div className={`text-3xl font-bold ${getScoreColor(interview.interviewScore)}`}>
+                {interview.interviewScore ? Math.round(interview.interviewScore) : 'N/A'}%
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
                 <FileIcon className="mr-1 size-4" />
