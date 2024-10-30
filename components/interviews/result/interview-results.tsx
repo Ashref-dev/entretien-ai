@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Interview } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight, X, MessageSquare } from "lucide-react";
-
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -15,7 +15,9 @@ interface InterviewResultsProps {
 
 export default function InterviewResults({ interview }: InterviewResultsProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const router = useRouter();
   const score = interview.interviewScore || 0;
+  const isLastQuestion = currentQuestionIndex === interview.interviewData.length - 1;
 
   const handleNext = () => {
     if (currentQuestionIndex < interview.interviewData.length - 1) {
@@ -27,6 +29,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
+  };
+
+  const handleFinish = () => {
+    router.push('/interviews');
   };
 
   return (
@@ -118,15 +124,21 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 >
                   <ChevronLeft className="mr-2 h-4 w-4" /> Previous
                 </Button>
-                <Button
-                  onClick={handleNext}
-                  disabled={
-                    currentQuestionIndex === interview.interviewData.length - 1
-                  }
-                  variant="outline"
-                >
-                  Next <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+                {isLastQuestion ? (
+                  <Button
+                    onClick={handleFinish}
+                    variant="default"
+                  >
+                    Finish <Check className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleNext}
+                    variant="outline"
+                  >
+                    Next <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </motion.div>
           </AnimatePresence>
