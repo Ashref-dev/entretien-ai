@@ -96,10 +96,8 @@ export function CreateInterviewModal({
         <DialogHeader>
           <DialogTitle>Create New Interview</DialogTitle>
           <DialogDescription className="text-pretty text-xs opacity-70">
-            <p>
-              Using your resume and job description, we&apos;ll craft the
-              perfect interview answers for the most popular questions.
-            </p>
+            Using your resume and job description, we&apos;ll craft the perfect
+            interview answers for the most popular questions.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

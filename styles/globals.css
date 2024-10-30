@@ -86,11 +86,18 @@
   }
 }
 
-.text-gradient_cyan-blue {
+.text-gradient {
   background: linear-gradient(90deg, #00e1ff 0%, rgba(0, 119, 255, 0.8) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.background-gradient {
+  background: linear-gradient(90deg, #00e1ff 0%, rgba(0, 119, 255, 0.8) 100%);
+}
+.background-gradient-reverse {
+  background: linear-gradient(90deg, rgba(0, 119, 255, 0.8) 0%, #00e1ff 100%);
 }
 
 @keyframes fadeInUp {
@@ -108,8 +115,18 @@
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.animation-delay-100 { animation-delay: 100ms; }
-.animation-delay-200 { animation-delay: 200ms; }
-.animation-delay-300 { animation-delay: 300ms; }
-.animation-delay-400 { animation-delay: 400ms; }
-.animation-delay-500 { animation-delay: 500ms; }
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+.animation-delay-500 {
+  animation-delay: 500ms;
+}

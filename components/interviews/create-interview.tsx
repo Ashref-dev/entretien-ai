@@ -67,7 +67,6 @@ const CreateInterview = () => {
       </motion.div>
 
       <CreateInterviewModal
-      
         onCreateInterview={handleCreateInterview}
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

@@ -1,39 +1,48 @@
+import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { InterviewCards } from "@/components/interviews/history/interview-cards";
-import { prisma } from "@/lib/db";
 
 // Sample interview data
 const sampleInterviews = [
   {
     id: "1",
-    jobTitle: "Frontend Developer",
-    jobDescription: "We are looking for a skilled Frontend Developer...",
-    interviewScore: 85.5,
-    createdAt: new Date("2023-03-15T10:00:00Z"),
-    userId: "user1",
+    jobTitle: "Senior Frontend Developer",
+    interviewScore: 85,
+    resume: "john_doe_resume",
+    createdAt: new Date(),
+    duration: 45,
+    questionsAnswered: 12,
+    difficulty: "Advanced",
+    skillsAssessed: ["React", "System Design", "JavaScript", "Performance"],
+    performanceMetrics: {
+      technicalScore: 88,
+      communicationScore: 92,
+      problemSolvingScore: 85,
+    },
+    feedbackSummary:
+      "Excellent technical knowledge and communication skills...",
   },
   {
     id: "2",
-    jobTitle: "UX Designer",
-    jobDescription: "Seeking a creative UX Designer to join our team...",
-    interviewScore: 92.0,
-    createdAt: new Date("2023-04-02T14:30:00Z"),
-    userId: "user1",
+    jobTitle: "Senior Frontend Developer",
+    interviewScore: 85,
+    resume: "john_doe_resume",
+    createdAt: new Date(),
+    duration: 45,
+    questionsAnswered: 12,
+    difficulty: "Advanced",
+    skillsAssessed: ["React", "System Design", "JavaScript", "Performance"],
+    performanceMetrics: {
+      technicalScore: 88,
+      communicationScore: 92,
+      problemSolvingScore: 85,
+    },
+    feedbackSummary:
+      "Excellent technical knowledge and communication skills...",
   },
 ];
 
-// const Page = async () => {
-//   const user = await getCurrentUser();
-
-//   const interviews = await prisma.interview.findMany({
-//     where: {
-//       userId: user?.id,
-//     },
-//     orderBy: {
-//       createdAt: 'desc',
-//     },
-//   });
 const Page = async () => {
   const user = await getCurrentUser();
 
@@ -44,7 +53,7 @@ const Page = async () => {
         userId: user?.id,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
   } catch (error) {
@@ -53,7 +62,6 @@ const Page = async () => {
     interviews = sampleInterviews;
   }
 
-
   return (
     <>
       <DashboardHeader
@@ -61,7 +69,7 @@ const Page = async () => {
         text="Access your past interviews"
       />
 
-<InterviewCards
+      <InterviewCards
         interviews={interviews.map((interview) => ({
           ...interview,
           updatedAt: interview.createdAt,
