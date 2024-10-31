@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { Interview } from "@prisma/client";
 import { motion } from "framer-motion";
-import { ArrowRightCircle, Award, Calendar, FileIcon } from "lucide-react";
+import {
+    ArrowRightCircle,
+    Award,
+    Briefcase,
+    Calendar,
+    FileIcon,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,31 +89,55 @@ export function InterviewCard({
             <div className="flex items-center space-x-3">
               <FileIcon className="size-5" />
               <span className="truncate">
-                {interview.resume?.toLowerCase().replace(/\s+/g, "_")}.pdf
+                {interview.resume?.toLowerCase().replace(/\s+/g, "_")}
               </span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Briefcase className="size-5" />
+              <span>Target: Google</span>
             </div>
             <div className="flex items-center space-x-3">
               <Calendar className="size-5" />
               <span>
                 {new Date(interview.createdAt).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
                 })}
               </span>
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <Link
-              href={`/interviews/${interview.id}`}
-              className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
-            >
-              <span className="text-foreground dark:text-white">View Details</span>
-              <ArrowRightCircle 
-                className="size-4 transition-transform group-hover:translate-x-0.5" 
-              />
-            </Link>
+          <div className="flex items-start justify-between">
+            <div className="flex flex-wrap gap-2">
+              {[
+                "React",
+                "TypeScript",
+                "Node.js",
+                "System Design",
+                "Triangle",
+              ].map((skill) => (
+                <Badge
+                  key={skill}
+                  variant="secondary"
+                  className="bg-muted/50 hover:bg-muted dark:bg-gray-700/50 dark:hover:bg-gray-700"
+                >
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+
+            <div className="flex">
+              <Link
+                href={`/interviews/${interview.id}`}
+                className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
+              >
+                <span className="text-nowrap text-foreground dark:text-white">
+                  View Details
+                </span>
+                <ArrowRightCircle className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
         </CardContent>
 
