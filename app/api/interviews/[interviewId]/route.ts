@@ -4,64 +4,45 @@ import { prisma } from "@/lib/db";
 import { callAIWithPrompt } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
 
-async function scoreMe(
+async function evaluateAnswer(
   question: string,
   aiAnswer: string,
   userAnswer: string,
-): Promise<number> {
-  console.log("question", question);
-  console.log("aiAnswer", aiAnswer);
-  console.log("userAnswer", userAnswer);
-
+): Promise<{ score: number; feedback: string }> {
   if (!userAnswer) {
-    return 0;
+    return { score: 0, feedback: "No answer provided to give feedback on." };
   }
 
   const prompt = `
     You are an expert technical interviewer.
-    You are given a question, the expected answer, and the user's answer.
-    Score the user's answer based on how well it matches the expected answer.
-    If there is no user answer, return the score as 0.
-    Question: ${question}
-    Expected Answer: ${aiAnswer}
-    User's Answer: ${userAnswer}
-
-    Return only one number between 0 and 100.
-    DON'T ANSWER WITH ANYTHING BUT THAT ONE NUMBER.
-  `;
-  const response = await callAIWithPrompt(prompt);
-  console.log("ai response", response);
-
-  return parseInt(response) || 0;
-}
-
-async function generateFeedback(
-  question: string,
-  aiAnswer: string,
-  userAnswer: string,
-): Promise<string> {
-  if (!userAnswer) {
-    return "No answer provided to give feedback on.";
-  }
-
-  const prompt = `
-    You are an expert technical interviewer.
-    Analyze the following technical interview response and provide constructive feedback.
+    Analyze the following technical interview response and provide both a score and feedback.
+    If the user's answer is exactly the same or close as the expected answer, give a score of 100.
+    If the user just repeats the question as an answer, give a score of 0.
     
     Question: ${question}
     Expected Answer: ${aiAnswer}
     User's Answer: ${userAnswer}
 
-    Provide concise, constructive feedback that:
-    1. Highlights what was done well
-    2. Points out any missing key points
-    3. Suggests areas for improvement
-    
-    Return only the feedback text, no additional formatting or labels.
+    Provide your response in the following JSON format only:
+    {
+      "score": <number between 0 and 100>,
+      "feedback": "<constructive feedback that highlights what was done well, points out missing key points, and suggests improvements>"
+    }
+
+    Return only the JSON object, no additional text or formatting.
   `;
 
   const response = await callAIWithPrompt(prompt);
-  return response.toString();
+  try {
+    const result = JSON.parse(response);
+    return {
+      score: result.score || 0,
+      feedback: result.feedback || "Error processing feedback.",
+    };
+  } catch (error) {
+    console.error("Error parsing AI response:", error);
+    return { score: 0, feedback: "Error processing response." };
+  }
 }
 
 export async function PUT(
@@ -88,33 +69,32 @@ export async function PUT(
     });
 
     if (!existingInterview) {
-      return NextResponse.json({ error: "Interview not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Interview not found" },
+        { status: 404 },
+      );
     }
 
     // Calculate scores and generate feedback for each question
     const processedData = await Promise.all(
       interviewData.map(async (item) => {
-        const score = await scoreMe(
-          item.aiQuestion,
-          item.aiAnswer,
-          item.userAnswer,
-        );
-        const feedback = await generateFeedback(
+        const evaluation = await evaluateAnswer(
           item.aiQuestion,
           item.aiAnswer,
           item.userAnswer,
         );
         return {
           ...item,
-          score,
-          feedback,
+          score: evaluation.score,
+          feedback: evaluation.feedback,
         };
       }),
     );
 
     // Calculate overall interview score
     const interviewScore =
-      processedData.reduce((acc, curr) => acc + curr.score, 0) / processedData.length;
+      processedData.reduce((acc, curr) => acc + curr.score, 0) /
+      processedData.length;
 
     // Update the interview and its data
     const updatedInterview = await prisma.interview.update({

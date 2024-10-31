@@ -17,6 +17,8 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
       messages: [{ role: "user", content: prompt }],
       model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
       // model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+      // model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+      // model: "meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
     });
 
     // Extract the AI response content

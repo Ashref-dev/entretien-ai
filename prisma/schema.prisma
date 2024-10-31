@@ -69,19 +69,35 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+enum InterviewDifficulty {
+  JUNIOR
+  MID_LEVEL
+  SENIOR
+  LEAD
+  PRINCIPAL
+}
+
 model Interview {
-  id              String          @id @default(cuid())
-  jobTitle        String
-  jobDescription  String
-  interviewScore  Float?
-  targetCompany   String?
-  overAllFeedback String?
-  resume          String?
-  userId          String
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @default(now()) @map("updated_at")
-  interviewData   InterviewData[]
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String             @id @default(cuid())
+  userId              String
+  jobTitle            String
+  jobDescription      String
+  difficulty          InterviewDifficulty @default(JUNIOR)
+  yearsOfExperience   Int                @default(0)
+  interviewScore      Float?
+  targetCompany       String?
+  overAllFeedback     String?
+  resume              String?
+  duration            Int?
+  questionsAnswered   Int?
+  skillsAssessed      String[] // Array to store multiple skills
+  technicalScore      Float?
+  communicationScore  Float?
+  problemSolvingScore Float?
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @default(now()) @map("updated_at")
+  interviewData       InterviewData[]
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("interviews")

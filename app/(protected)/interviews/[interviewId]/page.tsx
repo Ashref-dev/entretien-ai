@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { prisma } from "@/lib/db";
 import InterviewProcess from "@/components/interviews/interview-process";
@@ -45,6 +45,16 @@ async function InterviewContent({ interviewId }: { interviewId: string }) {
 
   if (!interview) {
     notFound();
+  }
+
+  // Check if all questions have answers
+  const allQuestionsAnswered = interview.interviewData.every(
+    (item) => item.userAnswer && item.userAnswer.trim().length > 0,
+  );
+
+  // If all questions are answered, redirect to results page
+  if (allQuestionsAnswered) {
+    redirect(`/interviews/${interviewId}/results`);
   }
 
   return <InterviewProcess interview={interview} />;
