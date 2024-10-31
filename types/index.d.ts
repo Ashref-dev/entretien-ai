@@ -101,18 +101,38 @@ export type TestimonialType = {
 };
 export type InterviewStep = "initial" | "processing" | "results";
 
+export type InterviewDifficulty =
+  | "JUNIOR"
+  | "MID_LEVEL"
+  | "SENIOR"
+  | "LEAD"
+  | "PRINCIPAL";
+
 export type Interview = {
   id: string;
+  userId: string;
   jobTitle: string;
   jobDescription: string;
-  resume?: string | null;
+  difficulty: InterviewDifficulty;
+  yearsOfExperience: number;
   interviewScore?: number | null;
+  targetCompany?: string | null;
+  overAllFeedback?: string | null;
+  resume?: string | null;
+  duration?: number | null;
+  questionsAnswered?: number | null;
+  skillsAssessed: string[];
+  technicalScore?: number | null;
+  communicationScore?: number | null;
+  problemSolvingScore?: number | null;
+  createdAt: Date;
+  updatedAt: Date;
   interviewData: {
     id: string;
     aiQuestion: string;
     aiAnswer: string;
     userAnswer: string;
+    questionFeedback?: string;
+    questionsScore?: number;
   }[];
-  createdAt: Date;
-  updatedAt: Date;
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { InterviewDifficulty } from "@/types";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 import { FileUpload } from "../ui/file-upload";
@@ -21,6 +29,8 @@ interface CreateInterviewModalProps {
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
+    difficulty: InterviewDifficulty;
+    yearsOfExperience: number;
   }) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -34,6 +44,9 @@ export function CreateInterviewModal({
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState<File | null>(null);
+  const [difficulty, setDifficulty] =
+    useState<InterviewDifficulty>("MID_LEVEL");
+  const [yearsOfExperience, setYearsOfExperience] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileUpload = (files: File[]) => {
@@ -60,6 +73,8 @@ export function CreateInterviewModal({
       formData.append("pdf", resume);
       formData.append("jobTitle", jobTitle);
       formData.append("jobDescription", jobDescription);
+      formData.append("difficulty", difficulty);
+      formData.append("yearsOfExperience", yearsOfExperience.toString());
 
       // Make API call
       const response = await fetch("/api/ai", {
@@ -75,7 +90,13 @@ export function CreateInterviewModal({
       console.log("OpenAI Generated Interview Data:", data);
 
       // Call the original onCreateInterview callback
-      onCreateInterview({ jobTitle, jobDescription, resume });
+      onCreateInterview({
+        jobTitle,
+        jobDescription,
+        resume,
+        difficulty,
+        yearsOfExperience,
+      });
 
       // Reset form
       setJobTitle("");
@@ -95,9 +116,9 @@ export function CreateInterviewModal({
       <DialogContent className="sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Create New Interview</DialogTitle>
-          <DialogDescription className="text-pretty text-xs opacity-70">
+          <DialogDescription>
             Using your resume and job description, we&apos;ll craft the perfect
-            interview answers for the most popular questions.
+            interview answers.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -123,6 +144,43 @@ export function CreateInterviewModal({
                   required
                   className="h-[200px]"
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty">Difficulty Level</Label>
+                  <Select
+                    value={difficulty}
+                    onValueChange={(value: InterviewDifficulty) =>
+                      setDifficulty(value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="JUNIOR">Junior</SelectItem>
+                      <SelectItem value="MID_LEVEL">Mid Level</SelectItem>
+                      <SelectItem value="SENIOR">Senior</SelectItem>
+                      <SelectItem value="LEAD">Lead</SelectItem>
+                      <SelectItem value="PRINCIPAL">Principal</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+                  <Input
+                    id="yearsOfExperience"
+                    type="number"
+                    min="0"
+                    max="30"
+                    value={yearsOfExperience}
+                    onChange={(e) =>
+                      setYearsOfExperience(parseInt(e.target.value))
+                    }
+                    required
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-4 flex-1 space-y-2 md:mt-0">

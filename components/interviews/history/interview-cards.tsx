@@ -3,25 +3,21 @@
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { Interview } from "@prisma/client";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowRightCircle,
-  Award,
-  Briefcase,
-  Calendar,
-  FileIcon,
-} from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { InterviewCard } from "./interview-card";
 
 interface InterviewCardsProps {
   interviews: Interview[];
@@ -30,7 +26,8 @@ interface InterviewCardsProps {
 
 export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"date" | "score">("date");
+  const [filter, setFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("date");
 
   const getScoreColor = useCallback((score: number | null) => {
     if (!score) return "bg-gray-500";
@@ -46,16 +43,32 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
     return "Excellent work";
   };
 
-  const sortedInterviews = useMemo(() => {
-    return [...interviews].sort((a, b) => {
-      if (sortBy === "date") {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+  const filteredInterviews = useMemo(() => {
+    let result = [...interviews];
+
+    // Filter logic
+    if (filter !== "all") {
+      result = result.filter((interview) => {
+        if (filter === "high") return (interview.interviewScore || 0) >= 80;
+        if (filter === "medium")
+          return (
+            (interview.interviewScore || 0) >= 60 &&
+            (interview.interviewScore || 0) < 80
+          );
+        return (interview.interviewScore || 0) < 60;
+      });
+    }
+
+    // Sort logic
+    result.sort((a, b) => {
+      if (sortBy === "score") {
+        return (b.interviewScore || 0) - (a.interviewScore || 0);
       }
-      return (b.interviewScore || 0) - (a.interviewScore || 0);
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [interviews, sortBy]);
+
+    return result;
+  }, [interviews, filter, sortBy]);
 
   if (isLoading) {
     return (
@@ -67,7 +80,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
     );
   }
 
-  if (!interviews.length) {
+  if (interviews.length === 0) {
     return (
       <Card className="p-6 text-center">
         <p className="text-lg font-medium">No interviews found</p>
@@ -75,140 +88,55 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
           Complete your first interview to see it here
         </p>
         <Button className="mt-4">
-          <Link href="/interviews/new">Start New Interview</Link>
+          <Link href="/interviews">Start New Interview</Link>
         </Button>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end space-x-2">
-        <Button
-          variant={sortBy === "date" ? "default" : "outline"}
-          onClick={() => setSortBy("date")}
-          size="sm"
+    <div className="space-y-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs
+          defaultValue="all"
+          className="w-full sm:w-auto"
+          onValueChange={(value) => setFilter(value)}
         >
-          Sort by Date
-        </Button>
-        <Button
-          variant={sortBy === "score" ? "default" : "outline"}
-          onClick={() => setSortBy("score")}
-          size="sm"
-        >
-          Sort by Score
-        </Button>
+          <TabsList className="grid h-fit w-full grid-cols-3 sm:w-[400px]">
+            <TabsTrigger value="all" className="min-h-[44px]">
+              All Interviews
+            </TabsTrigger>
+            <TabsTrigger value="high" className="min-h-[44px]">
+              High Score
+            </TabsTrigger>
+            <TabsTrigger value="low" className="min-h-[44px]">
+              Needs Work
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Select defaultValue="date" onValueChange={(value) => setSortBy(value)}>
+          <SelectTrigger className="min-h-[44px] w-full sm:w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Latest First</SelectItem>
+            <SelectItem value="score">Highest Score</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <AnimatePresence>
-          {sortedInterviews.map((interview) => (
-            <motion.div
+          {filteredInterviews.map((interview) => (
+            <InterviewCard
               key={interview.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Card
-                className="group relative overflow-hidden transition-all duration-300 hover:shadow-xl"
-                onMouseEnter={() => setHoveredId(interview.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                role="article"
-                aria-labelledby={`interview-title-${interview.id}`}
-              >
-                <div className="background-gradient-reverse absolute inset-0 h-[6.4em] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <CardHeader className="relative z-10 flex flex-row items-center justify-between">
-                  <div className="flex flex-col space-y-1">
-                    <Badge variant="secondary" className="w-fit">
-                      {getScoreLabel(interview.interviewScore)}
-                    </Badge>
-                    <div className="flex items-center space-x-2">
-                      <CardTitle
-                        id={`interview-title-${interview.id}`}
-                        className="text-xl text-white"
-                      >
-                        {interview.jobTitle}
-                      </CardTitle>
-                      <Badge variant="outline" className="text-white">
-                        Mid-level
-                      </Badge>
-                    </div>
-                  </div>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href={`/interviews/${interview.id}`}
-                          className="transition-transform duration-300 group-hover:translate-x-1"
-                        >
-                          <Button
-                            size="icon"
-                            variant="secondary"
-                            className="rounded-full"
-                          >
-                            <ArrowRightCircle className="size-5" />
-                            <span className="sr-only">
-                              View Interview Details
-                            </span>
-                          </Button>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>View Interview Details</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </CardHeader>
-                <CardContent className="relative z-10 p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className={`flex size-12 items-center justify-center rounded-full ${getScoreColor(
-                          interview.interviewScore,
-                        )} text-white transition-all duration-300 group-hover:scale-110`}
-                      >
-                        <Award className="size-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-white">Score</p>
-                        <p className="text-2xl font-bold text-white">
-                          {interview.interviewScore
-                            ? Math.round(interview.interviewScore)
-                            : "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-sm text-white">
-                    <div className="flex items-center space-x-2">
-                      <FileIcon className="size-4" />
-                      <span>
-                        {interview.resume?.toLowerCase().replace(/\s+/g, "_")}
-                        .pdf
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="size-4" />
-                      <span>
-                        Completed on{" "}
-                        {new Date(interview.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Briefcase className="size-4" />
-                      <span>{interview.jobTitle}</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <div
-                  className="absolute bottom-0 left-0 h-1 bg-white transition-all duration-300 ease-in-out"
-                  style={{
-                    width: hoveredId === interview.id ? "100%" : "0%",
-                  }}
-                />
-              </Card>
-            </motion.div>
+              interview={interview}
+              hoveredId={hoveredId}
+              setHoveredId={setHoveredId}
+              getScoreColor={getScoreColor}
+              getScoreLabel={getScoreLabel}
+            />
           ))}
         </AnimatePresence>
       </div>

@@ -9,6 +9,8 @@ export async function POST(req: NextRequest) {
   const document = formData.get("pdf");
   const jobTitle = formData.get("jobTitle");
   const jobDescription = formData.get("jobDescription");
+  const difficulty = formData.get("difficulty");
+  const yearsOfExperience = formData.get("yearsOfExperience");
 
   if (!document || !(document instanceof Blob)) {
     return NextResponse.json({ error: "Invalid PDF file" }, { status: 400 });
@@ -27,14 +29,20 @@ export async function POST(req: NextRequest) {
 
     const prompt = `
     Respond ONLY with a valid JSON object. Do not include any additional text or explanations.
-    You are an expert technical interviewer. Based on the following resume content, job title "${jobTitle}", and job description:
-   "${jobDescription}".
+    You are an expert technical interviewer. Based on the following:
+    - Resume content
+    - Job title: "${jobTitle}"
+    - Job description: "${jobDescription}"
+    - Difficulty level: "${difficulty}"
+    - Required years of experience: ${yearsOfExperience}
 
-   Generate 5 relevant technical interview questions along with their expected answers.
-   Resume content:
-   ${texts.join("\n")}
+    Generate 5 relevant technical interview questions along with their expected answers.
+    Adjust the complexity and depth of questions based on the difficulty level and years of experience.
+    
+    Resume content:
+    ${texts.join("\n")}
 
-   Respond ONLY with a JSON object in this exact format:
+    Respond ONLY with a JSON object in this exact format:
   {
   "interviewData": [
     {
@@ -85,13 +93,17 @@ export async function POST(req: NextRequest) {
    
    respond in json format.`;
 
-    // Use the utility function to call Together AI with the prompt
     const aiResponseContent = await callAIWithPrompt(prompt);
-    console.log(texts.join("\n"));
-    // Validate that the response is a valid JSON
+    console.log("🚀 ~ POST ~ aiResponseContent:", aiResponseContent);
+
+    // Extract only the JSON content between curly braces
+    const jsonMatch = aiResponseContent.match(/\{[\s\S]*\}/);
+    const cleanedResponse = jsonMatch ? jsonMatch[0] : "{}";
+
     let aiResponse: { interviewData: any[] };
+
     try {
-      aiResponse = JSON.parse(aiResponseContent);
+      aiResponse = JSON.parse(cleanedResponse);
 
       // Ensure exactly 5 questions are returned
       if (
@@ -112,7 +124,9 @@ export async function POST(req: NextRequest) {
             aiQuestion: item.aiQuestion || `Question ${index + 1}`,
             aiAnswer: item.aiAnswer || "Expected answer not provided",
             userAnswer: "",
-            questionFeedback: item.questionFeedback || "Detailed feedback for the answer not provided",
+            questionFeedback:
+              item.questionFeedback ||
+              "Detailed feedback for the answer not provided",
           })),
       };
 

@@ -4,17 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Interview } from "@/types";
 import {
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Mic,
-    MicOff,
-    Video,
-    VideoOff,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Mic,
+  MicOff,
+  Type,
+  Video,
+  VideoOff,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
@@ -67,6 +69,7 @@ export default function InterviewProcess({
   const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
+  const [isTypingMode, setIsTypingMode] = useState(false);
 
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
@@ -90,18 +93,18 @@ export default function InterviewProcess({
         })
         .catch((err) => console.error("Error accessing webcam:", err));
     }
-  
+
     const SpeechRecognitionAPI =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-  
+
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = "";  // Store only finalized text here
+        let finalTranscript = ""; // Store only finalized text here
         let interimTranscript = ""; // Clear interim text each cycle
-  
+
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript + " ";
@@ -109,7 +112,7 @@ export default function InterviewProcess({
             interimTranscript += event.results[i][0].transcript;
           }
         }
-  
+
         // Only update state once per result, adding a space before appending finalTranscript
         setTranscripts((prev) => {
           const newTranscripts = [...prev];
@@ -119,21 +122,20 @@ export default function InterviewProcess({
             finalTranscript.trim(); // Add a space before the new final text
           return newTranscripts;
         });
-  
+
         // Optionally: Set interimTranscript to state if you need a real-time view
       };
     }
-  
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
   }, [isVideoOn, currentQuestionIndex]);
-  
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1 ) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       if (isRecording) {
         toggleRecording();
@@ -162,7 +164,7 @@ export default function InterviewProcess({
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      setHasRecorded(prev => {
+      setHasRecorded((prev) => {
         const newHasRecorded = [...prev];
         newHasRecorded[currentQuestionIndex] = true;
         return newHasRecorded;
@@ -234,6 +236,14 @@ export default function InterviewProcess({
           Question {currentQuestionIndex + 1} of {questions.length}
         </div>
         <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsTypingMode(!isTypingMode)}
+            title={isTypingMode ? "Switch to speech" : "Switch to typing"}
+          >
+            <Type className="size-4" />
+          </Button>
           <Button variant="outline" size="icon" onClick={toggleMic}>
             {isMicOn ? (
               <Mic className="size-4" />
@@ -290,17 +300,38 @@ export default function InterviewProcess({
             <CardTitle className="text-lg">Your Answer</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 p-6">
-            <div className="h-[150px] overflow-y-auto rounded-lg bg-muted/20 p-4">
-              {transcripts[currentQuestionIndex] ||
-                "Your speech will appear here as you speak..."}
-            </div>
-            <Button
-              onClick={toggleRecording}
-              variant={isRecording ? "destructive" : "default"}
-              className="w-full"
-            >
-              {isRecording ? "Stop Recording" : "Start Recording"}
-            </Button>
+            {isTypingMode ? (
+              <Textarea
+                placeholder="Type your answer here..."
+                className="min-h-[150px] resize-none"
+                value={transcripts[currentQuestionIndex] || ""}
+                onChange={(e) => {
+                  const newTranscripts = [...transcripts];
+                  newTranscripts[currentQuestionIndex] = e.target.value;
+                  setTranscripts(newTranscripts);
+                  // Mark as recorded when typing
+                  setHasRecorded((prev) => {
+                    const newHasRecorded = [...prev];
+                    newHasRecorded[currentQuestionIndex] = true;
+                    return newHasRecorded;
+                  });
+                }}
+              />
+            ) : (
+              <div className="h-[150px] overflow-y-auto rounded-lg bg-muted/20 p-4">
+                {transcripts[currentQuestionIndex] ||
+                  "Your speech will appear here as you speak..."}
+              </div>
+            )}
+            {!isTypingMode && (
+              <Button
+                onClick={toggleRecording}
+                variant={isRecording ? "destructive" : "default"}
+                className="w-full"
+              >
+                {isRecording ? "Stop Recording" : "Start Recording"}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -327,9 +358,9 @@ export default function InterviewProcess({
             </Button>
           ))}
         </div>
-        <Button 
-          variant="outline" 
-          onClick={handleNext} 
+        <Button
+          variant="outline"
+          onClick={handleNext}
           className="w-[100px]"
           disabled={!isAnswerValid(currentQuestionIndex)}
         >

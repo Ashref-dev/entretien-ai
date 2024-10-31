@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Interview } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, X, MessageSquare } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  MessageSquare,
+  X,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -17,7 +25,8 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const router = useRouter();
   const score = interview.interviewScore || 0;
-  const isLastQuestion = currentQuestionIndex === interview.interviewData.length - 1;
+  const isLastQuestion =
+    currentQuestionIndex === interview.interviewData.length - 1;
 
   const handleNext = () => {
     if (currentQuestionIndex < interview.interviewData.length - 1) {
@@ -32,7 +41,7 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
   };
 
   const handleFinish = () => {
-    router.push('/interviews');
+    router.push("/interviews");
   };
 
   return (
@@ -40,7 +49,7 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
       <h1 className="text-center text-3xl font-bold">Interview Results</h1>
 
       <Card className="overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+        <CardHeader className="background-gradient-reverse text-white">
           <CardTitle className="text-2xl">
             {interview.jobTitle} Interview
           </CardTitle>
@@ -70,7 +79,17 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
             >
               <Card>
                 <CardHeader>
-                  <CardTitle>Question</CardTitle>
+                  <CardTitle className="flex items-center justify-between">
+                    Question {currentQuestionIndex + 1}
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-normal">Score:</span>
+                      <Badge variant="secondary">
+                        {interview.interviewData[currentQuestionIndex]
+                          .questionsScore || 0}
+                        %
+                      </Badge>
+                    </div>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {interview.interviewData[currentQuestionIndex].aiQuestion}
@@ -86,8 +105,8 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {interview.interviewData[currentQuestionIndex].userAnswer ||
-                        "No answer provided"}
+                      {interview.interviewData[currentQuestionIndex]
+                        .userAnswer || "No answer provided"}
                     </CardContent>
                   </Card>
 
@@ -106,12 +125,13 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
-                      AI Feedback <MessageSquare className="ml-2 text-blue-500" />
+                      AI Feedback{" "}
+                      <MessageSquare className="ml-2 text-blue-500" />
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {interview.interviewData[currentQuestionIndex].questionFeedback || 
-                      "No feedback provided"}
+                    {interview.interviewData[currentQuestionIndex]
+                      .questionFeedback || "No feedback provided"}
                   </CardContent>
                 </Card>
               </div>
@@ -122,21 +142,15 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                   disabled={currentQuestionIndex === 0}
                   variant="outline"
                 >
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                  <ChevronLeft className="mr-2 size-4" /> Previous
                 </Button>
                 {isLastQuestion ? (
-                  <Button
-                    onClick={handleFinish}
-                    variant="default"
-                  >
-                    Finish <Check className="ml-2 h-4 w-4" />
+                  <Button onClick={handleFinish} variant="default">
+                    Finish <Check className="ml-2 size-4" />
                   </Button>
                 ) : (
-                  <Button
-                    onClick={handleNext}
-                    variant="outline"
-                  >
-                    Next <ChevronRight className="ml-2 h-4 w-4" />
+                  <Button onClick={handleNext} variant="outline">
+                    Next <ChevronRight className="ml-2 size-4" />
                   </Button>
                 )}
               </div>
