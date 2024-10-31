@@ -1,8 +1,9 @@
-"use client";;
+"use client";
+
 import Link from "next/link";
 import { Interview } from "@prisma/client";
 import { motion } from "framer-motion";
-import { ArrowRightCircle, Calendar, FileIcon } from "lucide-react";
+import { ArrowRightCircle, Award, Calendar, FileIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,16 +39,11 @@ export function InterviewCard({
         role="article"
         aria-labelledby={`interview-title-${interview.id}`}
       >
-        <div 
-          className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-gray-900/80" 
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-gray-900/80" />
 
         <CardHeader className="relative z-10 flex flex-row items-start justify-between p-6">
           <div className="flex flex-col space-y-2">
-            <Badge 
-              variant="secondary" 
-              className="w-fit text-sm font-medium"
-            >
+            <Badge variant="secondary" className="w-fit text-sm font-medium">
               {getScoreLabel(interview.interviewScore)}
             </Badge>
             <div className="flex flex-col space-y-1">
@@ -65,15 +61,18 @@ export function InterviewCard({
 
           <div
             className={`flex size-16 items-center justify-center rounded-full ${getScoreColor(
-              interview.interviewScore
+              interview.interviewScore,
             )} text-white transition-all duration-300 group-hover:scale-110`}
           >
             <div className="flex flex-col items-center">
-              <span className="text-lg font-bold">
-                {interview.interviewScore
-                  ? Math.round(interview.interviewScore)
-                  : "N/A"}
-              </span>
+              <div className="flex items-center gap-1">
+                <Award className="size-4" />
+                <span className="text-lg font-bold">
+                  {interview.interviewScore
+                    ? Math.round(interview.interviewScore)
+                    : "N/A"}
+                </span>
+              </div>
               <span className="text-xs">Score</span>
             </div>
           </div>
@@ -99,13 +98,17 @@ export function InterviewCard({
             </div>
           </div>
 
-          <Link
-            href={`/interviews/${interview.id}`}
-            className="flex items-center justify-between rounded-lg p-3 transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
-          >
-            <span className="text-sm font-medium">View Details</span>
-            <ArrowRightCircle className="size-5" />
-          </Link>
+          <div className="flex justify-end">
+            <Link
+              href={`/interviews/${interview.id}`}
+              className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
+            >
+              <span className="text-foreground dark:text-white">View Details</span>
+              <ArrowRightCircle 
+                className="size-4 transition-transform group-hover:translate-x-0.5" 
+              />
+            </Link>
+          </div>
         </CardContent>
 
         <div
