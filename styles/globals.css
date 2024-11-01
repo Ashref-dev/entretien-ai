@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 188 76% 45%;
+    --primary: 187, 74%, 55%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -39,7 +39,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 188 76% 45%;
+    --primary: 187, 74%, 55%;
     --primary-foreground: 0 0% 9%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
@@ -87,17 +87,17 @@
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, #00e1ff 0%, rgba(0, 119, 255, 0.8) 100%);
+  background: linear-gradient(45deg, #36cde1 0%, #994bff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .background-gradient {
-  background: linear-gradient(90deg, #00e1ff 0%, rgba(0, 119, 255, 0.8) 100%);
+  background: linear-gradient(45deg, #36cde1 0%, #994bff 100%);
 }
 .background-gradient-reverse {
-  background: linear-gradient(90deg, rgba(0, 119, 255, 0.8) 0%, #00e1ff 100%);
+  background: linear-gradient(45deg, #994bff 0%, #36cde1 100%);
 }
 
 @keyframes fadeInUp {
