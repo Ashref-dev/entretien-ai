@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { InterviewDifficulty } from "@/types";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
+import { Badge } from "@/components/ui/badge";
 import { FileUpload } from "../ui/file-upload";
+import { toast } from "sonner";
 
 interface CreateInterviewModalProps {
   onCreateInterview: (data: {
@@ -31,6 +33,9 @@ interface CreateInterviewModalProps {
     resume: File | null;
     difficulty: InterviewDifficulty;
     yearsOfExperience: number;
+    skillsAssessed: string[];
+    targetCompany?: string;
+    interviewData: any;
   }) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -44,17 +49,31 @@ export function CreateInterviewModal({
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState<File | null>(null);
-  const [difficulty, setDifficulty] =
-    useState<InterviewDifficulty>("MID_LEVEL");
+  const [difficulty, setDifficulty] = useState<InterviewDifficulty>("MID_LEVEL");
   const [yearsOfExperience, setYearsOfExperience] = useState<number>(0);
+  const [skillInput, setSkillInput] = useState("");
+  const [skillsAssessed, setSkillsAssessed] = useState<string[]>([]);
+  const [targetCompany, setTargetCompany] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileUpload = (files: File[]) => {
-    if (files.length > 0) {
-      setResume(files[0]);
-    } else {
-      setResume(null);
+  const addSkill = () => {
+    if (skillInput.trim()) {
+      if (!skillsAssessed.includes(skillInput.trim())) {
+        setSkillsAssessed([...skillsAssessed, skillInput.trim()]);
+      }
+      setSkillInput(""); // Clear input after adding
     }
+  };
+
+  const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent form submission
+      addSkill();
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    setSkillsAssessed(skillsAssessed.filter(skill => skill !== skillToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,21 +81,21 @@ export function CreateInterviewModal({
     setIsLoading(true);
 
     if (!resume) {
-      alert("Please upload a resume before submitting.");
+      toast.error("Please upload a resume");
       setIsLoading(false);
       return;
     }
 
     try {
-      // Create FormData
       const formData = new FormData();
       formData.append("pdf", resume);
       formData.append("jobTitle", jobTitle);
       formData.append("jobDescription", jobDescription);
       formData.append("difficulty", difficulty);
       formData.append("yearsOfExperience", yearsOfExperience.toString());
+      formData.append("skillsAssessed", JSON.stringify(skillsAssessed || []));
+      if (targetCompany) formData.append("targetCompany", targetCompany);
 
-      // Make API call
       const response = await fetch("/api/ai", {
         method: "POST",
         body: formData,
@@ -87,27 +106,49 @@ export function CreateInterviewModal({
       }
 
       const data = await response.json();
-      console.log("OpenAI Generated Interview Data:", data);
-
-      // Call the original onCreateInterview callback
+      
+      // Set interview data and move to next step
       onCreateInterview({
         jobTitle,
         jobDescription,
         resume,
         difficulty,
         yearsOfExperience,
+        skillsAssessed: skillsAssessed || [],
+        targetCompany,
+        interviewData: data.interviewData,
       });
 
-      // Reset form
-      setJobTitle("");
-      setJobDescription("");
-      setResume(null);
+      // Close modal
       onOpenChange(false);
+      
+      toast.success("Interview questions generated successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error creating interview. Please try again.");
+      toast.error("Failed to generate interview questions. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFileUpload = (file: File | null) => {
+    if (file) {
+      // Validate file type
+      if (!file.type.includes('pdf')) {
+        toast.error('Please upload a PDF file');
+        return;
+      }
+      
+      // Validate file size (5MB)
+      const fiveMB = 5 * 1024 * 1024;
+      if (file.size > fiveMB) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+
+      setResume(file);
+    } else {
+      setResume(null);
     }
   };
 
@@ -117,7 +158,7 @@ export function CreateInterviewModal({
         <DialogHeader>
           <DialogTitle>Create New Interview</DialogTitle>
           <DialogDescription>
-            Using your resume and job description, we&apos;ll craft the perfect
+            Using your resume and job description, we'll craft the perfect
             interview answers.
           </DialogDescription>
         </DialogHeader>
@@ -134,17 +175,17 @@ export function CreateInterviewModal({
                   required
                 />
               </div>
+              
               <div className="space-y-2">
-                <Label htmlFor="jobDescription">Job Description</Label>
-                <Textarea
-                  id="jobDescription"
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Enter the job description here..."
-                  required
-                  className="h-[200px]"
+                <Label htmlFor="targetCompany">Target Company (Optional)</Label>
+                <Input
+                  id="targetCompany"
+                  value={targetCompany}
+                  onChange={(e) => setTargetCompany(e.target.value)}
+                  placeholder="e.g. Google, Meta, etc."
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty Level</Label>
@@ -182,13 +223,69 @@ export function CreateInterviewModal({
                   />
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="skillsAssessed">Skills to Assess</Label>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      id="skillsAssessed"
+                      value={skillInput}
+                      onChange={(e) => setSkillInput(e.target.value)}
+                      onKeyDown={handleAddSkill}
+                      placeholder="Type a skill and press Enter or Add"
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button"
+                      onClick={addSkill}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {skillsAssessed.map((skill) => (
+                      <Badge key={skill} variant="secondary" className="gap-1">
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeSkill(skill)}
+                          className="ml-1 rounded-full hover:bg-muted"
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  {skillsAssessed.length === 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      Add skills using Enter key or Add button
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="jobDescription">Job Description</Label>
+                <Textarea
+                  id="jobDescription"
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                  placeholder="Enter the job description here..."
+                  required
+                  className="h-[200px]"
+                />
+              </div>
             </div>
             <div className="mt-4 flex-1 space-y-2 md:mt-0">
-              <Label htmlFor="resume" className="hidden">
-                Upload Resume
-              </Label>
+              <Label htmlFor="resume">Upload Resume</Label>
               <div className="min-h-[300px] w-full rounded-lg border border-dashed border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
-                <FileUpload onChange={handleFileUpload} />
+                <FileUpload 
+                  onChange={handleFileUpload} 
+                  value={resume}
+                />
               </div>
             </div>
           </div>
