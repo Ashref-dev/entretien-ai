@@ -60,7 +60,7 @@ export function InterviewCard({
                 {interview.jobTitle}
               </CardTitle>
               <Badge variant="outline" className="w-fit dark:text-gray-300">
-                Mid-level
+               {interview.difficulty || "Not Specified"}
               </Badge>
             </div>
           </div>
@@ -74,9 +74,9 @@ export function InterviewCard({
               <div className="flex items-center gap-1">
                 <Award className="size-4" />
                 <span className="text-lg font-bold">
-                  {interview.interviewScore
-                    ? Math.round(interview.interviewScore)
-                    : "N/A"}
+                  {
+                     Math.round(interview.interviewScore ?? 0)
+                    }
                 </span>
               </div>
               <span className="text-xs">Score</span>
@@ -94,7 +94,7 @@ export function InterviewCard({
             </div>
             <div className="flex items-center space-x-3">
               <Briefcase className="size-5" />
-              <span>Target: Google</span>
+              <span>Target: {interview.targetCompany || "Not Specified"}</span>
             </div>
             <div className="flex items-center space-x-3">
               <Calendar className="size-5" />
@@ -110,13 +110,7 @@ export function InterviewCard({
 
           <div className="flex items-start justify-between">
             <div className="flex flex-wrap gap-2">
-              {[
-                "React",
-                "TypeScript",
-                "Node.js",
-                "System Design",
-                "Triangle",
-              ].map((skill) => (
+              {interview.skillsAssessed.map((skill) => (
                 <Badge
                   key={skill}
                   variant="secondary"

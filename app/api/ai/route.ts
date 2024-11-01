@@ -11,6 +11,12 @@ export async function POST(req: NextRequest) {
   const jobDescription = formData.get("jobDescription");
   const difficulty = formData.get("difficulty");
   const yearsOfExperience = formData.get("yearsOfExperience");
+  const targetCompany = formData.get("targetCompany");
+  
+  const skillsAssessedRaw = formData.get("skillsAssessed");
+  const skillsAssessed = skillsAssessedRaw 
+    ? JSON.parse(skillsAssessedRaw as string).join(", ")
+    : "";
 
   if (!document || !(document instanceof Blob)) {
     return NextResponse.json({ error: "Invalid PDF file" }, { status: 400 });
@@ -35,63 +41,39 @@ export async function POST(req: NextRequest) {
     - Job description: "${jobDescription}"
     - Difficulty level: "${difficulty}"
     - Required years of experience: ${yearsOfExperience}
+    - Skills to assess: ${skillsAssessed}
+    ${targetCompany ? `- Target company: ${targetCompany}` : ''}
 
-    Generate 5 relevant technical interview questions along with their expected answers.
+    Generate 5 relevant technical interview questions focusing specifically on the listed skills to assess.
     Adjust the complexity and depth of questions based on the difficulty level and years of experience.
     
     Resume content:
     ${texts.join("\n")}
 
     Respond ONLY with a JSON object in this exact format:
-  {
-  "interviewData": [
     {
-      "id": "unique-id-1",
-      "aiQuestion": "detailed technical question 1",
-      "aiAnswer": "detailed expected answer 1",
-      "userAnswer": "",
-      "questionFeedback": "Detailed feedback for the answer 1"
-    },
-    {
-      "id": "unique-id-2",
-      "aiQuestion": "detailed technical question 2",
-      "aiAnswer": "detailed expected answer 2",
-      "userAnswer": "",
-      "questionFeedback": "Detailed feedback for the answer 2"
-    },
-    {
-      "id": "unique-id-3",
-      "aiQuestion": "detailed technical question 3",
-      "aiAnswer": "detailed expected answer 3",
-      "userAnswer": "",
-      "questionFeedback": "Detailed feedback for the answer 3"
-    },
-    {
-      "id": "unique-id-4",
-      "aiQuestion": "detailed technical question 4",
-      "aiAnswer": "detailed expected answer 4",
-      "userAnswer": "",
-      "questionFeedback": "Detailed feedback for the answer 4"
-    },
-    {
-      "id": "unique-id-5",
-      "aiQuestion": "detailed technical question 5",
-      "aiAnswer": "detailed expected answer 5",
-      "userAnswer": "",
-      "questionFeedback": "Detailed feedback for the answer 5"
+      "interviewData": [
+        {
+          "id": "unique-id-1",
+          "aiQuestion": "detailed technical question focusing on one of the skills to assess",
+          "aiAnswer": "detailed expected answer showing mastery of the skill",
+          "userAnswer": "",
+          "questionFeedback": "Detailed feedback criteria for evaluating the answer"
+        },
+        // ... repeat for all 5 questions ...
+      ]
     }
-  ]
-}
 
-   Requirements:
-   1. Generate exactly 5 questions.
-   2. Each question should be detailed and technical.
-   3. Each answer should be comprehensive.
-   4. Focus on technical skills mentioned in the resume.
-   5. Strictly follow the JSON format above.
-   6. Include ONLY JSON in your response.
-   
-   respond in json format.`;
+    Requirements:
+    1. Generate exactly 5 questions.
+    2. Each question should focus on one or more of the skills to assess.
+    3. Each answer should demonstrate mastery of the relevant skill(s).
+    4. Match question difficulty to the specified level (${difficulty}).
+    5. Consider the candidate's years of experience (${yearsOfExperience} years).
+    6. Strictly follow the JSON format above.
+    7. Include ONLY JSON in your response.
+    
+    respond in json format.`;
 
     const aiResponseContent = await callAIWithPrompt(prompt);
     console.log("🚀 ~ POST ~ aiResponseContent:", aiResponseContent);
