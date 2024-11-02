@@ -13,9 +13,8 @@ export default function Features() {
         <MaxWidthWrapper>
           <HeaderSection
             label="Features"
-            title="Discover all features."
-            subtitle="Harum quae dolore inventore repudiandae? orrupti aut temporibus
-          ariatur."
+            title="Elevate Your Interview Game"
+            subtitle="Discover our comprehensive suite of AI-powered tools designed to transform your interview preparation experience and boost your chances of landing your dream job."
           />
 
           <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
