@@ -76,6 +76,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           "dark:from-neutral-900 dark:to-neutral-800",
           "shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]",
           "dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]",
+
+          "transition-all duration-300",
+          "hover:bg-gradient-to-br hover:from-gray-200 hover:to-gray-300",
+          "dark:hover:from-neutral-800 dark:hover:to-neutral-700",
+          "hover:shadow-lg",
+          "hover:ring-2 hover:ring-primary/20",
         )}
         ref={ref}
         {...props}
