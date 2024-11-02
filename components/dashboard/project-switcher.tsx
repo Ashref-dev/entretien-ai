@@ -62,13 +62,16 @@ export default function ProjectSwitcher({
               "dark:from-neutral-900 dark:to-neutral-800",
               "shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]",
               "dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]",
+
+              "hover:bg-gradient-to-br hover:from-gray-200 hover:to-gray-300",
+              "dark:hover:from-neutral-800 dark:hover:to-neutral-700",
+              "hover:shadow-lg",
+              "hover:ring-2 hover:ring-primary/20",
             )}
             onClick={() => setOpenPopover(!openPopover)}
           >
             <div className="flex items-center space-x-3">
-              <div
-                className={cn("size-3 rounded-full", selected.color)}
-              />
+              <div className={cn("size-3 rounded-full", selected.color)} />
               <div className="flex items-center space-x-3">
                 <span
                   className={cn(
