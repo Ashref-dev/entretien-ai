@@ -10,6 +10,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Clock,
   Code,
   MessageCircle,
   MessageSquare,
@@ -51,6 +52,20 @@ function ScoreCard({ icon, title, score, color }: ScoreCardProps) {
   );
 }
 
+function formatDuration(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${remainingSeconds}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${remainingSeconds}s`;
+  }
+  return `${remainingSeconds}s`;
+}
+
 export default function InterviewResults({ interview }: InterviewResultsProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const router = useRouter();
@@ -74,7 +89,7 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
 
   if (!showQuestions) {
     return (
-      <div className="container mx-auto space-y-8 p-4">
+      <div className="space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -82,7 +97,17 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
         >
           <Card className="overflow-hidden">
             <CardHeader className="background-gradient-reverse text-white">
-              <CardTitle className="text-2xl">Interview Summary</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">Interview Summary</CardTitle>
+                <div className="flex items-center gap-2 rounded-full bg-black/10 px-4 py-1.5">
+                  <Clock className="size-4" />
+                  <span className="text-sm font-medium">
+                    {interview.duration
+                      ? formatDuration(interview.duration)
+                      : "N/A"}
+                  </span>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
               {/* Overall Score */}
@@ -164,7 +189,7 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
 
   // Questions View
   return (
-    <div className="container mx-auto space-y-8 p-4">
+    <div className="space-y-8">
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={handleBack} className="min-h-[44px]">
           <ArrowLeft className="mr-2 size-4" />

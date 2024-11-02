@@ -53,6 +53,12 @@ declare global {
   }
 }
 
+function formatTime(seconds: number) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
 export default function InterviewProcess({
   interview,
 }: {
@@ -70,6 +76,8 @@ export default function InterviewProcess({
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
   const [isTypingMode, setIsTypingMode] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout>();
 
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
@@ -134,6 +142,22 @@ export default function InterviewProcess({
     };
   }, [isVideoOn, currentQuestionIndex]);
 
+  useEffect(() => {
+    console.log("Setting up timer"); // Debug log
+    timerRef.current = setInterval(() => {
+      setElapsedTime(prev => {
+        console.log("Current elapsed time:", prev + 1); // Debug log
+        return prev + 1;
+      });
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -190,29 +214,42 @@ export default function InterviewProcess({
       toggleRecording();
     }
 
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    console.log("Current elapsed time:", elapsedTime);
+
     const updatedInterviewData = questions.map((question, index) => ({
       ...question,
       userAnswer: transcripts[index] || "",
     }));
 
     try {
+      const payload = {
+        interviewData: updatedInterviewData,
+        difficulty: interview.difficulty,
+        yearsOfExperience: interview.yearsOfExperience,
+        duration: elapsedTime,
+      };
+
+      console.log("Sending payload:", payload);
+
       const response = await fetch(`/api/interviews/${interview.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          interviewData: updatedInterviewData,
-          difficulty: interview.difficulty,
-          yearsOfExperience: interview.yearsOfExperience 
-        }),
+        body: JSON.stringify(payload),
       });
+
+      const data = await response.json();
+      console.log("Response from server:", data);
 
       if (!response.ok) {
         throw new Error("Failed to save interview data");
       }
 
-      console.log("Interview data saved successfully");
       router.push(`/interviews/${interview.id}/results`);
     } catch (error) {
       console.error("Error saving interview data:", error);
@@ -229,7 +266,8 @@ export default function InterviewProcess({
 
       <div className="mb-4 flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Question {currentQuestionIndex + 1} of {questions.length}
+          Question {currentQuestionIndex + 1} of {questions.length}{" "}
+          <span className="font-mono">({formatTime(elapsedTime)} elapsed)</span>
         </div>
         <div className="flex space-x-2">
           <Button

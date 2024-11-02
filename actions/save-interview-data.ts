@@ -20,7 +20,7 @@ export async function saveInterviewData(interviewData: any) {
         communicationScore: 0,
         problemSolvingScore: 0,
         questionsAnswered: interviewData.interviewData.length,
-        duration: 0,
+        duration: interviewData.duration,
         overAllFeedback: "",
 
         user: {

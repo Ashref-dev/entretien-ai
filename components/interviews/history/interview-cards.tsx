@@ -2,8 +2,8 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { Interview } from "@prisma/client";
-import { AnimatePresence } from "framer-motion";
+import { Interview } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -24,6 +24,8 @@ interface InterviewCardsProps {
   isLoading?: boolean;
 }
 
+const ANIMATION_DURATION = 0.2; // Duration in seconds for the fades
+
 export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
@@ -37,7 +39,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
   }, []);
 
   const getScoreLabel = (score: number | null) => {
-    if (!score) return "Not Available";
+    if (!score) return "Incomplete";
     if (score < 50) return "Needs Improvement";
     if (score < 75) return "Good level";
     return "Excellent work";
@@ -49,13 +51,9 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
     // Filter logic
     if (filter !== "all") {
       result = result.filter((interview) => {
-        if (filter === "high") return (interview.interviewScore || 0) >= 80;
-        if (filter === "medium")
-          return (
-            (interview.interviewScore || 0) >= 60 &&
-            (interview.interviewScore || 0) < 80
-          );
-        return (interview.interviewScore || 0) < 60;
+        const score = interview.interviewScore || 0;
+        if (filter === "high") return score >= 50;
+        return score < 50;
       });
     }
 
@@ -109,7 +107,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
             <TabsTrigger value="high" className="min-h-[44px]">
               High Score
             </TabsTrigger>
-            <TabsTrigger value="low" className="min-h-[44px]">
+            <TabsTrigger value="needs-work" className="min-h-[44px]">
               Needs Work
             </TabsTrigger>
           </TabsList>
@@ -127,16 +125,29 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {filteredInterviews.map((interview) => (
-            <InterviewCard
+            <motion.div
               key={interview.id}
-              interview={interview}
-              hoveredId={hoveredId}
-              setHoveredId={setHoveredId}
-              getScoreColor={getScoreColor}
-              getScoreLabel={getScoreLabel}
-            />
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{
+                opacity: { duration: ANIMATION_DURATION },
+                scale: { duration: ANIMATION_DURATION },
+                y: { duration: ANIMATION_DURATION },
+                layout: { duration: ANIMATION_DURATION },
+              }}
+              layout // This enables smooth layout transitions
+            >
+              <InterviewCard
+                interview={interview}
+                hoveredId={hoveredId}
+                setHoveredId={setHoveredId}
+                getScoreColor={getScoreColor}
+                getScoreLabel={getScoreLabel}
+              />
+            </motion.div>
           ))}
         </AnimatePresence>
       </div>

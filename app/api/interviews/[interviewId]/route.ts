@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { InterviewDifficulty } from "@/types";
 
-import { InterviewDifficulty } from "@/types/interview";
 import { prisma } from "@/lib/db";
 import { callAIWithPrompt } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
@@ -13,6 +13,7 @@ type InterviewRequestBody = {
   }>;
   difficulty: InterviewDifficulty;
   yearsOfExperience: number;
+  duration: number;
 };
 
 async function evaluateAnswer(
@@ -49,7 +50,7 @@ async function evaluateAnswer(
 
   Scoring Rules:
   - If the user's answer matches the expected answer exactly or very closely, assign a score of 100.
-  - If the user simply repeats the question as the answer, assign a score of 0.
+  - If the user simply repeats the question as the answer, always assign a score of 0.
   - For answers that are informative but not perfect, assign a moderate score that reflects partial mastery.
 
   Question: ${question}
@@ -70,6 +71,7 @@ async function evaluateAnswer(
   2. Ensure feedback text is a single line without special characters or line breaks.
   3. All scores must be numbers without quotes.
   4. Return only the JSON object with no additional text or formatting.
+  5. If the user's answer is a simple repetition of the question or almost a repetition of the question, or a simple yes or no, always assign a score of 0. 
 
   Respond only with JSON.
 `;
@@ -206,7 +208,15 @@ export async function PUT(
       interviewData,
       difficulty,
       yearsOfExperience,
+      duration,
     }: InterviewRequestBody = await req.json();
+
+    console.log("Received body:", {
+      interviewData,
+      difficulty,
+      yearsOfExperience,
+      duration,
+    }); // Debug log
 
     if (!interviewData || !Array.isArray(interviewData)) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
@@ -298,8 +308,8 @@ export async function PUT(
         questionsAnswered: processedData.length,
         difficulty,
         yearsOfExperience,
+        duration: duration || 0,
         overAllFeedback: overallFeedback,
-        // updatedAt: new Date(),
         interviewData: {
           deleteMany: {},
           create: processedData.map((item) => ({
@@ -313,6 +323,8 @@ export async function PUT(
       },
       include: { interviewData: true },
     });
+
+    console.log("Updated interview:", updatedInterview); // Debug log
 
     return NextResponse.json(updatedInterview);
   } catch (error) {
