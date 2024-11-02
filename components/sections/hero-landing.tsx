@@ -1,9 +1,13 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
+
+import { MovingBorderButton } from "../ui/moving-border";
+import HeroCTA from "./hero-cta";
 
 export default async function HeroLanding() {
   const { stargazers_count: stars } = await fetch(
@@ -15,7 +19,6 @@ export default async function HeroLanding() {
           "Content-Type": "application/json",
         },
       }),
-      // data will revalidate every hour
       next: { revalidate: 3600 },
     },
   )
@@ -26,41 +29,35 @@ export default async function HeroLanding() {
     <section className="space-y-6 py-12 sm:py-20 lg:py-20">
       <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
         <Link
-          href="https://twitter.com/miickasmt/status/1810465801649938857"
+          href="https://twitter.com/yourtwitterhandle"
           className={cn(
             buttonVariants({ variant: "outline", size: "sm", rounded: "full" }),
             "px-4",
           )}
           target="_blank"
         >
-          <span className="mr-3">🎉</span>
-          <span className="hidden md:flex">Introducing&nbsp;</span> Next Auth
-          Roles Template on <Icons.twitter className="ml-2 size-3.5" />
+          <span className="mr-3">🎯</span>
+          <span className="hidden md:flex">Revolutionizing&nbsp;</span>{" "}
+          Interview Preparation with AI{" "}
+          <Icons.twitter className="ml-2 size-3.5" />
         </Link>
 
         <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Kick off with a bang with{" "}
-          <span className="text-gradient font-extrabold">
-            Entretien AI
-          </span>
+          Master Your Next Interview with{" "}
+          <span className="text-gradient font-extrabold">Interview AI</span>
         </h1>
 
         <p
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Build your next project using Next.js 14, Prisma, Neon, Auth.js v5,
-          Resend, React Email, Shadcn/ui, Stripe.
+          Practice smarter with AI-powered mock interviews tailored to your
+          role. Get real-time feedback, expert analysis, and personalized
+          coaching to land your dream job.
         </p>
 
-        <Link href="/pricing" prefetch={true}>
-          <Button className="px-16">
-            <div className="inline-flex items-center gap-2">
-              Start now
-              <Icons.arrowRight className="size-4" />
-            </div>
-          </Button>
-        </Link>
+        
+        <HeroCTA />
       </div>
     </section>
   );

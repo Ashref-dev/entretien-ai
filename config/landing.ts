@@ -2,51 +2,49 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "Empower your projects",
+    title: "AI-Powered Interview Excellence",
     description:
-      "Unlock the full potential of your projects with our open-source SaaS platform. Collaborate seamlessly, innovate effortlessly, and scale limitlessly.",
+      "Experience the future of interview preparation with our advanced AI platform. Get personalized questions, real-time feedback, and expert analysis tailored to your specific role and experience level.",
     image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
-        title: "Collaborative",
-        description: "Work together with your team members in real-time.",
-        icon: "laptop",
+        title: "Role-Specific",
+        description: "Customized questions for any job position or industry.",
+        icon: "briefcase",
       },
       {
-        title: "Innovative",
-        description: "Stay ahead of the curve with access constant updates.",
-        icon: "settings",
+        title: "Instant Feedback",
+        description: "Real-time analysis and scoring of your responses.",
+        icon: "messageCircle",
       },
       {
-        title: "Scalable",
-        description:
-          "Our platform offers the scalability needed to adapt to your needs.",
-        icon: "search",
+        title: "Comprehensive",
+        description: "Cover technical, behavioral, and soft skills assessment.",
+        icon: "brain",
       },
     ],
   },
   {
-    title: "Seamless Integration",
+    title: "Perfect Your Interview Skills",
     description:
-      "Integrate our open-source SaaS seamlessly into your existing workflows. Effortlessly connect with your favorite tools and services for a streamlined experience.",
-    image: "/_static/illustrations/work-from-home.jpg",
+      "Practice makes perfect. Our platform provides a safe environment to rehearse your answers, improve your communication, and build confidence for the real interview.",
+    image: "/_static/illustrations/practice.jpg",
     list: [
       {
-        title: "Flexible",
-        description:
-          "Customize your integrations to fit your unique requirements.",
-        icon: "laptop",
+        title: "Adaptive Learning",
+        description: "Questions adjust based on your performance and progress.",
+        icon: "trending-up",
       },
       {
-        title: "Efficient",
-        description: "Streamline your processes and reducing manual effort.",
-        icon: "search",
+        title: "Expert Guidance",
+        description: "Access to optimal answers and industry best practices.",
+        icon: "award",
       },
       {
-        title: "Reliable",
+        title: "Detailed Analytics",
         description:
-          "Rely on our robust infrastructure and comprehensive documentation.",
-        icon: "settings",
+          "Track your improvement with comprehensive performance metrics.",
+        icon: "pieChart",
       },
     ],
   },
@@ -54,97 +52,95 @@ export const infos: InfoLdg[] = [
 
 export const features: FeatureLdg[] = [
   {
-    title: "Feature 1",
+    title: "Resume Analysis",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "nextjs",
+      "AI-powered resume scanning to generate relevant interview questions.",
+    link: "/features/resume-analysis",
+    icon: "fileText",
   },
   {
-    title: "Feature 2",
+    title: "Voice Recognition",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "google",
+      "Practice speaking your answers with real-time speech analysis.",
+    link: "/features/voice-recognition",
+    icon: "mic",
   },
   {
-    title: "Feature 3",
-    description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "gitHub",
+    title: "Performance Tracking",
+    description: "Monitor your progress and identify areas for improvement.",
+    link: "/features/analytics",
+    icon: "lineChart",
   },
   {
-    title: "Feature 4",
+    title: "Expert Feedback",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "laptop",
+      "Detailed feedback on technical accuracy and communication skills.",
+    link: "/features/feedback",
+    icon: "messageSquare",
   },
   {
-    title: "Feature 5",
+    title: "Multiple Industries",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "user",
+      "Specialized questions for tech, finance, healthcare, and more.",
+    link: "/features/industries",
+    icon: "buildings",
   },
   {
-    title: "Feature 6",
-    description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "copy",
+    title: "Interview History",
+    description: "Review past sessions and track your improvement over time.",
+    link: "/features/history",
+    icon: "history",
   },
 ];
 
 export const testimonials: TestimonialType[] = [
   {
     name: "John Doe",
-    job: "Full Stack Developer",
+    job: "Software Engineer at Google",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
     review:
-      "The next-saas-stripe-starter repo has truly revolutionized my development workflow. With its comprehensive features and seamless integration with Stripe, I've been able to build and deploy projects faster than ever before. The documentation is clear and concise, making it easy to navigate through the setup process. I highly recommend next-saas-stripe-starter to any developer.",
+      "Interview AI was a game-changer in my job search. The AI-generated questions were incredibly relevant to my role, and the instant feedback helped me identify and improve my weak points. I landed my dream job at Google, and I credit a lot of my interview success to this platform.",
   },
   {
     name: "Alice Smith",
-    job: "UI/UX Designer",
+    job: "Product Manager at Meta",
     image: "https://randomuser.me/api/portraits/women/2.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
+      "The behavioral interview practice on Interview AI was invaluable. The platform helped me structure my STAR responses better, and the detailed feedback on my communication style made a huge difference. Highly recommend for anyone preparing for PM roles!",
   },
   {
     name: "David Johnson",
-    job: "DevOps Engineer",
+    job: "Data Scientist at Amazon",
     image: "https://randomuser.me/api/portraits/men/3.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I was able to streamline the entire process and get payments up and running in no time. ",
+      "The technical questions were spot-on for my field. Being able to practice with voice recognition and get feedback on both my technical accuracy and communication clarity was incredibly helpful.",
   },
   {
     name: "Michael Wilson",
-    job: "Project Manager",
+    job: "Frontend Developer at Apple",
     image: "https://randomuser.me/api/portraits/men/5.jpg",
     review:
-      "I'm impressed by the quality of code and clear documentation of next-saas-stripe-starter. Kudos to the team!",
+      "The resume analysis feature is brilliant! It generated questions specific to my experience, which helped me prepare for questions about my past projects. The optimal answers provided great insights too.",
   },
   {
     name: "Sophia Garcia",
-    job: "Data Analyst",
+    job: "DevOps Engineer at Microsoft",
     image: "https://randomuser.me/api/portraits/women/6.jpg",
     review:
-      "next-saas-stripe-starter provided me with the tools I needed to efficiently manage user data. Thank you so much!",
+      "As someone who gets nervous during interviews, having a safe space to practice was crucial. The AI feedback helped me improve my confidence and technical communication significantly.",
   },
   {
     name: "Emily Brown",
-    job: "Marketing Manager",
+    job: "Senior Product Designer at Spotify",
     image: "https://randomuser.me/api/portraits/women/4.jpg",
     review:
-      "next-saas-stripe-starter has been an invaluable asset in my role as a marketing manager. With its seamless integration with Stripe, I've been able to launch targeted marketing campaigns with built-in payment functionality, allowing us to monetize our products and services more effectively.",
+      "The platform's ability to adapt questions based on my performance helped me prepare for increasingly challenging interviews. The design-specific questions were particularly helpful for my UX/UI role interviews.",
   },
   {
     name: "Jason Stan",
-    job: "Web Designer",
+    job: "Full Stack Developer at Netflix",
     image: "https://randomuser.me/api/portraits/men/9.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
+      "Interview AI's comprehensive coverage of both technical and soft skills made my interview preparation much more effective. The performance tracking helped me focus on areas where I needed the most improvement.",
   },
 ];
