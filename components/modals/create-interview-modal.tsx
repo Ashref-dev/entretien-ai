@@ -200,7 +200,7 @@ export function CreateInterviewModal({
                         setDifficulty(value)
                       }
                     >
-                      <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                      <SelectTrigger className="transition-all duration-200 focus:ring-2">
                         <SelectValue placeholder="Select difficulty" />
                       </SelectTrigger>
                       <SelectContent>
@@ -247,7 +247,7 @@ export function CreateInterviewModal({
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                     placeholder="Enter the job description here..."
-                    className="min-h-[200px] resize-none transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    className="min-h-[200px] resize-none transition-all duration-200"
                     required
                   />
                 </div>
@@ -259,12 +259,11 @@ export function CreateInterviewModal({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="space-y-2"
             >
               <Label htmlFor="resume" className="text-sm font-medium">
                 Upload Resume
               </Label>
-              <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed border-neutral-200 bg-white transition-all duration-300 hover:border-primary/50 dark:border-neutral-800 dark:bg-black">
+              <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed border-neutral-200 bg-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 dark:border-neutral-800 dark:bg-black">
                 <FileUpload onChange={handleFileUpload} />
               </div>
             </motion.div>
