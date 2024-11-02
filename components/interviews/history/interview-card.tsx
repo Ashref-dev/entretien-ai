@@ -4,11 +4,11 @@ import Link from "next/link";
 import { Interview } from "@prisma/client";
 import { motion } from "framer-motion";
 import {
-    ArrowRightCircle,
-    Award,
-    Briefcase,
-    Calendar,
-    FileIcon,
+  ArrowRightCircle,
+  Award,
+  Briefcase,
+  Calendar,
+  FileIcon,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -30,24 +30,15 @@ export function InterviewCard({
   getScoreLabel,
 }: InterviewCardProps) {
   return (
-    <motion.div
-      key={interview.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.2 }}
-      className="h-full"
-    >
+    <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
       <Card
-        className="group relative h-full overflow-hidden transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg dark:bg-gray-800/90"
+        className="group relative overflow-hidden"
         onMouseEnter={() => setHoveredId(interview.id)}
         onMouseLeave={() => setHoveredId(null)}
-        role="article"
-        aria-labelledby={`interview-title-${interview.id}`}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-gray-900/80" />
 
-        <CardHeader className="relative z-10 flex flex-row items-start justify-between p-6">
+        <CardHeader className="relative flex flex-row items-start justify-between p-6">
           <div className="flex flex-col space-y-2">
             <Badge variant="secondary" className="w-fit text-sm font-medium">
               {getScoreLabel(interview.interviewScore)}
@@ -60,7 +51,7 @@ export function InterviewCard({
                 {interview.jobTitle}
               </CardTitle>
               <Badge variant="outline" className="w-fit dark:text-gray-300">
-               {interview.difficulty || "Not Specified"}
+                {interview.difficulty || "Not Specified"}
               </Badge>
             </div>
           </div>
@@ -74,9 +65,7 @@ export function InterviewCard({
               <div className="flex items-center gap-1">
                 <Award className="size-4" />
                 <span className="text-lg font-bold">
-                  {
-                     Math.round(interview.interviewScore ?? 0)
-                    }
+                  {Math.round(interview.interviewScore ?? 0)}
                 </span>
               </div>
               <span className="text-xs">Score</span>
@@ -84,7 +73,7 @@ export function InterviewCard({
           </div>
         </CardHeader>
 
-        <CardContent className="relative z-10 space-y-6 p-6 pt-0">
+        <CardContent className="relative space-y-6 p-6 pt-0">
           <div className="grid grid-cols-1 gap-4 text-sm text-muted-foreground dark:text-gray-400">
             <div className="flex items-center space-x-3">
               <FileIcon className="size-5" />
@@ -109,7 +98,7 @@ export function InterviewCard({
           </div>
 
           <div className="flex items-start justify-between">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 pr-10">
               {interview.skillsAssessed.map((skill) => (
                 <Badge
                   key={skill}
