@@ -11,13 +11,15 @@
 
 ### Todo:
 
-  - Integrate "react hot toast" 
   - make LLM only return JSON usign libraries to constrain grammar
+    
   - Optimize LLm prompt
   - make sure only PDF files can be uploaded
-  - add lottie nimations to dashboard icons
+
   - add expressive loading tothe process page when the llm is generating the responses.
-  - add the user answer using microphone feature for reach question.
+  - Migrate to bun
+  - Deploy to vercel and test.
+
 
 <p align="center">
   <a href="https://twitter.com/miickasmt">
