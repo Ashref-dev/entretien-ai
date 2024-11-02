@@ -39,41 +39,40 @@ async function evaluateAnswer(
   }
 
   const prompt = `
-    You are an expert technical interviewer evaluating a ${difficulty} level candidate with ${yearsOfExperience} years of experience.
-    Analyze the following technical interview response and provide scores and feedback.
-    Consider three aspects:
-    1. Technical Knowledge: Understanding of concepts, accuracy, and depth of knowledge
-    2. Communication: Clarity, structure, and effectiveness of explanation
-    3. Problem Solving: Approach, methodology, and critical thinking
+  You are an expert technical interviewer evaluating a candidate with a difficulty level of ${difficulty} and ${yearsOfExperience} years of experience.
+  Analyze the following technical interview response and provide detailed scores and feedback.
 
-    If the user's answer is exactly the same or close as the expected answer, give a score of 100.
-    If the user just repeats the question as his answer, give a score of 0.
-    Otherwise, give a score based on the user's answer.
+  Consider the following evaluation criteria:
+  1. Technical Knowledge: Assess the depth, accuracy, and relevance of the concepts covered.
+  2. Communication: Evaluate clarity, structure, and effectiveness in conveying ideas.
+  3. Problem Solving: Rate the candidate's approach, critical thinking, and methodology.
 
-    Don't be too lenient, if the user's answer is not perfect, give a score in the middle.
+  Scoring Rules:
+  - If the user's answer matches the expected answer exactly or very closely, assign a score of 100.
+  - If the user simply repeats the question as the answer, assign a score of 0.
+  - For answers that are informative but not perfect, assign a moderate score that reflects partial mastery.
 
-    Question: ${question}
-    Expected Answer: ${aiAnswer}
-    User's Answer: ${userAnswer}
+  Question: ${question}
+  Expected Answer: ${aiAnswer}
+  User's Answer: ${userAnswer}
 
-    Provide your response judging the user's answer in the following JSON format only:
-    {
-      "score": <number between 0 and 100>,
-      "technicalScore": <number between 0 and 100>,
-      "communicationScore": <number between 0 and 100>,
-      "problemSolvingScore": <number between 0 and 100>,
-      "feedback": "Your feedback text here without any special characters or line breaks"
-    }
+  Provide your response in the following JSON format only:
+  {
+    "score": <number between 0 and 100>,
+    "technicalScore": <number between 0 and 100>,
+    "communicationScore": <number between 0 and 100>,
+    "problemSolvingScore": <number between 0 and 100>,
+    "feedback": "Provide constructive feedback covering strengths and areas for improvement. Avoid special characters and line breaks."
+  }
 
-    IMPORTANT: 
-    1. Use only double quotes (")
-    2. Do not use line breaks in the feedback text
-    3. Avoid special characters in the feedback text
-    4. All scores must be numbers without quotes
-    5. Return only the JSON object, no additional text or formatting
+  IMPORTANT:
+  1. Use only double quotes (")
+  2. Ensure feedback text is a single line without special characters or line breaks.
+  3. All scores must be numbers without quotes.
+  4. Return only the JSON object with no additional text or formatting.
 
-    Answer only with JSON.
-  `;
+  Respond only with JSON.
+`;
 
   const response = await callAIWithPrompt(prompt);
   try {

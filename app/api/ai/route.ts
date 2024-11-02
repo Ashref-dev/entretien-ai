@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     - Skills to assess: ${skillsAssessed}
     ${targetCompany ? `- Target company: ${targetCompany}` : ""}
 
-    Generate 5 relevant common interview questions focusing specifically on the listed skills to assess.
+    Generate 4 relevant common technical interview questions, and 1 common non-technical interview question focusing specifically on the listed skills to assess.
     Adjust the complexity and depth of questions based on the difficulty level and years of experience.
 
     Candidate Resume content:
