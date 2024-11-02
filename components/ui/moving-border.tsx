@@ -33,7 +33,7 @@ export function MovingBorderButton({
   return (
     <Component
       className={cn(
-        "relative h-16 w-40 overflow-hidden bg-transparent p-px text-xl",
+        "group relative h-12 w-40 overflow-hidden bg-transparent p-px text-xl transition-transform duration-300 ease-in-out hover:scale-105 active:scale-95",
         containerClassName,
       )}
       style={{
@@ -43,12 +43,12 @@ export function MovingBorderButton({
     >
       <div
         className="absolute inset-0"
-        style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
+        style={{ borderRadius: `calc(${borderRadius} * 0.86)` }}
       >
         <MovingBorder duration={duration} rx="30%" ry="30%">
           <div
             className={cn(
-              "size-20 bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)] opacity-80",
+              "size-96 bg-[linear-gradient(#36cde1_40%,#994bff_60%,transparent_80%)] opacity-80",
               borderClassName,
             )}
           />
@@ -64,7 +64,11 @@ export function MovingBorderButton({
           borderRadius: `calc(${borderRadius} * 0.96)`,
         }}
       >
-        {children}
+        <div className="flex items-center space-x-2">
+          <span className="flex items-center justify-center transition-all duration-500 group-hover:translate-x-1">
+            {children}
+          </span>
+        </div>
       </div>
     </Component>
   );
