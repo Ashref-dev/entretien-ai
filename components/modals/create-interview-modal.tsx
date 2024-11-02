@@ -138,7 +138,7 @@ export function CreateInterviewModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fade-up duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]">
+      <DialogContent className="fade-up max-h-[90vh] overflow-y-auto duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]">
         <DialogHeader className="space-y-4 pb-6">
           <DialogTitle className="text-2xl font-bold tracking-tight">
             Create New Interview
@@ -264,7 +264,7 @@ export function CreateInterviewModal({
               <Label htmlFor="resume" className="text-sm font-medium">
                 Upload Resume
               </Label>
-              <div className="group h-[29em] rounded-md border border-dashed border-neutral-200 bg-white transition-all duration-300 hover:border-primary/50 dark:border-neutral-800 dark:bg-black">
+              <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed border-neutral-200 bg-white transition-all duration-300 hover:border-primary/50 dark:border-neutral-800 dark:bg-black">
                 <FileUpload onChange={handleFileUpload} />
               </div>
             </motion.div>
@@ -274,7 +274,7 @@ export function CreateInterviewModal({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className="pt-4"
+            className=""
           >
             <Button
               type="submit"
