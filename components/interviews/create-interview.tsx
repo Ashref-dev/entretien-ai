@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Interview } from "@/types";
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { CreateInterviewModal } from "../modals/create-interview-modal";
 import { AnimatedIcon } from "../shared/animated-icon";
@@ -18,8 +19,20 @@ const CreateInterview = () => {
     jobDescription: string;
     resume: File | null;
   }) => {
-    console.log("data", data);
-    setInterviewData(data);
+    const interview: Interview = {
+      id: crypto.randomUUID(),
+      userId: "", // You'll need to get this from your auth context
+      jobTitle: data.jobTitle,
+      jobDescription: data.jobDescription,
+      resume: null,
+      difficulty: "MID_LEVEL", // Set default or get from form
+      yearsOfExperience: 0, // Set default or get from form
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      interviewData: [],
+      skillsAssessed: [],
+    };
+    setInterviewData(interview);
     setCurrentStep("processing");
   };
 
@@ -57,11 +70,11 @@ const CreateInterview = () => {
         >
           <MovingBorderButton
             borderRadius="1rem"
-            className="w-full border-neutral-200 bg-white text-black dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="border-neutral-200 bg-white text-black dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             onClick={() => setIsModalOpen(true)}
           >
             Create
-            <Plus className="ml-2 size-5" />
+            <ChevronRight className="size-5" />
           </MovingBorderButton>
         </motion.div>
       </motion.div>

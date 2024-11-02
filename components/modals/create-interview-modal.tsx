@@ -4,6 +4,7 @@ import { useState } from "react";
 import { InterviewDifficulty } from "@/types";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
+import { Loader } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -65,47 +66,54 @@ export function CreateInterviewModal({
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("pdf", resume);
-      formData.append("jobTitle", jobTitle);
-      formData.append("jobDescription", jobDescription);
-      formData.append("difficulty", difficulty);
-      formData.append("yearsOfExperience", yearsOfExperience.toString());
+    // Create a promise that wraps our existing logic
+    toast.promise(
+      (async () => {
+        try {
+          const formData = new FormData();
+          formData.append("pdf", resume);
+          formData.append("jobTitle", jobTitle);
+          formData.append("jobDescription", jobDescription);
+          formData.append("difficulty", difficulty);
+          formData.append("yearsOfExperience", yearsOfExperience.toString());
 
-      const response = await fetch("/api/ai", {
-        method: "POST",
-        body: formData,
-      });
+          const response = await fetch("/api/ai", {
+            method: "POST",
+            body: formData,
+          });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
-      const data = await response.json();
+          const data = await response.json();
 
-      // Set interview data and move to next step
-      onCreateInterview({
-        jobTitle,
-        jobDescription,
-        resume,
-        difficulty,
-        yearsOfExperience,
-        skillsAssessed: [],
-        targetCompany,
-        interviewData: data.interviewData,
-      });
+          // Set interview data and move to next step
+          onCreateInterview({
+            jobTitle,
+            jobDescription,
+            resume,
+            difficulty,
+            yearsOfExperience,
+            skillsAssessed: [],
+            targetCompany,
+            interviewData: data.interviewData,
+          });
 
-      // Close modal
-      onOpenChange(false);
-
-      toast.success("Interview questions generated successfully!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Failed to generate interview questions. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+          // Close modal
+          onOpenChange(false);
+        } catch (error) {
+          console.error("Error creating interview:", error);
+          setIsLoading(false);
+          throw error; // Re-throw to let toast handle the error state
+        }
+      })(),
+      {
+        loading: "Creating your interview...",
+        success: "Interview created successfully!",
+        error: "Failed to create interview",
+      },
+    );
   };
 
   const handleFileUpload = (files: File[]) => {
@@ -275,7 +283,7 @@ export function CreateInterviewModal({
             >
               {isLoading ? (
                 <div className="flex items-center space-x-2">
-                  <span className="animate-spin">⏳</span>
+                  <Loader className="size-4 animate-spin" />
                   <span>Creating Interview...</span>
                 </div>
               ) : (
