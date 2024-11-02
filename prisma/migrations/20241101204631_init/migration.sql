@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "InterviewDifficulty" AS ENUM ('JUNIOR', 'MID_LEVEL', 'SENIOR', 'LEAD', 'PRINCIPAL');
+
+-- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
 
 -- CreateTable
@@ -59,13 +62,21 @@ CREATE TABLE "verification_tokens" (
 -- CreateTable
 CREATE TABLE "interviews" (
     "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "jobTitle" TEXT NOT NULL,
     "jobDescription" TEXT NOT NULL,
+    "difficulty" "InterviewDifficulty" NOT NULL DEFAULT 'JUNIOR',
+    "yearsOfExperience" INTEGER NOT NULL DEFAULT 0,
     "interviewScore" DOUBLE PRECISION,
     "targetCompany" TEXT,
     "overAllFeedback" TEXT,
     "resume" TEXT,
-    "userId" TEXT NOT NULL,
+    "duration" INTEGER,
+    "questionsAnswered" INTEGER,
+    "skillsAssessed" TEXT[],
+    "technicalScore" DOUBLE PRECISION,
+    "communicationScore" DOUBLE PRECISION,
+    "problemSolvingScore" DOUBLE PRECISION,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

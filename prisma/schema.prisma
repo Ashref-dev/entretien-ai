@@ -78,12 +78,12 @@ enum InterviewDifficulty {
 }
 
 model Interview {
-  id                  String             @id @default(cuid())
+  id                  String              @id @default(cuid())
   userId              String
   jobTitle            String
   jobDescription      String
   difficulty          InterviewDifficulty @default(JUNIOR)
-  yearsOfExperience   Int                @default(0)
+  yearsOfExperience   Int                 @default(0)
   interviewScore      Float?
   targetCompany       String?
   overAllFeedback     String?
@@ -94,10 +94,10 @@ model Interview {
   technicalScore      Float?
   communicationScore  Float?
   problemSolvingScore Float?
-  createdAt           DateTime        @default(now()) @map("created_at")
-  updatedAt           DateTime        @default(now()) @map("updated_at")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @default(now()) @map("updated_at")
   interviewData       InterviewData[]
-  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("interviews")

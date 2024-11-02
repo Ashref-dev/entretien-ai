@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
   const difficulty = formData.get("difficulty");
   const yearsOfExperience = formData.get("yearsOfExperience");
   const targetCompany = formData.get("targetCompany");
-  
+
   const skillsAssessedRaw = formData.get("skillsAssessed");
-  const skillsAssessed = skillsAssessedRaw 
+  const skillsAssessed = skillsAssessedRaw
     ? JSON.parse(skillsAssessedRaw as string).join(", ")
     : "";
 
@@ -42,58 +42,76 @@ export async function POST(req: NextRequest) {
     - Difficulty level: "${difficulty}"
     - Required years of experience: ${yearsOfExperience}
     - Skills to assess: ${skillsAssessed}
-    ${targetCompany ? `- Target company: ${targetCompany}` : ''}
+    ${targetCompany ? `- Target company: ${targetCompany}` : ""}
 
-    Generate 5 relevant technical interview questions focusing specifically on the listed skills to assess.
+    Generate 5 relevant common interview questions focusing specifically on the listed skills to assess.
     Adjust the complexity and depth of questions based on the difficulty level and years of experience.
-    
-    Resume content:
-    ${texts.join("\n")}
 
-    Respond ONLY with a JSON object in this exact format:
+    Candidate Resume content:
+    ${texts.join(" ")}.
+
+    IMPORTANT FORMATTING RULES:
+    1. Code examples should be on a single line with spaces instead of newlines
+    2. Use only simple quotes or escaped quotes in code examples
+    3. Avoid special characters or control characters
+    4. All text content should be on a single line
+
+    Respond with a JSON object in this exact format:
     {
       "interviewData": [
         {
           "id": "unique-id-1",
           "aiQuestion": "detailed technical question focusing on one of the skills to assess",
-          "aiAnswer": "detailed expected answer showing mastery of the skill",
+          "aiAnswer": "detailed expected answer showing mastery of the skill,preferably without code unless the question requires it, then a little code is enough, also make sure the the answer takes into account the user's resume info.",
           "userAnswer": "",
           "questionFeedback": "Detailed feedback criteria for evaluating the answer"
-        },
-        // ... repeat for all 5 questions ...
+        }
       ]
     }
 
     Requirements:
-    1. Generate exactly 5 questions.
-    2. Each question should focus on one or more of the skills to assess.
-    3. Each answer should demonstrate mastery of the relevant skill(s).
-    4. Match question difficulty to the specified level (${difficulty}).
-    5. Consider the candidate's years of experience (${yearsOfExperience} years).
-    6. Strictly follow the JSON format above.
-    7. Include ONLY JSON in your response.
-    
-    respond in json format.`;
+    1. Generate exactly 5 questions
+    2. Each question should focus on one or more of the skills to assess
+    3. Each answer should demonstrate mastery of the relevant skill(s)
+    4. Match question difficulty to the specified level (${difficulty})
+    5. Consider the candidate's years of experience (${yearsOfExperience} years)
+    6. Strictly follow the JSON format above
+    7. Include ONLY JSON in your response
+    8. All code examples must be on a single line
+    `;
 
     const aiResponseContent = await callAIWithPrompt(prompt);
     console.log("🚀 ~ POST ~ aiResponseContent:", aiResponseContent);
 
-    // Extract only the JSON content between curly braces
-    const jsonMatch = aiResponseContent.match(/\{[\s\S]*\}/);
-    const cleanedResponse = jsonMatch ? jsonMatch[0] : "{}";
-
-    let aiResponse: { interviewData: any[] };
-
     try {
-      aiResponse = JSON.parse(cleanedResponse);
+      // Clean and format the response
+      const cleanedResponse = aiResponseContent
+        .replace(/\n\s*/g, " ") // Replace newlines and following spaces with a single space
+        .replace(/`{3}[\w]*\n?|\n?`{3}/g, "") // Remove code block markers
+        .replace(/\\n/g, " ") // Replace literal \n with space
+        .replace(/\\"/g, '"') // Replace escaped quotes
+        .replace(/\\/g, "\\\\") // Escape backslashes
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remove control characters
 
-      // Ensure exactly 5 questions are returned
+      // Extract only the JSON content between curly braces
+      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
+      const jsonContent = jsonMatch ? jsonMatch[0] : "{}";
+
+      // Parse the cleaned JSON
+      let aiResponse: { interviewData: any[] };
+      try {
+        aiResponse = JSON.parse(jsonContent);
+      } catch (parseError) {
+        console.error("Error parsing cleaned JSON:", parseError);
+        throw new Error("Invalid JSON format in AI response");
+      }
+
+      // Validate and format the data
       if (
         !aiResponse.interviewData ||
-        !Array.isArray(aiResponse.interviewData) ||
-        aiResponse.interviewData.length < 5
+        !Array.isArray(aiResponse.interviewData)
       ) {
-        throw new Error("AI response does not contain at least 5 questions.");
+        throw new Error("AI response does not contain interview data array");
       }
 
       // Format the data
@@ -103,11 +121,15 @@ export async function POST(req: NextRequest) {
           .map((item, index) => ({
             id: item.id || `q${index + 1}-${uuidv4()}`,
             interviewId: interviewId,
-            aiQuestion: item.aiQuestion || `Question ${index + 1}`,
-            aiAnswer: item.aiAnswer || "Expected answer not provided",
+            aiQuestion:
+              item.aiQuestion?.replace(/\n\s*/g, " ") ||
+              `Question ${index + 1}`,
+            aiAnswer:
+              item.aiAnswer?.replace(/\n\s*/g, " ") ||
+              "Expected answer not provided",
             userAnswer: "",
             questionFeedback:
-              item.questionFeedback ||
+              item.questionFeedback?.replace(/\n\s*/g, " ") ||
               "Detailed feedback for the answer not provided",
           })),
       };
@@ -125,10 +147,10 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json(formattedData, { status: 200 });
-    } catch (parseError) {
-      console.error("Error parsing AI response:", parseError);
+    } catch (error) {
+      console.error("Error processing request:", error);
       return NextResponse.json(
-        { error: "AI returned invalid JSON." },
+        { error: error.message || "Internal server error" },
         { status: 500 },
       );
     }

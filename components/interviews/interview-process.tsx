@@ -186,40 +186,36 @@ export default function InterviewProcess({
   const toggleVideo = () => setIsVideoOn(!isVideoOn);
 
   const finishInterview = async () => {
-    // Stop recording if it's still ongoing
     if (isRecording) {
       toggleRecording();
     }
 
-    // Prepare the updated interview data
     const updatedInterviewData = questions.map((question, index) => ({
       ...question,
       userAnswer: transcripts[index] || "",
     }));
 
     try {
-      // Call the API to save the interview data
       const response = await fetch(`/api/interviews/${interview.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ interviewData: updatedInterviewData }),
+        body: JSON.stringify({ 
+          interviewData: updatedInterviewData,
+          difficulty: interview.difficulty,
+          yearsOfExperience: interview.yearsOfExperience 
+        }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to save interview data");
       }
 
-      // Handle successful save
       console.log("Interview data saved successfully");
-
-      // Route to the interview result page
       router.push(`/interviews/${interview.id}/results`);
     } catch (error) {
       console.error("Error saving interview data:", error);
-      // Handle error (e.g., show an error message to the user)
-      // You might want to add a toast or alert here to inform the user
     }
   };
 
