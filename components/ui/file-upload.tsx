@@ -128,7 +128,7 @@ export const FileUpload = ({
                 layoutId="file-upload"
                 variants={mainVariant}
                 transition={{
-                  type: "spring",
+                  type: "sblng",
                   stiffness: 300,
                   damping: 20,
                 }}
@@ -154,7 +154,7 @@ export const FileUpload = ({
             {!file && (
               <motion.div
                 variants={secondaryVariant}
-                className="absolute inset-0 z-30 mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md border border-dashed border-sky-400 bg-transparent opacity-0"
+                className="absolute inset-0 z-30 mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md border border-dashed border-primary bg-transparent opacity-0"
               />
             )}
           </div>
