@@ -61,7 +61,7 @@ const CreateInterview = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="mb-8 text-xl text-muted-foreground"
         >
-          Create your interview to get started!
+          Create an interview to get started
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
