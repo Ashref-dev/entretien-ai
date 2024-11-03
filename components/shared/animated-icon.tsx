@@ -9,7 +9,7 @@ import DynamicLottie from "./lottie";
  * A collection of animated icons using Lottie animations.
  * @type {AnimatedIconName}
  */
-type AnimatedIconName =
+export type AnimatedIconName =
   | "barChart"
   | "kuaishouLogo"
   | "locationPin"
@@ -75,9 +75,13 @@ interface AnimatedIconProps {
    * @default 2000
    */
   hoverDuration?: number;
+  /** Speed of the animation
+   * @default 1
+   */
+  speed?: number;
 }
 
-const iconMap = {
+export const iconMap = {
   barChart: () => import("@/assets/lotties/Gradient Bar Chart Growth.json"),
   kuaishouLogo: () =>
     import("@/assets/lotties/Kuaishou Logo Gradient Icon.json"),
@@ -188,6 +192,7 @@ export function AnimatedIcon({
   className,
   playMode,
   hoverDuration,
+  speed,
 }: AnimatedIconProps) {
   const animationData = useMemo(() => iconMap[icon], [icon]);
 
@@ -202,6 +207,7 @@ export function AnimatedIcon({
       className={clsx(className)}
       playMode={playMode}
       hoverDuration={hoverDuration}
+      speed={speed}
     />
   );
 }

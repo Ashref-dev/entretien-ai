@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 
 import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/shared/icons";
 
-import { MovingBorderButton } from "../ui/moving-border";
+import { AnimatedIcon } from "../shared/animated-icon";
 import HeroCTA from "./hero-cta";
 
 export default async function HeroLanding() {
@@ -29,18 +27,31 @@ export default async function HeroLanding() {
     <section className="space-y-6 py-12 sm:py-20 lg:py-20">
       <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
         <Link
-          href="https://twitter.com/yourtwitterhandle"
+          href="https://ashref.tn"
           className={cn(
             buttonVariants({ variant: "outline", size: "sm", rounded: "full" }),
             "px-4",
           )}
           target="_blank"
         >
-          <span className="mr-3">🎯</span>
-          <span className="hidden md:flex">Revolutionizing&nbsp;</span>{" "}
-          Interview Preparation with AI{" "}
-          <Icons.twitter className="ml-2 size-3.5" />
+          <span className="mr-3">
+            <AnimatedIcon icon="xLogo" className="size-6" />
+          </span>
+          <span className="hidden md:flex">Revolutionizing&nbsp;</span>
+          Interview Preparation with AI
         </Link>
+
+        <div className="flex items-center justify-center gap-4">
+          <AnimatedIcon
+            // icon="videoConference"
+            // icon="rules"
+            icon="consultation"
+            className="size-40"
+            playMode="loop"
+            hoverDuration={3000}
+            speed={0.6}
+          />
+        </div>
 
         <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
           Master Your Next Interview with{" "}

@@ -9,6 +9,7 @@ interface DynamicLottieProps {
   playMode?: "loop" | "oneTime" | "hover";
   className?: string;
   hoverDuration?: number;
+  speed?: number;
 }
 
 const DynamicLottie: React.FC<DynamicLottieProps> = ({
@@ -16,6 +17,7 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
   playMode = "hover",
   className,
   hoverDuration = 2000,
+  speed = 1,
 }) => {
   const [animationData, setAnimationData] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -119,6 +121,7 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
         loop={playMode === "loop"}
         animationData={animationData}
         play={isPlaying}
+        speed={speed}
         onComplete={handleComplete}
         style={{ width: "100%", height: "100%" }}
       />
