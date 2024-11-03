@@ -139,7 +139,7 @@ export function CreateInterviewModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        isGlowing={!isLoading}
+        isGlowing={isLoading}
         className="fade-up max-h-[90vh] overflow-y-auto duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
       >
         <DialogHeader className="space-y-4 pb-6">
