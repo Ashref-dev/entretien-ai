@@ -52,7 +52,7 @@ export function CreateInterviewModal({
   const [resume, setResume] = useState<File | null>(null);
   const [difficulty, setDifficulty] =
     useState<InterviewDifficulty>("MID_LEVEL");
-  const [yearsOfExperience, setYearsOfExperience] = useState<number>(0);
+  const [yearsOfExperience, setYearsOfExperience] = useState<number>(1);
   const [targetCompany, setTargetCompany] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -86,6 +86,7 @@ export function CreateInterviewModal({
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
+          //get the interview questions and put them into the interview object
           const data = await response.json();
 
           // Set interview data and move to next step
@@ -171,7 +172,7 @@ export function CreateInterviewModal({
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
                     placeholder="e.g. Frontend Developer"
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    className="transition-all duration-200"
                     required
                   />
                 </div>

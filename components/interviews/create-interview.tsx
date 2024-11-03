@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Interview } from "@/types";
+import { Interview, InterviewDifficulty } from "@/types";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
@@ -18,19 +18,25 @@ const CreateInterview = () => {
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
+    difficulty: InterviewDifficulty;
+    yearsOfExperience: number;
+    skillsAssessed: string[];
+    targetCompany?: string;
+    interviewData: any;
   }) => {
     const interview: Interview = {
       id: crypto.randomUUID(),
       userId: "", // You'll need to get this from your auth context
       jobTitle: data.jobTitle,
       jobDescription: data.jobDescription,
-      resume: null,
-      difficulty: "MID_LEVEL", // Set default or get from form
-      yearsOfExperience: 0, // Set default or get from form
+      resume: data.resume,
+      difficulty: data.difficulty,
+      yearsOfExperience: data.yearsOfExperience,
+      targetCompany: data.targetCompany,
       createdAt: new Date(),
       updatedAt: new Date(),
-      interviewData: [],
-      skillsAssessed: [],
+      interviewData: data.interviewData || [],
+      skillsAssessed: data.skillsAssessed || [],
     };
     setInterviewData(interview);
     setCurrentStep("processing");

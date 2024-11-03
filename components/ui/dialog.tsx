@@ -121,7 +121,7 @@ const DialogContent = React.forwardRef<
       <div
         className={clsx(
           "absolute left-1/2 top-1/2 z-50 h-[40em] w-[62%] -translate-x-1/2 -translate-y-1/2 bg-primary opacity-0 transition-all",
-          isGlowing && "gradient-glow opacity-100",
+          isGlowing && "gradient-glow animate-pulse opacity-100",
         )}
       ></div>
       <DialogPrimitive.Content

@@ -118,7 +118,7 @@ export type Interview = {
   interviewScore?: number | null;
   targetCompany?: string | null;
   overAllFeedback?: string | null;
-  resume?: string | null;
+  resume?: File | null;
   duration?: number | null;
   questionsAnswered?: number | null;
   skillsAssessed: string[];

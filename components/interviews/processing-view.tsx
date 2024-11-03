@@ -1,53 +1,57 @@
-"use client";
-
-import { useEffect } from "react";
+"use client";;
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
 
 import { useInterview } from "./interview-context";
 
 export default function ProcessingView() {
+
   const { interviewData, setCurrentStep, setInterviewData } = useInterview();
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const processInterview = async () => {
       if (!interviewData) return;
 
       try {
-        const formData = new FormData();
-        if (interviewData.resume) {
-          formData.append("pdf", interviewData.resume);
-        }
-        formData.append("jobTitle", interviewData.jobTitle);
-        formData.append("jobDescription", interviewData.jobDescription);
-
-        const response = await fetch("/api/ai", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const aiGeneratedDataArray = await response.json();
-        console.log(
-          "🚀 ~ processInterview ~ aiGeneratedDataArray:",
-          aiGeneratedDataArray,
-        );
-
-        setInterviewData({
-          ...interviewData,
-          interviewData: aiGeneratedDataArray.interviewData,
-        });
+        console.log("Processing interview...");
+        console.log(interviewData);
 
         setCurrentStep("results");
       } catch (error) {
         console.error("Error processing interview:", error);
+        toast.error("Error processing interview, please try again.");
+        setError(true);
       }
     };
 
     processInterview();
-  }, [interviewData, setCurrentStep, setInterviewData]);
+  }, []);
+
+  if (error) {
+    return (
+      <div className="flex min-h-[40vh] flex-col items-center justify-center space-y-4">
+        <h2 className="text-2xl font-bold text-destructive">
+          Processing Error
+        </h2>
+        <p className="text-center text-muted-foreground">
+          There was an error processing your interview.
+          <br />
+          Please try again.
+        </p>
+        <Button
+          onClick={() => (window.location.href = "/interviews")}
+          variant="default"
+          className="mt-4"
+        >
+          Go Back
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center">

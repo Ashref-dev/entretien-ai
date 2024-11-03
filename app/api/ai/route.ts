@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
     2. Use only simple quotes or escaped quotes in code examples
     3. Avoid special characters or control characters
     4. All text content should be on a single line
+    5. All the 5 questions should be phrased like a question, with a question mark at the end.
 
     Respond with a JSON object in this exact format:
     {
