@@ -41,3 +41,7 @@ next-env.d.ts
 
 .vscode
 .contentlayer
+
+# mac metadata
+.DS_Store
+**/.DS_Store
