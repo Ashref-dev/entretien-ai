@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
@@ -6,7 +6,6 @@ import Lottie from "react-lottie-player";
 
 interface DynamicLottieProps {
   animationData?: any | (() => Promise<any>);
-
   playMode?: "loop" | "oneTime" | "hover";
   className?: string;
   hoverDuration?: number;
@@ -111,9 +110,8 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
 
   return (
     <div
-      className={clsx("dynamic-lottie-container", className)}
+      className={clsx("", className)}
       onMouseEnter={handleMouseEnter}
-      // onMouseLeave={handleMouseLeave}
     >
       <Lottie
         key={key}
@@ -122,6 +120,7 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
         animationData={animationData}
         play={isPlaying}
         onComplete={handleComplete}
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );

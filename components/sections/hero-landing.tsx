@@ -56,7 +56,6 @@ export default async function HeroLanding() {
           coaching to land your dream job.
         </p>
 
-        
         <HeroCTA />
       </div>
     </section>
