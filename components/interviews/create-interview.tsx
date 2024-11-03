@@ -44,8 +44,8 @@ const CreateInterview = () => {
         transition={{ duration: 0.5 }}
         className="flex h-[40vh] flex-col items-center justify-center text-center"
       >
-        <div className="mb-8 size-16">
-          <AnimatedIcon icon="speech" />
+        <div className="mb-8">
+          <AnimatedIcon icon="consultation" className="size-32" />
         </div>
         <motion.h2
           initial={{ opacity: 0 }}
