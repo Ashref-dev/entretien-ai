@@ -2,6 +2,7 @@ import { NavMobile } from "@/components/layout/mobile-nav";
 import { NavBar } from "@/components/layout/navbar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
+import { Toaster } from "sonner";
 
 interface DocsLayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
         {children}
       </MaxWidthWrapper>
       <SiteFooter className="border-t" />
+      <Toaster />
     </div>
   );
 }
