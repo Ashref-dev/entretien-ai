@@ -13,19 +13,19 @@ type AnimatedIconName =
   | "barChart"
   | "kuaishouLogo"
   | "locationPin"
-  | "lordiconLogo"
+  | "xLogo"
   | "privacyPolicy"
   | "safetyRing"
   | "shootingStars"
   | "avatar"
-  | "hoverCircle"
-  | "freeHover"
-  | "swipe"
+  | "penEdit"
+  | "free"
+  | "document"
   | "abcHover"
   | "alarmClock"
   | "applause"
-  | "arrow6"
-  | "arrow7"
+  | "arrowBack"
+  | "arrowRestart"
   | "cCode"
   | "camera"
   | "coins"
@@ -38,11 +38,11 @@ type AnimatedIconName =
   | "envelope"
   | "gift"
   | "html5"
-  | "hoverClick"
-  | "iconHover"
+  | "demand"
+  | "api"
   | "instagram"
   | "javaCode"
-  | "linkUnlink"
+  | "copyLink"
   | "linkedin"
   | "facebook"
   | "magicWand"
@@ -82,7 +82,7 @@ const iconMap = {
   kuaishouLogo: () =>
     import("@/assets/lotties/Kuaishou Logo Gradient Icon.json"),
   locationPin: () => import("@/assets/lotties/Location Pin Hover Jump.json"),
-  lordiconLogo: () => import("@/assets/lotties/Lordicon Gradient Logo.json"),
+  xLogo: () => import("@/assets/lotties/Lordicon Gradient Logo.json"),
   privacyPolicy: () =>
     import("@/assets/lotties/Lordicon Privacy Policy Hover Swipe.json"),
   safetyRing: () => import("@/assets/lotties/Rescue Safety Ring Icon.json"),
@@ -90,18 +90,18 @@ const iconMap = {
     import("@/assets/lotties/Shooting Stars Hover Pinch.json"),
   avatar: () =>
     import("@/assets/lotties/Wired Gradient 21 Avatar Hover Jumping.json"),
-  hoverCircle: () =>
-    import("@/assets/lotties/Wired Gradient 35 Hover Circle.json"),
-  freeHover: () =>
+  penEdit: () => import("@/assets/lotties/Wired Gradient 35 Hover Circle.json"),
+  free: () =>
     import("@/assets/lotties/Wired Gradient 501 Free Hover Roll.json"),
-  swipe: () => import("@/assets/lotties/Wired Gradient 56 Hover Swipe.json"),
+  document: () => import("@/assets/lotties/Wired Gradient 56 Hover Swipe.json"),
   abcHover: () =>
     import("@/assets/lotties/Wired Gradient ABC Hover Pinch.json"),
   alarmClock: () => import("@/assets/lotties/Wired Gradient Alarm Clock.json"),
   applause: () =>
     import("@/assets/lotties/Wired Gradient Applause Hover Pinch.json"),
-  arrow6: () => import("@/assets/lotties/Wired Gradient Arrow 6 Hover.json"),
-  arrow7: () => import("@/assets/lotties/Wired Gradient Arrow 7 Hover.json"),
+  arrowBack: () => import("@/assets/lotties/Wired Gradient Arrow 6 Hover.json"),
+  arrowRestart: () =>
+    import("@/assets/lotties/Wired Gradient Arrow 7 Hover.json"),
   cCode: () => import("@/assets/lotties/Wired Gradient C Code Icon.json"),
   camera: () =>
     import("@/assets/lotties/Wired Gradient Camera Hover Flash.json"),
@@ -123,13 +123,13 @@ const iconMap = {
     import("@/assets/lotties/Wired Gradient Envelope Send Hover.json"),
   gift: () => import("@/assets/lotties/Wired Gradient Gift Hover Squeeze.json"),
   html5: () => import("@/assets/lotties/Wired Gradient HTML 5 Code.json"),
-  hoverClick: () => import("@/assets/lotties/Wired Gradient Hover Click.json"),
-  iconHover: () => import("@/assets/lotties/Wired Gradient Icon Hover.json"),
+  demand: () => import("@/assets/lotties/Wired Gradient Hover Click.json"),
+  api: () => import("@/assets/lotties/Wired Gradient Icon Hover.json"),
   instagram: () =>
     import("@/assets/lotties/Wired Gradient Instagram Logo.json"),
   javaCode: () =>
     import("@/assets/lotties/Wired Gradient Java Code Hover Pinch.json"),
-  linkUnlink: () =>
+  copyLink: () =>
     import("@/assets/lotties/Wired Gradient Link Unlink Hover Bounce.json"),
   linkedin: () => import("@/assets/lotties/Wired Gradient LinkedIn Icon.json"),
   facebook: () => import("@/assets/lotties/Wired Gradient Logo Facebook.json"),
@@ -159,10 +159,19 @@ const iconMap = {
  * <AnimatedIcon icon="barChart" className="size-32" />
  *
  * @example
- * // With hover animation
+ * // With one time animation
  * <AnimatedIcon
  *   icon="confetti"
  *   playMode="oneTime"
+ *   className="size-8"
+ * />
+ *
+ *  @example
+ * // With hover animation, long animations need more hover duration so they can complete before resetting the animation
+ * <AnimatedIcon
+ *   icon="confetti"
+ *   playMode="hover"
+ *   hoverDuration={3000}
  *   className="size-8"
  * />
  *

@@ -45,7 +45,7 @@ const CreateInterview = () => {
         className="flex h-[40vh] flex-col items-center justify-center text-center"
       >
         <div className="mb-8">
-          <AnimatedIcon icon="consultation" className="size-32" />
+          <AnimatedIcon icon="penEdit" className="size-32" />
         </div>
         <motion.h2
           initial={{ opacity: 0 }}
@@ -53,7 +53,7 @@ const CreateInterview = () => {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-4 text-3xl font-bold"
         >
-          No Mock Interviews Yet
+          Ace your next interview.
         </motion.h2>
         <motion.p
           initial={{ opacity: 0 }}
@@ -61,7 +61,7 @@ const CreateInterview = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="mb-8 text-xl text-muted-foreground"
         >
-          Create your first mock interview to get started!
+          Create your interview to get started!
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
