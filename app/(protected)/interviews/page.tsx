@@ -10,7 +10,7 @@ const Page = async () => {
     <>
       <DashboardHeader
         heading="Interviews"
-        text={`Current Role: ${user?.role} — Change your role in settings.`}
+        text={`Create your personalized interview preparation.`}
       />
       <InterviewProvider>
         <InterviewContainer />
@@ -20,4 +20,3 @@ const Page = async () => {
 };
 
 export default Page;
-  

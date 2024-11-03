@@ -102,6 +102,11 @@
   background: linear-gradient(45deg, #994bff 0%, #36cde1 100%);
 }
 
+.gradient-glow {
+  box-shadow: 0 0 2000px 50px hsl(var(--primary));
+  filter: brightness(1.5);
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

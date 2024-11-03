@@ -138,7 +138,10 @@ export function CreateInterviewModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fade-up max-h-[90vh] overflow-y-auto duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]">
+      <DialogContent
+        isGlowing={!isLoading}
+        className="fade-up max-h-[90vh] overflow-y-auto duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
+      >
         <DialogHeader className="space-y-4 pb-6">
           <DialogTitle className="text-2xl font-bold tracking-tight">
             Create New Interview
