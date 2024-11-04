@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Lottie from "react-lottie-player";
 
+import { Skeleton } from "../ui/skeleton";
+
 interface DynamicLottieProps {
   animationData?: any | (() => Promise<any>);
   playMode?: "loop" | "oneTime" | "hover";
@@ -106,15 +108,12 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Skeleton className={clsx("size-full", className)} />;
   if (error) return <div>{error}</div>;
   if (!animationData) return <div>No animation data available</div>;
 
   return (
-    <div
-      className={clsx("", className)}
-      onMouseEnter={handleMouseEnter}
-    >
+    <div className={clsx("", className)} onMouseEnter={handleMouseEnter}>
       <Lottie
         key={key}
         ref={lottieRef}
