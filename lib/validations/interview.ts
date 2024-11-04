@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const InterviewDifficultyEnum = z.enum([
+export const InterviewDifficultyEnum = z.enum([
   "JUNIOR",
   "MID_LEVEL",
   "SENIOR",
