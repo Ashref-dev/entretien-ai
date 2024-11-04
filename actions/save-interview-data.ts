@@ -2,34 +2,42 @@
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import {
+  SaveInterviewInput,
+  SaveInterviewSchema,
+} from "@/lib/validations/interview";
 
-export async function saveInterviewData(interviewData: any) {
+export async function saveInterviewData(interviewData: SaveInterviewInput) {
   const user = await getCurrentUser();
+
   try {
+    // Validate the input data
+    const validatedData = SaveInterviewSchema.parse(interviewData);
+
     const savedInterview = await prisma.interview.create({
       data: {
-        resume: interviewData.resume.name,
-        jobTitle: interviewData.jobTitle,
-        jobDescription: interviewData.jobDescription,
-        difficulty: interviewData.difficulty,
-        yearsOfExperience: interviewData.yearsOfExperience,
-        skillsAssessed: interviewData.skillsAssessed,
-        targetCompany: interviewData.targetCompany || null,
-        interviewScore: interviewData.interviewScore || 0,
+        resume: validatedData.resume.name,
+        jobTitle: validatedData.jobTitle,
+        jobDescription: validatedData.jobDescription,
+        difficulty: validatedData.difficulty,
+        yearsOfExperience: validatedData.yearsOfExperience,
+        skillsAssessed: validatedData.skillsAssessed,
+        targetCompany: validatedData.targetCompany,
+        interviewScore: validatedData.interviewScore,
         technicalScore: 0,
         communicationScore: 0,
         problemSolvingScore: 0,
-        questionsAnswered: interviewData.interviewData.length,
-        duration: interviewData.duration,
+        questionsAnswered: validatedData.interviewData.length,
+        duration: validatedData.duration,
         overAllFeedback: "",
 
         user: {
           connect: {
-            id: user?.id
-          }
+            id: user?.id,
+          },
         },
         interviewData: {
-          create: interviewData.interviewData.map((item: any) => ({
+          create: validatedData.interviewData.map((item) => ({
             aiQuestion: item.aiQuestion,
             aiAnswer: item.aiAnswer,
             userAnswer: item.userAnswer || "",
@@ -46,6 +54,12 @@ export async function saveInterviewData(interviewData: any) {
     return { success: true, id: savedInterview.id };
   } catch (error) {
     console.error("Error saving interview data:", error);
-    return { success: false, error: "Failed to save interview data" };
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to save interview data",
+    };
   }
 }

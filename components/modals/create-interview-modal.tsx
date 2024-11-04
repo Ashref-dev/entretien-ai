@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { generateInterviewQuestions } from "@/actions/ai-interview-generate";
 import { InterviewDifficulty } from "@/types";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
@@ -66,30 +67,23 @@ export function CreateInterviewModal({
       return;
     }
 
-    // Create a promise that wraps our existing logic
     toast.promise(
       (async () => {
         try {
-          const formData = new FormData();
-          formData.append("pdf", resume);
-          formData.append("jobTitle", jobTitle);
-          formData.append("jobDescription", jobDescription);
-          formData.append("difficulty", difficulty);
-          formData.append("yearsOfExperience", yearsOfExperience.toString());
-
-          const response = await fetch("/api/ai", {
-            method: "POST",
-            body: formData,
+          const result = await generateInterviewQuestions({
+            pdf: resume,
+            jobTitle,
+            jobDescription,
+            difficulty,
+            yearsOfExperience,
+            targetCompany,
+            skillsAssessed: [],
           });
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          if (!result.success) {
+            throw new Error(result.error);
           }
 
-          //get the interview questions and put them into the interview object
-          const data = await response.json();
-
-          // Set interview data and move to next step
           onCreateInterview({
             jobTitle,
             jobDescription,
@@ -98,7 +92,7 @@ export function CreateInterviewModal({
             yearsOfExperience,
             skillsAssessed: [],
             targetCompany,
-            interviewData: data.interviewData,
+            interviewData: result.data!.interviewData,
           });
 
           // Close modal

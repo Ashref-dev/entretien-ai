@@ -28,7 +28,7 @@ export const infos: InfoLdg[] = [
     title: "Perfect Your Interview Skills",
     description:
       "Practice makes perfect. Our platform provides a safe environment to rehearse your answers, improve your communication, and build confidence for the real interview.",
-    image: "/_static/illustrations/practice.jpg",
+    image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
         title: "Adaptive Learning",

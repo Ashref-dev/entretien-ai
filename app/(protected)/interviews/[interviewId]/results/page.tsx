@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/db";
-import InterviewLoading from "./loading";
 import InterviewResults from "@/components/interviews/result/interview-results";
 
+import InterviewLoading from "./loading";
 
 async function getInterviewData(interviewId: string) {
   try {
@@ -26,6 +26,16 @@ async function getInterviewData(interviewId: string) {
   }
 }
 
+async function InterviewContent({ interviewId }: { interviewId: string }) {
+  const interview = await getInterviewData(interviewId);
+
+  if (!interview) {
+    notFound();
+  }
+
+  return <InterviewResults interview={interview} />;
+}
+
 export default async function InterviewDisplayPage({
   params,
 }: {
@@ -38,14 +48,4 @@ export default async function InterviewDisplayPage({
       <InterviewContent interviewId={interviewId} />
     </Suspense>
   );
-}
-
-async function InterviewContent({ interviewId }: { interviewId: string }) {
-  const interview = await getInterviewData(interviewId);
-
-  if (!interview) {
-    notFound();
-  }
-
-  return <InterviewResults interview={interview} />;
 }

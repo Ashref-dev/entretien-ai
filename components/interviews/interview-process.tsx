@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { evaluateInterview } from "@/actions/ai-interview-evaluate";
 import { Interview } from "@/types";
 import {
   Check,
@@ -145,7 +146,7 @@ export default function InterviewProcess({
   useEffect(() => {
     console.log("Setting up timer"); // Debug log
     timerRef.current = setInterval(() => {
-      setElapsedTime(prev => {
+      setElapsedTime((prev) => {
         console.log("Current elapsed time:", prev + 1); // Debug log
         return prev + 1;
       });
@@ -225,35 +226,19 @@ export default function InterviewProcess({
       userAnswer: transcripts[index] || "",
     }));
 
-    try {
-      const payload = {
-        interviewData: updatedInterviewData,
-        difficulty: interview.difficulty,
-        yearsOfExperience: interview.yearsOfExperience,
-        duration: elapsedTime,
-      };
+    const result = await evaluateInterview({
+      interviewId: interview.id,
+      interviewData: updatedInterviewData,
+      difficulty: interview.difficulty || "MID_LEVEL",
+      yearsOfExperience: interview.yearsOfExperience,
+      duration: elapsedTime,
+    });
 
-      console.log("Sending payload:", payload);
-
-      const response = await fetch(`/api/interviews/${interview.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      console.log("Response from server:", data);
-
-      if (!response.ok) {
-        throw new Error("Failed to save interview data");
-      }
-
-      router.push(`/interviews/${interview.id}/results`);
-    } catch (error) {
-      console.error("Error saving interview data:", error);
+    if (!result.success) {
+      throw new Error(result.error);
     }
+
+    router.push(`/interviews/${interview.id}/results`);
   };
 
   const isAnswerValid = (index: number) => {
