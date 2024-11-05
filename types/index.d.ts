@@ -132,7 +132,7 @@ export type Interview = {
     aiQuestion: string;
     aiAnswer: string;
     userAnswer: string;
-    questionFeedback?: string;
-    questionsScore?: number;
+    questionFeedback: string | null;
+    questionsScore: number | null;
   }[];
 };

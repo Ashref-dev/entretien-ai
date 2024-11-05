@@ -43,11 +43,7 @@ async function InterviewContent({ interviewId }: { interviewId: string }) {
     redirect(`/interviews/${interviewId}/results`);
   }
 
-  return (
-    <InterviewProcess
-      interview={{ ...interview, resume: null, interviewData: [] }}
-    />
-  );
+  return <InterviewProcess interview={interview} />;
 }
 
 export default async function InterviewDisplayPage({
