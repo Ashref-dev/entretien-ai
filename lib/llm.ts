@@ -1,36 +1,21 @@
-import Groq from "groq-sdk";
-  
-const key = process.env.GROQ_API_KEY;
-const groq = new Groq({ apiKey: key });
+import { callAIWithPrompt as callGroqAI } from "./model/groq";
+import { callAIWithPrompt as callTogetherAI } from "./model/together";
 
-export async function callAIWithPrompt(prompt: string): Promise<any> {
-  if (!key) {
-    throw new Error("API key is not configured");
-  }
-  console.log("🚀 ~ callAIWithPrompt ~ prompt:", prompt);
-
+export async function callLLM(prompt: string): Promise<string> {
   try {
-    // Send the prompt to Together AI and get the response
-    const response = await groq.chat.completions.create({
-      // temperature: 0.4,
+    // Try calling Groq AI first
+    const groqResponse = await callGroqAI(prompt);
+    return groqResponse;
+  } catch (groqError) {
+    console.error("Error calling Groq AI:", groqError);
 
-      messages: [{ role: "user", content: prompt }],
-      model: "llama3-8b-8192"
-      // model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-      // model: "meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
-      // model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-    });
-
-    // Extract the AI response content
-    const aiResponseContent = response.choices[0]?.message?.content;
-    if (!aiResponseContent) {
-      throw new Error("Invalid response from Together AI");
+    try {
+      // If Groq AI fails, try calling Together AI
+      const togetherResponse = await callTogetherAI(prompt);
+      return togetherResponse;
+    } catch (togetherError) {
+      console.error("Error calling Together AI:", togetherError);
+      throw new Error("Failed to get a valid response from either AI provider");
     }
-
-    // Parse the AI response as JSON
-    return aiResponseContent;
-  } catch (error) {
-    console.error("Error calling Together AI:", error);
-    throw new Error("Failed to get a valid response from AI");
   }
 }
