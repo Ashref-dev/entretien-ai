@@ -118,7 +118,11 @@ export function InterviewCard({
 
             <div className="flex">
               <Link
-                href={`/interviews/${interview.id}`}
+                href={
+                  allQuestionsAnswered
+                    ? `/interviews/${interview.id}/results`
+                    : `/interviews/${interview.id}`
+                }
                 className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
               >
                 <span className="text-nowrap text-foreground dark:text-white">
