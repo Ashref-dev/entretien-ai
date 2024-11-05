@@ -1,9 +1,7 @@
-import Together from "together-ai";
-
-import { env } from "@/env.mjs";
-
-const key = env.AI_API_KEY;
-const together = new Together({ apiKey: key });
+import Groq from "groq-sdk";
+  
+const key = process.env.GROQ_API_KEY;
+const groq = new Groq({ apiKey: key });
 
 export async function callAIWithPrompt(prompt: string): Promise<any> {
   if (!key) {
@@ -13,10 +11,11 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
 
   try {
     // Send the prompt to Together AI and get the response
-    const response = await together.chat.completions.create({
+    const response = await groq.chat.completions.create({
       // temperature: 0.4,
+
       messages: [{ role: "user", content: prompt }],
-      model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+      model: "llama3-8b-8192"
       // model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
       // model: "meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
       // model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
