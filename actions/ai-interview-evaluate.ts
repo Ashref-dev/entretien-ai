@@ -3,7 +3,7 @@
 import { InterviewDifficulty } from "@/types";
 
 import { prisma } from "@/lib/db";
-import { callAIWithPrompt } from "@/lib/llm";
+import { callLLM } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
 
 type InterviewRequestBody = {
@@ -78,7 +78,7 @@ async function evaluateAnswer(
   Respond only with JSON.
 `;
 
-  const response = await callAIWithPrompt(prompt);
+  const response = await callLLM(prompt);
   try {
     // First attempt to parse the response directly
     try {
@@ -149,7 +149,7 @@ async function extractTechnologies(
   `;
 
   try {
-    const response = await callAIWithPrompt(prompt);
+    const response = await callLLM(prompt);
     const technologies = JSON.parse(response);
 
     if (Array.isArray(technologies) && technologies.length === 5) {
@@ -188,7 +188,7 @@ async function generateOverallFeedback(
   `;
 
   try {
-    return await callAIWithPrompt(prompt);
+    return await callLLM(prompt);
   } catch (error) {
     console.error("Error generating overall feedback:", error);
     return "Unable to generate overall feedback.";
