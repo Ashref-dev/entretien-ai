@@ -113,12 +113,12 @@ export type Interview = {
   userId: string;
   jobTitle: string;
   jobDescription: string;
-  difficulty?: InterviewDifficulty;
+  difficulty: InterviewDifficulty;
   yearsOfExperience: number;
-  interviewScore?: number | null;
+  interviewScore: number | null;
   targetCompany?: string | null;
   overAllFeedback?: string | null;
-  resume?: File | null;
+  resume?: File | string | null;
   duration?: number | null;
   questionsAnswered?: number | null;
   skillsAssessed: string[];
@@ -132,7 +132,7 @@ export type Interview = {
     aiQuestion: string;
     aiAnswer: string;
     userAnswer: string;
-    questionFeedback?: string;
-    questionsScore?: number;
+    questionFeedback: string | null;
+    questionsScore: number | null;
   }[];
 };

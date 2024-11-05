@@ -26,20 +26,6 @@ async function getInterviewData(interviewId: string) {
   }
 }
 
-export default async function InterviewDisplayPage({
-  params,
-}: {
-  params: { interviewId: string };
-}) {
-  const { interviewId } = await params;
-
-  return (
-    <Suspense fallback={<InterviewLoading />}>
-      <InterviewContent interviewId={interviewId} />
-    </Suspense>
-  );
-}
-
 async function InterviewContent({ interviewId }: { interviewId: string }) {
   const interview = await getInterviewData(interviewId);
 
@@ -58,4 +44,18 @@ async function InterviewContent({ interviewId }: { interviewId: string }) {
   }
 
   return <InterviewProcess interview={interview} />;
+}
+
+export default async function InterviewDisplayPage({
+  params,
+}: {
+  params: { interviewId: string };
+}) {
+  const { interviewId } = await params;
+
+  return (
+    <Suspense fallback={<InterviewLoading />}>
+      <InterviewContent interviewId={interviewId} />
+    </Suspense>
+  );
 }

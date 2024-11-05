@@ -1,4 +1,5 @@
-"use client";;
+"use client";
+
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -8,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useInterview } from "./interview-context";
 
 export default function ProcessingView() {
-
-  const { interviewData, setCurrentStep, setInterviewData } = useInterview();
+  const { interviewData, setCurrentStep } = useInterview();
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -18,7 +18,6 @@ export default function ProcessingView() {
 
       try {
         console.log("Processing interview...");
-        console.log(interviewData);
 
         setCurrentStep("results");
       } catch (error) {

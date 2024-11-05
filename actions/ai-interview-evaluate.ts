@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
+
 import { InterviewDifficulty } from "@/types";
 
 import { prisma } from "@/lib/db";
-import { callAIWithPrompt } from "@/lib/llm";
+import { callLLM } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
 
 type InterviewRequestBody = {
@@ -14,6 +15,7 @@ type InterviewRequestBody = {
   difficulty: InterviewDifficulty;
   yearsOfExperience: number;
   duration: number;
+  interviewId: string;
 };
 
 async function evaluateAnswer(
@@ -51,7 +53,7 @@ async function evaluateAnswer(
   Scoring Rules:
   - If the user's answer matches the expected answer exactly or very closely, assign a score of 100.
   - If the user simply repeats the question as the answer, always assign a score of 0.
-  - For answers that are informative but not perfect, assign a moderate score that reflects partial mastery.
+  - For answers that are informative but not perfect, assign a moderate score.
 
   Question: ${question}
   Expected Answer: ${aiAnswer}
@@ -76,7 +78,7 @@ async function evaluateAnswer(
   Respond only with JSON.
 `;
 
-  const response = await callAIWithPrompt(prompt);
+  const response = await callLLM(prompt);
   try {
     // First attempt to parse the response directly
     try {
@@ -147,7 +149,7 @@ async function extractTechnologies(
   `;
 
   try {
-    const response = await callAIWithPrompt(prompt);
+    const response = await callLLM(prompt);
     const technologies = JSON.parse(response);
 
     if (Array.isArray(technologies) && technologies.length === 5) {
@@ -186,40 +188,30 @@ async function generateOverallFeedback(
   `;
 
   try {
-    return await callAIWithPrompt(prompt);
+    return await callLLM(prompt);
   } catch (error) {
     console.error("Error generating overall feedback:", error);
     return "Unable to generate overall feedback.";
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { interviewId: string } },
-) {
+export async function evaluateInterview(data: InterviewRequestBody) {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return { success: false, error: "Unauthorized" };
     }
 
-    const { interviewId } = await params;
     const {
+      interviewId,
       interviewData,
       difficulty,
       yearsOfExperience,
       duration,
-    }: InterviewRequestBody = await req.json();
-
-    console.log("Received body:", {
-      interviewData,
-      difficulty,
-      yearsOfExperience,
-      duration,
-    }); // Debug log
+    } = data;
 
     if (!interviewData || !Array.isArray(interviewData)) {
-      return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+      return { success: false, error: "Invalid data" };
     }
 
     // Validate difficulty enum
@@ -231,10 +223,7 @@ export async function PUT(
       "PRINCIPAL",
     ];
     if (!validDifficulties.includes(difficulty)) {
-      return NextResponse.json(
-        { error: "Invalid difficulty level" },
-        { status: 400 },
-      );
+      return { success: false, error: "Invalid difficulty level" };
     }
 
     // Fetch the existing interview
@@ -244,10 +233,7 @@ export async function PUT(
     });
 
     if (!existingInterview) {
-      return NextResponse.json(
-        { error: "Interview not found" },
-        { status: 404 },
-      );
+      return { success: false, error: "Interview not found" };
     }
 
     // Calculate scores and generate feedback for each question
@@ -324,14 +310,13 @@ export async function PUT(
       include: { interviewData: true },
     });
 
-    console.log("Updated interview:", updatedInterview); // Debug log
-
-    return NextResponse.json(updatedInterview);
+    return { success: true, data: updatedInterview };
   } catch (error) {
-    console.error("Error updating interview:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error("Error evaluating interview:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to evaluate interview",
+    };
   }
 }

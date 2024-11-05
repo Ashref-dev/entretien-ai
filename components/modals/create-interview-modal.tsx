@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { generateInterviewQuestions } from "@/actions/ai-interview-generate";
 import { InterviewDifficulty } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
+import { InterviewDifficultyEnum } from "@/lib/validations/interview";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +19,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,6 +39,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { FileUpload } from "../ui/file-upload";
+
+// Define the form schema
+const formSchema = z.object({
+  jobTitle: z.string().min(4, "Job title is required"),
+  jobDescription: z.string().min(4, "Job description is required"),
+  difficulty: InterviewDifficultyEnum,
+  yearsOfExperience: z.number().min(0).max(30),
+  targetCompany: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface CreateInterviewModalProps {
   onCreateInterview: (data: {
@@ -47,66 +71,54 @@ export function CreateInterviewModal({
   open,
   onOpenChange,
 }: CreateInterviewModalProps) {
-  const [jobTitle, setJobTitle] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState<File | null>(null);
-  const [difficulty, setDifficulty] =
-    useState<InterviewDifficulty>("MID_LEVEL");
-  const [yearsOfExperience, setYearsOfExperience] = useState<number>(1);
-  const [targetCompany, setTargetCompany] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  // Initialize form
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      jobTitle: "",
+      jobDescription: "",
+      difficulty: "MID_LEVEL",
+      yearsOfExperience: 1,
+      targetCompany: "",
+    },
+  });
 
+  const onSubmit = async (values: FormValues) => {
     if (!resume) {
       toast.error("Please upload a resume");
-      setIsLoading(false);
       return;
     }
 
-    // Create a promise that wraps our existing logic
+    setIsLoading(true);
+
     toast.promise(
       (async () => {
         try {
-          const formData = new FormData();
-          formData.append("pdf", resume);
-          formData.append("jobTitle", jobTitle);
-          formData.append("jobDescription", jobDescription);
-          formData.append("difficulty", difficulty);
-          formData.append("yearsOfExperience", yearsOfExperience.toString());
-
-          const response = await fetch("/api/ai", {
-            method: "POST",
-            body: formData,
+          const result = await generateInterviewQuestions({
+            pdf: resume,
+            ...values,
+            skillsAssessed: [],
           });
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          if (!result.success) {
+            throw new Error(result.error);
           }
 
-          //get the interview questions and put them into the interview object
-          const data = await response.json();
-
-          // Set interview data and move to next step
           onCreateInterview({
-            jobTitle,
-            jobDescription,
+            ...values,
             resume,
-            difficulty,
-            yearsOfExperience,
             skillsAssessed: [],
-            targetCompany,
-            interviewData: data.interviewData,
+            interviewData: result.data!.interviewData,
           });
 
-          // Close modal
           onOpenChange(false);
         } catch (error) {
           console.error("Error creating interview:", error);
           setIsLoading(false);
-          throw error; // Re-throw to let toast handle the error state
+          throw error;
         }
       })(),
       {
@@ -125,9 +137,9 @@ export function CreateInterviewModal({
         return;
       }
 
-      const fiveMB = 5 * 1024 * 1024;
-      if (file.size > fiveMB) {
-        toast.error("File size must be less than 5MB");
+      const thirtyMB = 30 * 1024 * 1024;
+      if (file.size > thirtyMB) {
+        toast.error("File size must be less than 30MB");
         return;
       }
 
@@ -153,148 +165,162 @@ export function CreateInterviewModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Left Column - Main Information */}
-            <div className="space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor="jobTitle" className="text-sm font-medium">
-                    Job Title
-                  </Label>
-                  <Input
-                    id="jobTitle"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    placeholder="e.g. Frontend Developer"
-                    className="transition-all duration-200"
-                    required
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+              {/* Left Column - Main Information */}
+              <div className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="jobTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Job Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g. Frontend Developer"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="targetCompany"
-                    className="text-sm font-medium"
-                  >
-                    Target Company (Optional)
-                  </Label>
-                  <Input
-                    id="targetCompany"
-                    value={targetCompany}
-                    onChange={(e) => setTargetCompany(e.target.value)}
-                    placeholder="e.g. Google, Meta, etc."
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                  <FormField
+                    control={form.control}
+                    name="targetCompany"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Target Company (Optional)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g. Google, Meta, etc."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="difficulty" className="text-sm font-medium">
-                      Difficulty Level
-                    </Label>
-                    <Select
-                      value={difficulty}
-                      onValueChange={(value: InterviewDifficulty) =>
-                        setDifficulty(value)
-                      }
-                    >
-                      <SelectTrigger className="transition-all duration-200 focus:ring-2">
-                        <SelectValue placeholder="Select difficulty" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="JUNIOR">Junior</SelectItem>
-                        <SelectItem value="MID_LEVEL">Mid Level</SelectItem>
-                        <SelectItem value="SENIOR">Senior</SelectItem>
-                        <SelectItem value="LEAD">Lead</SelectItem>
-                        <SelectItem value="PRINCIPAL">Principal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="difficulty"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Difficulty Level</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select difficulty" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="JUNIOR">Junior</SelectItem>
+                              <SelectItem value="MID_LEVEL">
+                                Mid Level
+                              </SelectItem>
+                              <SelectItem value="SENIOR">Senior</SelectItem>
+                              <SelectItem value="LEAD">Lead</SelectItem>
+                              <SelectItem value="PRINCIPAL">
+                                Principal
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="yearsOfExperience"
-                      className="text-sm font-medium"
-                    >
-                      Years of Experience
-                    </Label>
-                    <Input
-                      id="yearsOfExperience"
-                      type="number"
-                      min="0"
-                      max="30"
-                      value={yearsOfExperience}
-                      onChange={(e) =>
-                        setYearsOfExperience(parseInt(e.target.value))
-                      }
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                      required
+                    <FormField
+                      control={form.control}
+                      name="yearsOfExperience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Years of Experience</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="30"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="jobDescription"
-                    className="text-sm font-medium"
-                  >
-                    Job Description
-                  </Label>
-                  <Textarea
-                    id="jobDescription"
-                    value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    placeholder="Enter the job description here..."
-                    className="min-h-[200px] resize-none transition-all duration-200"
-                    required
+                  <FormField
+                    control={form.control}
+                    name="jobDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Job Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter the job description here..."
+                            className="min-h-[200px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
+                </motion.div>
+              </div>
+
+              {/* Right Column - Resume Upload */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <Label className="text-sm font-medium">Upload Resume</Label>
+                <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed">
+                  <FileUpload onChange={handleFileUpload} />
                 </div>
               </motion.div>
             </div>
 
-            {/* Right Column - Resume Upload */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <Label htmlFor="resume" className="text-sm font-medium">
-                Upload Resume
-              </Label>
-              <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed border-neutral-200 bg-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 dark:border-neutral-800 dark:bg-black">
-                <FileUpload onChange={handleFileUpload} />
-              </div>
+              <Button
+                type="submit"
+                className="w-full transition-all duration-200 hover:scale-[1.01]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader className="size-4 animate-spin" />
+                    <span>Creating Interview...</span>
+                  </div>
+                ) : (
+                  "Create Interview"
+                )}
+              </Button>
             </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            className=""
-          >
-            <Button
-              type="submit"
-              className="w-full transition-all duration-200 hover:scale-[1.01]"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <Loader className="size-4 animate-spin" />
-                  <span>Creating Interview...</span>
-                </div>
-              ) : (
-                "Create Interview"
-              )}
-            </Button>
-          </motion.div>
-        </form>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

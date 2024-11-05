@@ -2,21 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { evaluateInterview } from "@/actions/ai-interview-evaluate";
 import { Interview } from "@/types";
+import clsx from "clsx";
 import {
   Check,
   ChevronLeft,
   ChevronRight,
   Mic,
   MicOff,
-  Type,
   Video,
   VideoOff,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
@@ -143,10 +146,8 @@ export default function InterviewProcess({
   }, [isVideoOn, currentQuestionIndex]);
 
   useEffect(() => {
-    console.log("Setting up timer"); // Debug log
     timerRef.current = setInterval(() => {
-      setElapsedTime(prev => {
-        console.log("Current elapsed time:", prev + 1); // Debug log
+      setElapsedTime((prev) => {
         return prev + 1;
       });
     }, 1000);
@@ -218,42 +219,24 @@ export default function InterviewProcess({
       clearInterval(timerRef.current);
     }
 
-    console.log("Current elapsed time:", elapsedTime);
-
     const updatedInterviewData = questions.map((question, index) => ({
       ...question,
       userAnswer: transcripts[index] || "",
     }));
 
-    try {
-      const payload = {
-        interviewData: updatedInterviewData,
-        difficulty: interview.difficulty,
-        yearsOfExperience: interview.yearsOfExperience,
-        duration: elapsedTime,
-      };
+    const result = await evaluateInterview({
+      interviewId: interview.id,
+      interviewData: updatedInterviewData,
+      difficulty: interview.difficulty || "MID_LEVEL",
+      yearsOfExperience: interview.yearsOfExperience,
+      duration: elapsedTime,
+    });
 
-      console.log("Sending payload:", payload);
-
-      const response = await fetch(`/api/interviews/${interview.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      console.log("Response from server:", data);
-
-      if (!response.ok) {
-        throw new Error("Failed to save interview data");
-      }
-
-      router.push(`/interviews/${interview.id}/results`);
-    } catch (error) {
-      console.error("Error saving interview data:", error);
+    if (!result.success) {
+      throw new Error(result.error);
     }
+
+    router.push(`/interviews/${interview.id}/results`);
   };
 
   const isAnswerValid = (index: number) => {
@@ -270,28 +253,30 @@ export default function InterviewProcess({
           <span className="font-mono">({formatTime(elapsedTime)} elapsed)</span>
         </div>
         <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsTypingMode(!isTypingMode)}
-            title={isTypingMode ? "Switch to speech" : "Switch to typing"}
-          >
-            <Type className="size-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={toggleMic}>
-            {isMicOn ? (
-              <Mic className="size-4" />
-            ) : (
-              <MicOff className="size-4" />
-            )}
-          </Button>
-          <Button variant="outline" size="icon" onClick={toggleVideo}>
-            {isVideoOn ? (
-              <Video className="size-4" />
-            ) : (
-              <VideoOff className="size-4" />
-            )}
-          </Button>
+          <ToggleGroup type="multiple" variant="outline">
+            <ToggleGroupItem
+              value="mic"
+              aria-label="Toggle microphone"
+              onClick={toggleMic}
+            >
+              {isMicOn ? (
+                <Mic className="size-4" />
+              ) : (
+                <MicOff className="size-4" />
+              )}
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="video"
+              aria-label="Toggle video"
+              onClick={toggleVideo}
+            >
+              {isVideoOn ? (
+                <Video className="size-4" />
+              ) : (
+                <VideoOff className="size-4" />
+              )}
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </div>
 
@@ -329,48 +314,57 @@ export default function InterviewProcess({
           </CardContent>
         </Card>
 
-        <Card className="col-span-1">
-          <CardHeader className="bg-muted/50">
+        <Card className="col-span-1 flex h-full flex-col">
+          <CardHeader className="flex flex-row items-center justify-between bg-muted/50">
             <CardTitle className="text-lg">Your Answer</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 p-6">
-            {isTypingMode ? (
-              <Textarea
-                placeholder="Type your answer here..."
-                className="min-h-[150px] resize-none"
-                value={transcripts[currentQuestionIndex] || ""}
-                onChange={(e) => {
-                  const newTranscripts = [...transcripts];
-                  newTranscripts[currentQuestionIndex] = e.target.value;
-                  setTranscripts(newTranscripts);
-                  // Mark as recorded when typing
-                  setHasRecorded((prev) => {
-                    const newHasRecorded = [...prev];
-                    newHasRecorded[currentQuestionIndex] = true;
-                    return newHasRecorded;
-                  });
-                }}
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={isTypingMode}
+                onCheckedChange={setIsTypingMode}
+                aria-label="Toggle typing mode"
               />
-            ) : (
-              <div className="h-[150px] overflow-y-auto rounded-lg bg-muted/20 p-4">
-                {transcripts[currentQuestionIndex] ||
-                  "Your speech will appear here as you speak..."}
-              </div>
-            )}
-            {!isTypingMode && (
-              <Button
-                onClick={toggleRecording}
-                variant={isRecording ? "destructive" : "default"}
-                className="w-full"
-              >
-                {isRecording ? "Stop Recording" : "Start Recording"}
-              </Button>
-            )}
+              <span className="text-sm text-muted-foreground">Typing Mode</span>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 p-6">
+            <div className="flex h-full flex-col space-y-4">
+              {isTypingMode ? (
+                <Textarea
+                  placeholder="Type your answer here..."
+                  className="min-h-0 flex-1 resize-none"
+                  value={transcripts[currentQuestionIndex] || ""}
+                  onChange={(e) => {
+                    const newTranscripts = [...transcripts];
+                    newTranscripts[currentQuestionIndex] = e.target.value;
+                    setTranscripts(newTranscripts);
+                    setHasRecorded((prev) => {
+                      const newHasRecorded = [...prev];
+                      newHasRecorded[currentQuestionIndex] = true;
+                      return newHasRecorded;
+                    });
+                  }}
+                />
+              ) : (
+                <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-muted/20 p-4">
+                  {transcripts[currentQuestionIndex] ||
+                    "Your speech will appear here as you speak..."}
+                </div>
+              )}
+              {!isTypingMode && (
+                <Button
+                  onClick={toggleRecording}
+                  variant={isRecording ? "destructive" : "default"}
+                  className="w-full"
+                >
+                  {isRecording ? "Stop Recording" : "Start Recording"}
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="mt-6 flex justify-between space-x-4">
+      <div className="mt-6 flex items-center justify-between space-x-4">
         <Button
           variant="outline"
           onClick={handlePrevious}
@@ -380,18 +374,46 @@ export default function InterviewProcess({
           <ChevronLeft className="mr-2 size-4" />
           Previous
         </Button>
-        <div className="flex items-center space-x-2">
-          {questions.map((_, index) => (
-            <Button
-              key={index}
-              variant={index === currentQuestionIndex ? "default" : "outline"}
-              className="size-8 p-0"
-              onClick={() => setCurrentQuestionIndex(index)}
-            >
-              {index + 1}
-            </Button>
-          ))}
+
+        <div className="relative flex-1 px-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="h-1 w-full rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{
+                  width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+          <div className="relative flex justify-between">
+            {questions.map((_, index) => {
+              const isCompleted = index < currentQuestionIndex;
+              const isCurrent = index === currentQuestionIndex;
+              return (
+                <div
+                  key={index}
+                  // onClick={() => setCurrentQuestionIndex(index)}
+                  className={clsx(
+                    "flex size-8 items-center justify-center rounded-md p-0 transition-all",
+                    {
+                      "shadow-[0_0_15px_2px] shadow-primary": isCurrent,
+                      "bg-primary": isCompleted || isCurrent,
+                      "bg-muted hover:bg-muted/80": !isCompleted && !isCurrent,
+                    },
+                  )}
+                >
+                  {isCompleted ? (
+                    <Check className="size-4" />
+                  ) : (
+                    <span className="text-xs">{index + 1}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
+
         <Button
           variant="outline"
           onClick={handleNext}
