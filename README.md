@@ -14,7 +14,7 @@
   - make LLM only return JSON usign libraries to constrain grammar
     
   - Optimize LLm prompt
-  - make sure only PDF files can be uploaded
+ 
 
   - add expressive loading tothe process page when the llm is generating the responses.
   - Migrate to bun
