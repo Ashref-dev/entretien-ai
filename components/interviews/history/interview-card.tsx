@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Interview } from "@prisma/client";
+import { Interview } from "@/types";
 import { motion } from "framer-motion";
 import {
   ArrowRightCircle,
@@ -29,6 +29,10 @@ export function InterviewCard({
   getScoreColor,
   getScoreLabel,
 }: InterviewCardProps) {
+  const allQuestionsAnswered = interview.interviewData.every(
+    (item) => item.userAnswer && item.userAnswer.trim().length > 0,
+  );
+
   return (
     <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
       <Card
@@ -78,7 +82,9 @@ export function InterviewCard({
             <div className="flex items-center space-x-3">
               <FileIcon className="size-5" />
               <span className="truncate">
-                {interview.resume?.toLowerCase().replace(/\s+/g, "_")}
+                {typeof interview.resume === "string"
+                  ? interview.resume.toLowerCase().replace(/\s+/g, "_")
+                  : "No resume uploaded"}
               </span>
             </div>
             <div className="flex items-center space-x-3">
@@ -98,7 +104,7 @@ export function InterviewCard({
           </div>
 
           <div className="flex items-start justify-between">
-            <div className="flex flex-wrap gap-2 pr-10">
+            <div className="flex h-14 max-h-14 flex-wrap gap-2 overflow-y-hidden">
               {interview.skillsAssessed.map((skill) => (
                 <Badge
                   key={skill}
@@ -116,7 +122,7 @@ export function InterviewCard({
                 className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
               >
                 <span className="text-nowrap text-foreground dark:text-white">
-                  View Details
+                  {allQuestionsAnswered ? "View results" : "Continue"}
                 </span>
                 <ArrowRightCircle className="size-4 transition-transform group-hover:translate-x-0.5" />
               </Link>

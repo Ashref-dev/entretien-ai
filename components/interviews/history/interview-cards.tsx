@@ -24,7 +24,7 @@ interface InterviewCardsProps {
   isLoading?: boolean;
 }
 
-const ANIMATION_DURATION = 0.2; // Duration in seconds for the fades
+const ANIMATION_DURATION = 0.25; // Duration in seconds for the fades
 
 export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -125,7 +125,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {filteredInterviews.map((interview) => (
             <motion.div
               key={interview.id}
@@ -138,7 +138,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
                 y: { duration: ANIMATION_DURATION },
                 layout: { duration: ANIMATION_DURATION },
               }}
-              layout // This enables smooth layout transitions
+              layout
             >
               <InterviewCard
                 interview={interview}
