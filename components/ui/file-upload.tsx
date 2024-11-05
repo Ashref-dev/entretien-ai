@@ -4,6 +4,7 @@ import { Upload as IconUpload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const mainVariant = {
   initial: {
@@ -34,10 +35,29 @@ export const FileUpload = ({
   const [file, setFile] = useState<File | null>(null); // Use a single file state
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+
+  const validatePDF = (file: File) => {
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file only");
+      return false;
+    }
+    return true;
+  };
+
   const handleFileChange = (newFiles: File[]) => {
     const newFile = newFiles[0];
-    setFile(newFile); // Set the first file as the current file
-    onChange && onChange([newFile]);
+    if (!newFile) return;
+    if (validatePDF(newFile)) {
+      setFile(newFile);// Set the first file as the current file
+      onChange && onChange([newFile]);
+    }
+    else {
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+    
   };
 
   const handleClick = () => {
@@ -49,8 +69,21 @@ export const FileUpload = ({
     noClick: true,
     accept: { "application/pdf": [] }, // Accept only PDF files
     onDrop: handleFileChange,
-    onDropRejected: (error) => {
-      console.log(error);
+    onDropRejected: (fileRejections) => {
+      fileRejections.forEach((rejection) => {
+        rejection.errors.forEach((error) => {
+          switch (error.code) {
+            case 'file-invalid-type':
+              toast.error('Please upload a PDF file only');
+              break;
+            case 'file-too-large':
+              toast.error('File is too large');
+              break;
+            default:
+              toast.error('Error uploading file');
+          }
+        });
+      });
     },
   });
 
@@ -65,6 +98,7 @@ export const FileUpload = ({
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
+          accept=".pdf,application/pdf"
           onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
           className="hidden"
         />
