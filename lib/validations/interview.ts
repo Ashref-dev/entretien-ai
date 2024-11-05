@@ -26,7 +26,7 @@ export const SaveInterviewSchema = z.object({
   yearsOfExperience: z.number().min(0),
   skillsAssessed: z.array(z.string().trim()),
   targetCompany: z.string().nullable(),
-  interviewScore: z.number().default(0),
+  interviewScore: z.number().optional(),
   duration: z.number().optional(),
   interviewData: z.array(InterviewDataSchema),
 });

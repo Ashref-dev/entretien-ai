@@ -21,7 +21,7 @@ const CreateInterview = () => {
     difficulty: InterviewDifficulty;
     yearsOfExperience: number;
     skillsAssessed: string[];
-    targetCompany?: string;
+    targetCompany: string;
     interviewData: any;
   }) => {
     const interview: Interview = {
@@ -30,9 +30,10 @@ const CreateInterview = () => {
       jobTitle: data.jobTitle,
       jobDescription: data.jobDescription,
       resume: data.resume,
-      difficulty: data.difficulty,
+      difficulty: data.difficulty || "MID_LEVEL",
       yearsOfExperience: data.yearsOfExperience,
       targetCompany: data.targetCompany,
+      interviewScore: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       interviewData: data.interviewData || [],

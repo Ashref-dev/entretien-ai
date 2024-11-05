@@ -1,7 +1,5 @@
 "use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Interview } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -68,7 +66,6 @@ function formatDuration(seconds: number) {
 
 export default function InterviewResults({ interview }: InterviewResultsProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const router = useRouter();
   const [showQuestions, setShowQuestions] = useState(false);
 
   const handleShowQuestions = () => setShowQuestions(true);
@@ -84,7 +81,8 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
     }
   };
   const handleFinish = () => {
-    router.push("/interviews");
+    // router.push("/interviews");
+    handleBack();
   };
 
   if (!showQuestions) {

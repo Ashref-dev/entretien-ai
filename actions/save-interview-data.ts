@@ -1,18 +1,18 @@
 "use server";
 
+import { Interview } from "@/types";
+
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import {
-  SaveInterviewInput,
-  SaveInterviewSchema,
-} from "@/lib/validations/interview";
+import { SaveInterviewSchema } from "@/lib/validations/interview";
 
-export async function saveInterviewData(interviewData: SaveInterviewInput) {
+export async function saveInterviewData(interviewData: Interview) {
   const user = await getCurrentUser();
 
   try {
     // Validate the input data
-    const validatedData = SaveInterviewSchema.parse(interviewData);
+    // const validatedData = SaveInterviewSchema.parse(interviewData);
+    const validatedData = interviewData;
 
     const savedInterview = await prisma.interview.create({
       data: {
