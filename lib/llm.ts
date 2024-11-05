@@ -1,5 +1,5 @@
-import { callAIWithPrompt as callGroqAI } from "./model/groq";
-import { callAIWithPrompt as callTogetherAI } from "./model/together";
+import { callAIWithPrompt as callGroqAI } from "./modelProviders/groq";
+import { callAIWithPrompt as callTogetherAI } from "./modelProviders/together";
 
 export async function callLLM(prompt: string): Promise<string> {
   try {
