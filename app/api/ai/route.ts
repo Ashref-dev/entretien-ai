@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { v4 as uuidv4 } from "uuid";
 
-import { callAIWithPrompt } from "@/lib/llm";
+import { callLLM } from "@/lib/llm";
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     8. All code examples must be on a single line
     `;
 
-    const aiResponseContent = await callAIWithPrompt(prompt);
+    const aiResponseContent = await callLLM(prompt);
     console.log("🚀 ~ POST ~ aiResponseContent:", aiResponseContent);
 
     try {
