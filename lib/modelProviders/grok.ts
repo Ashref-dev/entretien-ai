@@ -1,33 +1,36 @@
-import Groq from "groq-sdk";
+import OpenAI from "openai";
+const key = process.env.GROK_API_KEY;
+const baseURL = "https://api.x.ai/v1";
+const GROK_MODEL = process.env.GROK_MODEL || "grok-beta";
+const grokai = new OpenAI({ apiKey: key, baseURL });
 
-const key = process.env.GROQ_API_KEY;
-const groq = new Groq({ apiKey: key });
-const GROQ_MODEL = process.env.GROQ_MODEL || "llama3-8b-8192";
 export async function callAIWithPrompt(prompt: string): Promise<any> {
   if (!key) {
     throw new Error("API key is not configured");
   }
-  console.log("🚀 ~ callAIWithPrompt for grop ~ prompt:", prompt);
+  console.log("🚀 ~ callAIWithPrompt for grok ~ prompt:", prompt);
 
   try {
     // Send the prompt to Together AI and get the response
-    const response = await groq.chat.completions.create({
-      // temperature: 0.4,
+    const response = await grokai.chat.completions.create({
+     
 
       messages: [{ role: "user", content: prompt }],
-      model: GROQ_MODEL,
+      model: GROK_MODEL,
     });
 
     // Extract the AI response content
     const aiResponseContent = response.choices[0]?.message?.content;
     if (!aiResponseContent) {
-      throw new Error("Invalid response from Groq AI");
+      throw new Error("Invalid response from Grok AI");
     }
 
     // Parse the AI response as JSON
     return aiResponseContent;
   } catch (error) {
-    console.error("Error calling Groq AI:", error);
+    console.error("Error calling Grok AI:", error);
     throw new Error("Failed to get a valid response from AI");
   }
 }
+
+
