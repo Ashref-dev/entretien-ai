@@ -82,7 +82,7 @@ export default function InterviewProcess({
   const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
   const [isTypingMode, setIsTypingMode] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<ReturnType<typeof setInterval>>();
   const [loading, setLoading] = useState(false);
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
@@ -176,9 +176,7 @@ export default function InterviewProcess({
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setElapsedTime((prev) => {
-        return prev + 1;
-      });
+      setElapsedTime((prev) => prev + 1);
     }, 1000);
 
     return () => {
@@ -471,7 +469,6 @@ export default function InterviewProcess({
           </div>
 
           <Button
-          
             variant="outline"
             onClick={handleNext}
             className="w-full sm:w-[100px]"
