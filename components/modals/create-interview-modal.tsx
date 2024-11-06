@@ -153,7 +153,7 @@ export function CreateInterviewModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         isGlowing={isLoading}
-        className="fade-up max-h-[90vh] overflow-y-auto duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
+        className="fade-up max-h-[90vh] overflow-y-auto rounded-lg duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
       >
         <DialogHeader className="space-y-4 pb-6">
           <DialogTitle className="text-2xl font-bold tracking-tight">
@@ -293,7 +293,7 @@ export function CreateInterviewModal({
                 transition={{ duration: 0.3, delay: 0.1 }}
               >
                 <Label className="text-sm font-medium">Upload Resume</Label>
-                <div className="group h-[calc(100%-2rem)] rounded-md border border-dashed">
+                <div className="group h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
                   <FileUpload onChange={handleFileUpload} />
                 </div>
               </motion.div>

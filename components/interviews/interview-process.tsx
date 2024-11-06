@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { evaluateInterview } from "@/actions/ai-interview-evaluate";
 import { Interview } from "@/types";
-import clsx from "clsx";
 import {
   Check,
   ChevronLeft,
@@ -15,6 +14,7 @@ import {
   VideoOff,
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -244,15 +244,17 @@ export default function InterviewProcess({
   };
 
   return (
-    <div className="container mx-auto space-y-6 p-4">
-      <h1 className="mb-6 text-center text-3xl font-bold">Interview Session</h1>
+    <div className="container mx-auto space-y-4 p-2 sm:space-y-6 sm:p-4">
+      <h1 className="mb-4 text-center text-2xl font-bold sm:mb-6 sm:text-3xl">
+        Interview Session
+      </h1>
 
-      <div className="mb-4 flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-xs text-muted-foreground sm:text-sm">
           Question {currentQuestionIndex + 1} of {questions.length}{" "}
           <span className="font-mono">({formatTime(elapsedTime)} elapsed)</span>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex justify-end">
           <ToggleGroup type="multiple" variant="outline">
             <ToggleGroupItem
               value="mic"
@@ -280,23 +282,25 @@ export default function InterviewProcess({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
         <Card className="col-span-1 md:col-span-2">
           <CardHeader className="bg-muted/50">
-            <CardTitle className="text-xl">
+            <CardTitle className="text-lg sm:text-xl">
               Question {currentQuestionIndex + 1}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
-            <p className="text-lg">{currentQuestion?.aiQuestion}</p>
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-base sm:text-lg">
+              {currentQuestion?.aiQuestion}
+            </p>
           </CardContent>
         </Card>
 
         <Card className="col-span-1">
           <CardHeader className="bg-muted/50">
-            <CardTitle className="text-lg">Webcam</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Webcam</CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="aspect-video overflow-hidden rounded-lg bg-black">
               {isVideoOn ? (
                 <video
@@ -316,22 +320,24 @@ export default function InterviewProcess({
 
         <Card className="col-span-1 flex h-full flex-col">
           <CardHeader className="flex flex-row items-center justify-between bg-muted/50">
-            <CardTitle className="text-lg">Your Answer</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Your Answer</CardTitle>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={isTypingMode}
                 onCheckedChange={setIsTypingMode}
                 aria-label="Toggle typing mode"
               />
-              <span className="text-sm text-muted-foreground">Typing Mode</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">
+                Typing Mode
+              </span>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 p-6">
-            <div className="flex h-full flex-col space-y-4">
+          <CardContent className="flex-1 p-4 sm:p-6">
+            <div className="flex h-full flex-col space-y-3 sm:space-y-4">
               {isTypingMode ? (
                 <Textarea
                   placeholder="Type your answer here..."
-                  className="min-h-0 flex-1 resize-none"
+                  className="min-h-40 flex-1 resize-none"
                   value={transcripts[currentQuestionIndex] || ""}
                   onChange={(e) => {
                     const newTranscripts = [...transcripts];
@@ -345,7 +351,7 @@ export default function InterviewProcess({
                   }}
                 />
               ) : (
-                <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-muted/20 p-4">
+                <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-muted/20 p-3 text-sm sm:p-4 sm:text-base">
                   {transcripts[currentQuestionIndex] ||
                     "Your speech will appear here as you speak..."}
                 </div>
@@ -364,18 +370,18 @@ export default function InterviewProcess({
         </Card>
       </div>
 
-      <div className="mt-6 flex items-center justify-between space-x-4">
+      <div className="mt-4 flex flex-col gap-4 sm:mt-6 sm:flex-row sm:items-center sm:space-x-4">
         <Button
           variant="outline"
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0}
-          className="w-[100px]"
+          className="w-full sm:w-[100px]"
         >
           <ChevronLeft className="mr-2 size-4" />
           Previous
         </Button>
 
-        <div className="relative flex-1 px-4">
+        <div className="relative order-first flex-1 px-4 sm:order-none">
           <div className="absolute inset-0 flex items-center">
             <div className="h-1 w-full rounded-full bg-muted">
               <div
@@ -393,9 +399,8 @@ export default function InterviewProcess({
               return (
                 <div
                   key={index}
-                  // onClick={() => setCurrentQuestionIndex(index)}
-                  className={clsx(
-                    "flex size-8 items-center justify-center rounded-md p-0 transition-all",
+                  className={cn(
+                    "flex size-6 items-center justify-center rounded-md p-0 transition-all sm:size-8",
                     {
                       "shadow-[0_0_15px_2px] shadow-primary": isCurrent,
                       "bg-primary": isCompleted || isCurrent,
@@ -404,9 +409,9 @@ export default function InterviewProcess({
                   )}
                 >
                   {isCompleted ? (
-                    <Check className="size-4" />
+                    <Check className="size-3 sm:size-4" />
                   ) : (
-                    <span className="text-xs">{index + 1}</span>
+                    <span className="text-[10px] sm:text-xs">{index + 1}</span>
                   )}
                 </div>
               );
@@ -417,7 +422,7 @@ export default function InterviewProcess({
         <Button
           variant="outline"
           onClick={handleNext}
-          className="w-[100px]"
+          className="w-full sm:w-[100px]"
           disabled={!isAnswerValid(currentQuestionIndex)}
         >
           {isLastQuestion ? (

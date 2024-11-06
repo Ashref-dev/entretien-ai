@@ -49,7 +49,7 @@ const CreateInterview = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex h-[40vh] flex-col items-center justify-center text-center"
+        className="flex flex-col items-center justify-center py-8 text-center"
       >
         <div className="mb-8">
           <AnimatedIcon icon="penEdit" className="size-32" />

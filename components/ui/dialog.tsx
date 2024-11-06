@@ -13,6 +13,7 @@ import {
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -114,54 +115,58 @@ const MovingBorder = ({
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, isGlowing = false, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <div>
-      <div
-        className={clsx(
-          "absolute left-1/2 top-1/2 z-50 h-[40em] w-[62%] -translate-x-1/2 -translate-y-1/2 bg-primary opacity-0 transition-all",
-          isGlowing && "gradient-glow animate-pulse opacity-100",
-        )}
-      ></div>
-      <DialogPrimitive.Content
-        ref={ref}
-        className={cn(
-          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-1 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full",
-          className,
-        )}
-        {...props}
-      >
-        {isGlowing && (
-          <div
-            className="absolute inset-0 overflow-hidden"
-            style={{ borderRadius: "0.5rem" }}
-          >
-            {/* // ! do not edit the border unless necessary */}
-            <MovingBorder duration={2500} rx="30%" ry="30%">
-              <div
-                className="size-[200em] opacity-70"
-                style={{
-                  background:
-                    "linear-gradient(#994bff 40%, #36cde1 60%, #994bff 80%)",
-                  filter: "blur(8px) brightness(1.5)",
-                  transform: "scale(1)",
-                }}
-              />
-            </MovingBorder>
+>(({ className, children, isGlowing = false, ...props }, ref) => {
+  const isMobile = useMediaQuery().isMobile;
+
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <div>
+        <div
+          className={clsx(
+            "absolute left-1/2 top-1/2 z-50 h-[40em] w-[56%] max-w-[62em] -translate-x-1/2 -translate-y-1/2 bg-primary opacity-0 transition-all",
+            isGlowing && "gradient-glow animate-pulse opacity-100",
+          )}
+        ></div>
+        <DialogPrimitive.Content
+          ref={ref}
+          className={cn(
+            "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-1 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full",
+            className,
+          )}
+          {...props}
+        >
+          {isGlowing && !isMobile && (
+            <div
+              className="absolute inset-0 overflow-hidden rounded-md"
+              style={{ borderRadius: "0.5rem" }}
+            >
+              {/* // ! do not edit the border unless necessary */}
+              <MovingBorder duration={2500} rx="30%" ry="30%">
+                <div
+                  className="size-[200em] opacity-70"
+                  style={{
+                    background:
+                      "linear-gradient(#994bff 40%, #36cde1 60%, #994bff 80%)",
+                    filter: "blur(8px) brightness(1.5)",
+                    transform: "scale(1)",
+                  }}
+                />
+              </MovingBorder>
+            </div>
+          )}
+          <div className={cn("relative rounded-md bg-background p-5")}>
+            {children}
           </div>
-        )}
-        <div className={cn("relative rounded-md bg-background p-5")}>
-          {children}
-        </div>
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-          <X className="size-4" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Content>
-    </div>
-  </DialogPortal>
-));
+          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="size-4" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        </DialogPrimitive.Content>
+      </div>
+    </DialogPortal>
+  );
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({
