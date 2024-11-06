@@ -14,6 +14,7 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -224,19 +225,29 @@ export default function InterviewProcess({
       userAnswer: transcripts[index] || "",
     }));
 
-    const result = await evaluateInterview({
-      interviewId: interview.id,
-      interviewData: updatedInterviewData,
-      difficulty: interview.difficulty || "MID_LEVEL",
-      yearsOfExperience: interview.yearsOfExperience,
-      duration: elapsedTime,
-    });
+    toast.promise(
+      (async () => {
+        const result = await evaluateInterview({
+          interviewId: interview.id,
+          interviewData: updatedInterviewData,
+          difficulty: interview.difficulty || "MID_LEVEL",
+          yearsOfExperience: interview.yearsOfExperience,
+          duration: elapsedTime,
+        });
 
-    if (!result.success) {
-      throw new Error(result.error);
-    }
+        if (!result.success) {
+          throw new Error(result.error);
+        }
 
-    router.push(`/interviews/${interview.id}/results`);
+        router.push(`/interviews/${interview.id}/results`);
+        return result;
+      })(),
+      {
+        loading: "Evaluating Interview...",
+        success: "Interview evaluated successfully!",
+        error: "Failed to evaluate interview",
+      },
+    );
   };
 
   const isAnswerValid = (index: number) => {
