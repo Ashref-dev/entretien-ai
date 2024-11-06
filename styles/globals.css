@@ -10,7 +10,6 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    /* primary: #698BF1 */
     --primary: 225, 83%, 68%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
@@ -31,6 +30,9 @@
     --chart-3: 270 91% 65%;
     --chart-4: 269 97% 85%;
     --chart-5: 269 100% 92%;
+
+    --gradient-1: #36cde1;
+    --gradient-2: #994bff;
   }
 
   .dark {
@@ -40,7 +42,6 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    /* primary: #698BF1 */
     --primary: 225, 83%, 68%;
     --primary-foreground: 0 0% 9%;
     --secondary: 0 0% 14.9%;
@@ -60,6 +61,9 @@
     --chart-3: 270 91% 65%;
     --chart-4: 269 97% 85%;
     --chart-5: 269 100% 92%;
+
+    --gradient-1: #36cde1;
+    --gradient-2: #994bff;
   }
 }
 
@@ -89,17 +93,29 @@
 }
 
 .text-gradient {
-  background: linear-gradient(45deg, #36cde1 0%, #994bff 100%);
+  background: linear-gradient(
+    45deg,
+    var(--gradient-1) 0%,
+    var(--gradient-2) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .background-gradient {
-  background: linear-gradient(45deg, #36cde1 0%, #994bff 100%);
+  background: linear-gradient(
+    45deg,
+    var(--gradient-1) 0%,
+    var(--gradient-2) 100%
+  );
 }
 .background-gradient-reverse {
-  background: linear-gradient(45deg, #994bff 0%, #36cde1 100%);
+  background: linear-gradient(
+    45deg,
+    var(--gradient-2) 0%,
+    var(--gradient-1) 100%
+  );
 }
 
 .gradient-glow {
