@@ -176,9 +176,7 @@ export default function InterviewProcess({
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setElapsedTime((prev) => {
-        return prev + 1;
-      });
+      setElapsedTime((prev) => prev + 1);
     }, 1000);
 
     return () => {
