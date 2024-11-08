@@ -6,13 +6,15 @@ import InfoLanding from "@/components/sections/info-landing";
 import Powered from "@/components/sections/powered";
 import PreviewLanding from "@/components/sections/preview-landing";
 import Testimonials from "@/components/sections/testimonials";
+import LogoCloud from "@/components/sections/logo-cloud";
 
 export default function IndexPage() {
   return (
     <>
       <HeroLanding />
       <PreviewLanding />
-      <Powered />
+      {/* <Powered /> */}
+      <LogoCloud />
       <BentoGrid />
       <InfoLanding data={infos[0]} reverse={true} />
       <InfoLanding data={infos[1]} />

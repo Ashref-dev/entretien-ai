@@ -99,14 +99,14 @@ export const testimonials: TestimonialType[] = [
     job: "Software Engineer at Google",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
     review:
-      "Interview AI was a game-changer in my job search. The AI-generated questions were incredibly relevant to my role, and the instant feedback helped me identify and improve my weak points. I landed my dream job at Google, and I credit a lot of my interview success to this platform.",
+      "Entretien AI was a game-changer in my job search. The AI-generated questions were incredibly relevant to my role, and the instant feedback helped me identify and improve my weak points. I landed my dream job at Google, and I credit a lot of my interview success to this platform.",
   },
   {
-    name: "Alice Smith",
-    job: "Product Manager at Meta",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    name: "Rayen Fassatoui",
+    job: "Product Manager at CIN Group",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
     review:
-      "The behavioral interview practice on Interview AI was invaluable. The platform helped me structure my STAR responses better, and the detailed feedback on my communication style made a huge difference. Highly recommend for anyone preparing for PM roles!",
+      "The behavioral interview practice on Entretien AI was invaluable. The platform helped me structure my STAR responses better, and the detailed feedback on my communication style made a huge difference. Highly recommend for anyone preparing for PM roles!",
   },
   {
     name: "David Johnson",
@@ -141,6 +141,6 @@ export const testimonials: TestimonialType[] = [
     job: "Full Stack Developer at Netflix",
     image: "https://randomuser.me/api/portraits/men/9.jpg",
     review:
-      "Interview AI's comprehensive coverage of both technical and soft skills made my interview preparation much more effective. The performance tracking helped me focus on areas where I needed the most improvement.",
+      "Entretien AI's comprehensive coverage of both technical and soft skills made my interview preparation much more effective. The performance tracking helped me focus on areas where I needed the most improvement.",
   },
 ];
