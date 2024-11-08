@@ -50,8 +50,8 @@ export function NavBar({ scroll = false }: NavBarProps) {
       >
         {/* Left section: Logo */}
         <div className="flex items-center">
-          <Link href="/" className="flex items-center space-x-1.5">
-            <Icons.logo />
+          <Link href="/" className="flex items-center space-x-2">
+            <Icons.logo className="size-7" />
             <span className="font-urban text-xl font-bold">
               {siteConfig.name}
             </span>

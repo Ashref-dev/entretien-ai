@@ -54,17 +54,18 @@ export default async function HeroLanding() {
         </div>
 
         <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Master Your Next Interview with{" "}
-          <span className="text-gradient font-extrabold">Interview AI</span>
+          Nail Every Interview with{" "}
+          <span className="text-gradient font-extrabold">Entretien AI</span>
         </h1>
 
         <p
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Practice smarter with AI-powered mock interviews tailored to your
-          role. Get real-time feedback, expert analysis, and personalized
-          coaching to land your dream job.
+          Walk into your dream job interview with unshakeable confidence. 
+          Our AI-powered mock interviews simulate the real thing, providing 
+          instant feedback and expert coaching that turns interview anxiety 
+          into your competitive advantage.
         </p>
 
         <HeroCTA />

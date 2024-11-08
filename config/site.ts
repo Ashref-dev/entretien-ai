@@ -6,7 +6,7 @@ const site_url = env.NEXT_PUBLIC_APP_URL;
 export const siteConfig: SiteConfig = {
   name: "Entretien AI",
   description:
-    "Get your project off to an explosive start with Entretien AI! Harness the power of Next.js 14, Prisma, Neon, Auth.js v5, Resend, React Email, Shadcn/ui and Stripe to build your next big thing.",
+    "Walk into your dream job interview with unshakeable confidence. Our AI-powered mock interviews simulate the real thing, providing instant feedback and expert coaching that turns interview anxiety into your competitive advantage.",
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {
