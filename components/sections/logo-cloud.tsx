@@ -14,41 +14,49 @@ import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 const logos = [
   {
     name: "Waverio",
+    displayName: "Acme Waverio Inc.",
     icon: Waves,
     color: "text-purple-500",
   },
   {
     name: "Logoipsum",
+    displayName: "Global Logoipsum Ltd.",
     icon: Boxes,
     color: "text-gray-700",
   },
   {
     name: "Alterbone",
+    displayName: "Alterbone Systems",
     icon: Bot,
     color: "text-green-600",
   },
   {
     name: "Tinygone",
+    displayName: "Tinygone Solutions",
     icon: Fingerprint,
     color: "text-pink-500",
   },
   {
     name: "Preso",
+    displayName: "Preso Technologies",
     icon: Compass,
     color: "text-cyan-500",
   },
   {
     name: "Ridoria",
+    displayName: "Ridoria Dynamics",
     icon: Rocket,
     color: "text-blue-500",
   },
   {
     name: "Carbonia",
+    displayName: "Carbonia Industries",
     icon: Diamond,
     color: "text-indigo-500",
   },
   {
     name: "Incanto",
+    displayName: "Incanto Corp",
     icon: Building2,
     color: "text-blue-600",
   },
@@ -60,7 +68,7 @@ export default function LogoCloud() {
       {/* Gradient Blur Shapes - Smaller and more subtle */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div
-          className="absolute left-[50%] top-[50%] h-[200px] w-[250px] -translate-x-[50%] -translate-y-[50%] rounded-full bg-purple-500/15 blur-[96px]"
+          className="absolute left-1/2 top-1/2 h-[200px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500/15 blur-[96px]"
           style={{ filter: "blur(96px)" }}
         />
         <div
@@ -78,34 +86,35 @@ export default function LogoCloud() {
           Popular brands use Entretien AI
         </h2>
 
-        <div className="relative mt-12 grid grid-cols-2 items-center gap-12 md:grid-cols-3 lg:grid-cols-4">
-          {logos.map(({ name, icon: Icon, color }) => (
+        <div className="relative mt-12 grid grid-cols-2 items-center gap-8 md:grid-cols-3 lg:grid-cols-4">
+          {logos.map(({ name, displayName, icon: Icon, color }) => (
             <div
               key={name}
-              className="flex flex-col items-center justify-center gap-3 transition-all hover:scale-105"
+              className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl p-6 transition-all hover:scale-105 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
             >
-              <div className={`${color} transition-colors`}>
+              <div
+                className={`${color} transition-colors duration-200 group-hover:scale-110`}
+              >
                 <Icon size={32} strokeWidth={1.5} />
               </div>
-              <p className="text-sm font-medium text-muted-foreground">
-                {name}
-              </p>
+              <div className="text-center">
+                <p className="text-sm font-semibold text-foreground">
+                  {displayName}
+                </p>
+                <p className="text-xs text-muted-foreground">{name}</p>
+              </div>
             </div>
           ))}
         </div>
 
         <div className="mt-20 flex flex-col items-center justify-center gap-2">
           <div className="flex items-center">
-            <img
-              src="/capterra-logo.svg"
-              alt="Capterra"
-              className="h-6 w-auto"
-            />
+            <Building2 className="h-6 w-auto" />
             <div className="ml-2 flex">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className="h-5 w-5 text-yellow-400"
+                  className="size-5 text-yellow-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >

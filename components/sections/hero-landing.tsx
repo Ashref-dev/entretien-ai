@@ -1,31 +1,17 @@
 import Link from "next/link";
 
-import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 import { AnimatedIcon } from "../shared/animated-icon";
+import BackgroundShader from "./background-shader";
 import HeroCTA from "./hero-cta";
 
 export default async function HeroLanding() {
-  const { stargazers_count: stars } = await fetch(
-    "https://api.github.com/repos/mickasmt/next-saas-stripe-starter",
-    {
-      ...(env.GITHUB_OAUTH_TOKEN && {
-        headers: {
-          Authorization: `Bearer ${process.env.GITHUB_OAUTH_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }),
-      next: { revalidate: 3600 },
-    },
-  )
-    .then((res) => res.json())
-    .catch((e) => console.log(e));
-
   return (
-    <section className="space-y-6 py-12 sm:py-20 lg:py-20">
-      <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
+    <section className="relative space-y-6 py-12 sm:py-20 lg:py-20">
+      {/* <BackgroundShader /> */}
+      <div className="container relative flex max-w-5xl flex-col items-center gap-5 text-center">
         <Link
           href="https://www.linkedin.com/in/ahmedbalti/"
           className={cn(
@@ -43,8 +29,6 @@ export default async function HeroLanding() {
 
         <div className="flex items-center justify-center gap-4">
           <AnimatedIcon
-            // icon="videoConference"
-            // icon="rules"
             icon="consultation"
             className="size-40"
             playMode="loop"
@@ -62,10 +46,10 @@ export default async function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Walk into your dream job interview with unshakeable confidence. 
-          Our AI-powered mock interviews simulate the real thing, providing 
-          instant feedback and expert coaching that turns interview anxiety 
-          into your competitive advantage.
+          Walk into your dream job interview with unshakeable confidence. Our
+          AI-powered mock interviews simulate the real thing, providing instant
+          feedback and expert coaching that turns interview anxiety into your
+          competitive advantage.
         </p>
 
         <HeroCTA />
