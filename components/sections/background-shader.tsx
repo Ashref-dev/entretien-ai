@@ -9,12 +9,15 @@ export default function BackgroundShader({
   className?: string;
 }) {
   return (
-    <div className={clsx(className)}>
+    <div
+      className={clsx("pointer-events-none touch-none select-none", className)}
+    >
       <ShaderGradientCanvas
         style={{
           position: "absolute",
           top: 0,
-          height: "100svh",
+          right: 0,
+          height: "100%",
           width: "100%",
           backgroundColor: "var(--gradient-2)",
         }}

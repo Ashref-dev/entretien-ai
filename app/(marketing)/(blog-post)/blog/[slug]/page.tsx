@@ -11,11 +11,11 @@ import Link from "next/link";
 import { BLOG_CATEGORIES } from "@/config/blog";
 import { getTableOfContents } from "@/lib/toc";
 import {
-    cn,
-    constructMetadata,
-    formatDate,
-    getBlurDataURL,
-    placeholderBlurhash,
+  cn,
+  constructMetadata,
+  formatDate,
+  getBlurDataURL,
+  placeholderBlurhash,
 } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import Author from "@/components/content/author";
@@ -34,7 +34,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata | undefined> {
-  const post = allPosts.find((post) => post.slugAsParams === params.slug);
+  const parameters = await params;
+  const post = allPosts.find((post) => post.slugAsParams === parameters.slug);
   if (!post) {
     return;
   }
@@ -55,7 +56,8 @@ export default async function PostPage({
     slug: string;
   };
 }) {
-  const post = allPosts.find((post) => post.slugAsParams === params.slug);
+  const parameters = await params;
+  const post = allPosts.find((post) => post.slugAsParams === parameters.slug);
 
   if (!post) {
     notFound();

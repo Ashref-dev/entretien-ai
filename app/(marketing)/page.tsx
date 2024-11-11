@@ -11,7 +11,7 @@ import Testimonials from "@/components/sections/testimonials";
 export default function IndexPage() {
   return (
     <>
-      {/* <BackgroundShader /> */}
+
       <HeroLanding />
       <PreviewLanding />
       {/* <Powered /> */}
