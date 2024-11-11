@@ -21,9 +21,7 @@ const defaultComputedFields: ComputedFields = {
   images: {
     type: "list",
     resolve: (doc) => {
-      return (
-        doc.body.raw.match(/(?<=<Image[^>]*\bsrc=")[^"]+(?="[^>]*\/>)/g) || []
-      );
+      return doc.body.raw.match(/(?<=<Image[^>]*\bsrc=")[^"]+(?="[^>]*\/>)/g) || [];
     },
   },
 };

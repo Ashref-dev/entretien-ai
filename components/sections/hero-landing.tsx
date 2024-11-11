@@ -21,7 +21,7 @@ export default async function HeroLanding() {
             <Link
               href="https://www.linkedin.com/in/rayenfassatoui/"
               className={cn(
-                "z-50 flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-md transition-colors duration-300 hover:bg-white/20",
+                "z-50 flex items-center gap-1 rounded-full border border-white/20 bg-neutral-800/10 px-3 py-2 backdrop-blur-md transition-colors duration-300 hover:bg-white/20",
               )}
               target="_blank"
             >
