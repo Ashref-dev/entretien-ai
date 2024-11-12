@@ -2,7 +2,7 @@ import {
   ComputedFields,
   defineDocumentType,
   makeSource,
-} from "contentlayer/source-files";
+} from "contentlayer2/source-files";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
@@ -157,7 +157,7 @@ export default makeSource({
         });
       },
       [
-        rehypePrettyCode as any,
+        rehypePrettyCode,
         {
           theme: "github-dark",
           keepBackground: false,

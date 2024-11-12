@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata | undefined> {
   const parameters = await params;
   const page = allPages.find((page) => page.slugAsParams === parameters.slug);
@@ -29,7 +29,7 @@ export async function generateMetadata({
   const { title, description } = page;
 
   return constructMetadata({
-    title: `${title} – Entretien AI`,
+    title: `${title} – Entretien AI`,
     description: description,
   });
 }
@@ -37,9 +37,9 @@ export async function generateMetadata({
 export default async function PagePage({
   params,
 }: {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
 }) {
   const parameters = await params;
   const page = allPages.find((page) => page.slugAsParams === parameters.slug);
