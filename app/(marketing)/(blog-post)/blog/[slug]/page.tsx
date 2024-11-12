@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { allPosts } from "contentlayer/generated";
 
 import { Mdx } from "@/components/content/mdx-components";
 
@@ -6,7 +7,6 @@ import "@/styles/mdx.css";
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { allPosts } from "contentlayer/generated";
 
 import { BLOG_CATEGORIES } from "@/config/blog";
 import { getTableOfContents } from "@/lib/toc";
@@ -34,8 +34,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata | undefined> {
-  const parameters = params;
-  const post = allPosts.find((post: { slugAsParams: string; }) => post.slugAsParams === parameters.slug);
+  const parameters = await params;
+  const post = allPosts.find((post) => post.slugAsParams === parameters.slug);
   if (!post) {
     return;
   }
@@ -56,7 +56,7 @@ export default async function PostPage({
     slug: string;
   };
 }) {
-  const parameters = params;
+  const parameters = await params;
   const post = allPosts.find((post) => post.slugAsParams === parameters.slug);
 
   if (!post) {
