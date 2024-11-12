@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { withContentlayer } from "next-contentlayer2";
+import { withContentlayer } from "next-contentlayer";
 
 import "./env.mjs";
 
@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ["@prisma/client"],
-  // serverComponentsExternalPackages: ["@prisma/client"],
 };
 
 module.exports = withContentlayer(nextConfig);

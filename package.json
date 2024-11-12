@@ -1,9 +1,9 @@
 {
-  "name": "saas-starter",
-  "version": "0.3.1",
+  "name": "entretien-ai",
+  "version": "0.5",
   "private": true,
   "author": {
-    "name": "mickasmt",
+    "name": "ashref",
     "url": "https://ashref.tn"
   },
   "scripts": {
@@ -67,7 +67,6 @@
     "cmdk": "^1.0.4",
     "concurrently": "^8.2.2",
     "contentlayer": "^0.3.4",
-    "contentlayer2": "^0.5.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.11.11",
     "groq-sdk": "^0.7.0",
@@ -76,7 +75,6 @@
     "next": "^15.0.2",
     "next-auth": "^5.0.0-beta.25",
     "next-contentlayer": "^0.3.4",
-    "next-contentlayer2": "^0.5.3",
     "next-themes": "^0.3.0",
     "pdf-parse": "^1.1.1",
     "prop-types": "^15.8.1",
