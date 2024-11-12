@@ -30,7 +30,7 @@ export default function InfoLanding({
               return (
                 <div className="relative pl-8" key={index}>
                   <dt className="font-semibold">
-                    <Icon className="absolute left-0 top-1 size-5 stroke-cyan-700" />
+                    <Icon className="absolute left-0 top-1 size-5 stroke-primary" />
                     <span>{item.title}</span>
                   </dt>
                   <dd className="text-sm text-muted-foreground">

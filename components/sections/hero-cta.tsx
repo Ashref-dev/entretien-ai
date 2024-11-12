@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { ModalContext } from "../modals/providers";
-import { MovingBorderButton } from "../ui/moving-border";
+import { MovingBorderButton } from "../ui/moving-border-button";
 import { Skeleton } from "../ui/skeleton";
 
 const HeroCTA = () => {

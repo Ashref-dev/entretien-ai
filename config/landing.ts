@@ -2,10 +2,10 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "AI-Powered Interview Excellence",
+    title: "Interview Excellence",
     description:
       "Experience the future of interview preparation with our advanced AI platform. Get personalized questions, real-time feedback, and expert analysis tailored to your specific role and experience level.",
-    image: "/_static/illustrations/work-from-home.jpg",
+    image: "/_static/landing/shot1.jpg",
     list: [
       {
         title: "Role-Specific",
@@ -28,7 +28,7 @@ export const infos: InfoLdg[] = [
     title: "Perfect Your Interview Skills",
     description:
       "Practice makes perfect. Our platform provides a safe environment to rehearse your answers, improve your communication, and build confidence for the real interview.",
-    image: "/_static/illustrations/work-from-home.jpg",
+    image: "/_static/landing/shot2.jpg",
     list: [
       {
         title: "Adaptive Learning",
@@ -95,52 +95,52 @@ export const features: FeatureLdg[] = [
 
 export const testimonials: TestimonialType[] = [
   {
-    name: "John Doe",
+    name: "Alex Chen",
     job: "Software Engineer at Google",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
     review:
-      "Entretien AI was a game-changer in my job search. The AI-generated questions were incredibly relevant to my role, and the instant feedback helped me identify and improve my weak points. I landed my dream job at Google, and I credit a lot of my interview success to this platform.",
+      "After practicing with Entretien AI for a few weeks, I felt much more confident going into my Google interviews. The technical questions were challenging and relevant, and the feedback on my communication style was eye-opening. It helped me present my solutions more clearly.",
   },
   {
-    name: "Rayen Fassatoui",
+    name: "Sarah Miller",
     job: "Product Manager at CIN Group",
     image: "https://randomuser.me/api/portraits/men/2.jpg",
     review:
-      "The behavioral interview practice on Entretien AI was invaluable. The platform helped me structure my STAR responses better, and the detailed feedback on my communication style made a huge difference. Highly recommend for anyone preparing for PM roles!",
+      "I was struggling with behavioral interviews until I found Entretien AI. The platform taught me how to structure my responses using the STAR method effectively. The instant feedback helped me refine my answers and sound more polished.",
   },
   {
-    name: "David Johnson",
+    name: "James Liu",
     job: "Data Scientist at Amazon",
     image: "https://randomuser.me/api/portraits/men/3.jpg",
     review:
-      "The technical questions were spot-on for my field. Being able to practice with voice recognition and get feedback on both my technical accuracy and communication clarity was incredibly helpful.",
+      "The ML and data science questions were exactly what I needed. Being able to practice explaining complex concepts clearly was invaluable. The platform helped me find the right balance between technical depth and clear communication.",
   },
   {
-    name: "Michael Wilson",
+    name: "Ryan Park",
     job: "Frontend Developer at Apple",
     image: "https://randomuser.me/api/portraits/men/5.jpg",
     review:
-      "The resume analysis feature is brilliant! It generated questions specific to my experience, which helped me prepare for questions about my past projects. The optimal answers provided great insights too.",
+      "The platform analyzed my resume and generated questions about my React projects and system design experience. This targeted practice helped me feel prepared for the actual interviews. Really impressed with how relevant the questions were.",
   },
   {
-    name: "Sophia Garcia",
+    name: "Maya Patel",
     job: "DevOps Engineer at Microsoft",
     image: "https://randomuser.me/api/portraits/women/6.jpg",
     review:
-      "As someone who gets nervous during interviews, having a safe space to practice was crucial. The AI feedback helped me improve my confidence and technical communication significantly.",
+      "English isn't my first language, so I was nervous about technical interviews. The speech recognition feature helped me improve my pronunciation and pacing. After a month of practice, I felt much more confident.",
   },
   {
-    name: "Emily Brown",
+    name: "Emma Thompson",
     job: "Senior Product Designer at Spotify",
     image: "https://randomuser.me/api/portraits/women/4.jpg",
     review:
-      "The platform's ability to adapt questions based on my performance helped me prepare for increasingly challenging interviews. The design-specific questions were particularly helpful for my UX/UI role interviews.",
+      "The UX design questions were spot-on. I particularly appreciated how the platform helped me articulate my design decisions and process. The feedback on presenting portfolio work was incredibly valuable.",
   },
   {
-    name: "Jason Stan",
+    name: "Daniel Kim",
     job: "Full Stack Developer at Netflix",
     image: "https://randomuser.me/api/portraits/men/9.jpg",
     review:
-      "Entretien AI's comprehensive coverage of both technical and soft skills made my interview preparation much more effective. The performance tracking helped me focus on areas where I needed the most improvement.",
+      "What stood out was how the platform helped me prepare for both frontend and backend questions. The system design scenarios were particularly helpful. I felt well-prepared for all aspects of my Netflix interviews.",
   },
 ];

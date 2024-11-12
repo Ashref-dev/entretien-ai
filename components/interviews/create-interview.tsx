@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 
 import { CreateInterviewModal } from "../modals/create-interview-modal";
 import { AnimatedIcon } from "../shared/animated-icon";
-import { MovingBorderButton } from "../ui/moving-border";
+import { MovingBorderButton } from "../ui/moving-border-button";
 import { useInterview } from "./interview-context";
 
 const CreateInterview = () => {

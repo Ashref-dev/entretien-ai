@@ -11,7 +11,7 @@ export default function IndexPage() {
   return (
     <>
       <HeroLanding />
-      <PreviewLanding />
+      {/* <PreviewLanding /> */}
       {/* <Powered /> */}
       <LogoCloud />
       <BentoGrid />
