@@ -27,7 +27,7 @@ const DynamicLottie: React.FC<DynamicLottieProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [key, setKey] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lottieRef = useRef<any>(null);
 
   useEffect(() => {

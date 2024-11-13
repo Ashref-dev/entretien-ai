@@ -49,7 +49,7 @@ async function InterviewContent({ interviewId }: { interviewId: string }) {
 export default async function InterviewDisplayPage({
   params,
 }: {
-  params: { interviewId: string };
+  params: Promise<{ interviewId: string }>;
 }) {
   const { interviewId } = await params;
 

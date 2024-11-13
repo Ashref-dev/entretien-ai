@@ -1,3 +1,5 @@
+"use server";
+
 import { notFound } from "next/navigation";
 import { allPosts } from "contentlayer/generated";
 
@@ -32,7 +34,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata | undefined> {
   const parameters = await params;
   const post = allPosts.find((post) => post.slugAsParams === parameters.slug);
@@ -43,7 +45,7 @@ export async function generateMetadata({
   const { title, description, image } = post;
 
   return constructMetadata({
-    title: `${title} – Entretien AI`,
+    title: `${title} – Entretien AI`,
     description: description,
     image,
   });
@@ -52,9 +54,9 @@ export async function generateMetadata({
 export default async function PostPage({
   params,
 }: {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }) {
   const parameters = await params;
   const post = allPosts.find((post) => post.slugAsParams === parameters.slug);

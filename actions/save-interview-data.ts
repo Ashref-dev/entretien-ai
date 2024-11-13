@@ -4,19 +4,18 @@ import { Interview } from "@/types";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { SaveInterviewSchema } from "@/lib/validations/interview";
 
 export async function saveInterviewData(interviewData: Interview) {
   const user = await getCurrentUser();
 
   try {
-    // Validate the input data
+    // TODO: Validate the input data
     // const validatedData = SaveInterviewSchema.parse(interviewData);
     const validatedData = interviewData;
 
     const savedInterview = await prisma.interview.create({
       data: {
-        resume: validatedData.resume.name,
+        resume: validatedData.resume ? (validatedData.resume as File).name : "",
         jobTitle: validatedData.jobTitle,
         jobDescription: validatedData.jobDescription,
         difficulty: validatedData.difficulty,
