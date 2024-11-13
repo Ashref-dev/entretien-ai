@@ -81,9 +81,9 @@ export default function InterviewProcess({
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
   const [isTypingMode, setIsTypingMode] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
-  const [loading, setLoading] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -283,7 +283,7 @@ export default function InterviewProcess({
   };
 
   return (
-    <div className="flex h-[60vh] w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center">
       {/* Core Loader Modal */}
       <Loader loadingStates={loadingStates} loading={loading} duration={2000} />
       <div className="container mx-auto space-y-4 p-2 sm:space-y-6 sm:p-4">
