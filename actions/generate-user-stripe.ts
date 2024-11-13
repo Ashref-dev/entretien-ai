@@ -11,7 +11,7 @@ export type responseAction = {
   stripeUrl?: string;
 }
 
-// const billingUrl = absoluteUrl("/dashboard/billing")
+// const billingUrl = absoluteUrl("/billing")
 const billingUrl = absoluteUrl("/pricing")
 
 export async function generateUserStripe(priceId: string): Promise<responseAction> {

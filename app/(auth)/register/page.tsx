@@ -1,15 +1,16 @@
-import Link from "next/link"
+import { Suspense } from "react";
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/shared/icons"
-import { UserAuthForm } from "@/components/forms/user-auth-form"
-import { Suspense } from "react"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { UserAuthForm } from "@/components/forms/user-auth-form";
+import BackgroundGradient from "@/components/sections/background-shader";
+import { Icons } from "@/components/shared/icons";
 
 export const metadata = {
   title: "Create an account",
   description: "Create an account to get started.",
-}
+};
 
 export default function RegisterPage() {
   return (
@@ -18,16 +19,18 @@ export default function RegisterPage() {
         href="/login"
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          "absolute right-4 top-4 md:right-8 md:top-8"
+          "absolute right-4 top-4 md:right-8 md:top-8",
         )}
       >
         Login
       </Link>
-      <div className="hidden h-full bg-muted lg:block" />
+      <div className="relative hidden h-full overflow-hidden lg:block">
+        <BackgroundGradient />
+      </div>
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <Icons.logo className="mx-auto size-6" />
+            <Icons.logo className="mx-auto size-10" />
             <h1 className="text-2xl font-semibold tracking-tight">
               Create an account
             </h1>
@@ -58,5 +61,5 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

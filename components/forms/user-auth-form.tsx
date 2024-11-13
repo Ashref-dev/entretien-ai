@@ -10,9 +10,7 @@ import * as z from "zod";
 
 import { cn } from "@/lib/utils";
 import { userAuthSchema } from "@/lib/validations/auth";
-import { buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -33,6 +31,8 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
   const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false);
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false);
   const searchParams = useSearchParams();
+  const [signInWithGitHubClicked, setSignInWithGitHubClicked] =
+    React.useState<boolean>(false);
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
@@ -57,22 +57,16 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
   }
 
   async function handleOAuthSignIn(provider: string) {
-    setIsLoading(true);
-
-    const signInResult = await signIn(provider, {
-      redirect: false,
-      callbackUrl: searchParams?.get("from") || "/settings",
-    });
-
-    setIsLoading(false);
-    if (signInResult?.error === "OAuthAccountNotLinked") {
-      return toast.error("Account with this email already exists.", {
-        description: "Would you like to link your account instead?",
-      });
-    }
-
-    if (!signInResult?.ok) {
-      return toast.error("Something went wrong.", {
+    try {
+      const signInResult = await signIn(provider, {
+        redirect: false,
+      }).then(() =>
+        setTimeout(() => {
+          window.location.href = searchParams?.get("from") || "/settings";
+        }, 400),
+      );
+    } catch (error) {
+      toast.error("Something went wrong.", {
         description: "Sign-in failed. Please try again.",
       });
     }
@@ -136,16 +130,19 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         )}{" "}
         Google
       </button>
+      {/* GitHub sign-in button */}
       <button
         type="button"
         className={cn(buttonVariants({ variant: "outline" }))}
+        disabled={signInWithGitHubClicked}
         onClick={() => {
-          setIsGitHubLoading(true);
-          handleOAuthSignIn("github").finally(() => setIsGitHubLoading(false));
+          setSignInWithGitHubClicked(true);
+          signIn("github", { redirect: false }).then(() =>
+            setTimeout(() => {}, 400),
+          );
         }}
-        disabled={isLoading || isGitHubLoading}
       >
-        {isGitHubLoading ? (
+        {signInWithGitHubClicked ? (
           <Icons.spinner className="mr-2 size-4 animate-spin" />
         ) : (
           <Icons.gitHub className="mr-2 size-4" />

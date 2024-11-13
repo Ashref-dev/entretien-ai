@@ -56,7 +56,7 @@ const MovingBorder = ({
   ry?: string;
   [key: string]: any;
 }) => {
-  const pathRef = React.useRef<any>();
+  const pathRef = React.useRef<any>(0);
   const progress = useMotionValue<number>(0);
 
   useAnimationFrame((time) => {
