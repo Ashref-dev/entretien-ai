@@ -47,13 +47,13 @@ export default function InfoLanding({
             reverse ? "order-1" : "order-2",
           )}
         >
-          <div className="aspect-video">
+          <div className="">
             <Image
               className="size-full object-cover object-center"
               src={data.image}
               alt={data.title}
               width={1000}
-              height={500}
+              height={600}
               priority={true}
             />
           </div>

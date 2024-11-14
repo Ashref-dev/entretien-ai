@@ -2,24 +2,27 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "AI-Powered Interview Excellence",
+    title: "AI-Powered Interview Prep",
     description:
       "Practice with an AI that thinks like a senior interviewer. Get role-specific questions and expert feedback that's indistinguishable from real tech interviews at FAANG companies.",
     image: "/_static/landing/shot1.jpg",
     list: [
       {
         title: "Industry-Specific Training",
-        description: "Tailored questions for Software Engineering, Data Science, Product Management and more.",
+        description:
+          "Tailored questions for Software Engineering, Data Science, Product Management and more.",
         icon: "briefcase",
       },
       {
         title: "Real-Time Performance Analysis",
-        description: "Get instant feedback on technical accuracy, communication clarity, and delivery confidence.",
+        description:
+          "Get instant feedback on technical accuracy, communication clarity, and delivery confidence.",
         icon: "messageCircle",
       },
       {
         title: "FAANG-Level Preparation",
-        description: "Practice with questions sourced from actual interviews at top tech companies.",
+        description:
+          "Practice with questions sourced from actual interviews at top tech companies.",
         icon: "brain",
       },
     ],
@@ -32,17 +35,20 @@ export const infos: InfoLdg[] = [
     list: [
       {
         title: "Personalized Learning Path",
-        description: "AI adapts questions based on your experience level and previous responses.",
+        description:
+          "AI adapts questions based on your experience level and previous responses.",
         icon: "trending-up",
       },
       {
         title: "Success Blueprints",
-        description: "Access proven answer frameworks from candidates who landed $200K+ offers.",
+        description:
+          "Access proven answer frameworks from candidates who landed $200K+ offers.",
         icon: "award",
       },
       {
         title: "Interview Analytics",
-        description: "Track confidence scores, technical accuracy, and communication improvements across sessions.",
+        description:
+          "Track confidence scores, technical accuracy, and communication improvements across sessions.",
         icon: "pieChart",
       },
     ],
@@ -66,7 +72,8 @@ export const features: FeatureLdg[] = [
   },
   {
     title: "Success Metrics Dashboard",
-    description: "Visualize your improvement across technical knowledge, communication skills, and interview confidence.",
+    description:
+      "Visualize your improvement across technical knowledge, communication skills, and interview confidence.",
     link: "/features/analytics",
     icon: "lineChart",
   },
@@ -86,7 +93,8 @@ export const features: FeatureLdg[] = [
   },
   {
     title: "Progress Tracking",
-    description: "See your growth with detailed session recordings and improvement analytics over time.",
+    description:
+      "See your growth with detailed session recordings and improvement analytics over time.",
     link: "/features/history",
     icon: "history",
   },

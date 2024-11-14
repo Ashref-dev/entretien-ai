@@ -32,7 +32,7 @@ const HeroCTA = () => {
           className="border-neutral-200 bg-white font-medium text-black dark:border-slate-800 dark:bg-slate-950 dark:text-white"
           onClick={() => setShowSignInModal(true)}
         >
-          Sign in
+          Start Your Prep
           <ChevronRight className="size-5" />
         </MovingBorderButton>
       ) : (

@@ -109,9 +109,9 @@ export const InfiniteMovingCards = ({
               <Image
                 src={item.image}
                 alt={item.name}
-                className="mb-4 h-32 w-full rounded-lg object-cover"
+                className="mb-4 h-64 w-full rounded-lg object-cover"
                 height={256}
-                width={256}
+                width={512}
               />
               <div className="relative z-20 mt-6 flex flex-row items-center">
                 <span className="flex flex-col gap-1">
@@ -138,14 +138,9 @@ const products = [
     description:
       "Practice with our AI interviewer that adapts to your responses and provides instant feedback",
   },
+
   {
-    image: "/_static/landing/shot1.jpg",
-    name: "Technical Assessment Engine",
-    description:
-      "Master coding challenges and system design interviews with real FAANG-style questions",
-  },
-  {
-    image: "/_static/landing/shot1.jpg",
+    image: "/_static/landing/shot2.jpg",
     name: "Communication Coach",
     description:
       "Perfect your delivery with AI-powered feedback on clarity, confidence, and professional presence",
@@ -157,7 +152,7 @@ const products = [
       "Compare with the optimized answers and get instant feedback on your soft skills",
   },
   {
-    image: "/_static/landing/shot1.jpg",
+    image: "/_static/landing/shot2.jpg",
     name: "Performance Analytics",
     description:
       "Track your progress across multiple mock interviews with detailed scoring and improvement insights",
