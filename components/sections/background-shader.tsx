@@ -10,7 +10,21 @@ export default function BackgroundShader({
 }) {
   return (
     <div
-      className={clsx("pointer-events-none touch-none select-none", className)}
+      className={clsx(
+        "pointer-events-none touch-none select-none overflow-hidden",
+        className,
+      )}
+      style={{
+        touchAction: "none",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        msUserSelect: "none",
+        WebkitTouchCallout: "none",
+        WebkitTapHighlightColor: "transparent",
+        overscrollBehavior: "none",
+        overscrollBehaviorY: "none",
+        overscrollBehaviorX: "none",
+      }}
     >
       <ShaderGradientCanvas
         style={{
