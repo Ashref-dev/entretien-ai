@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import { useContext } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -17,8 +16,6 @@ import { DocsSearch } from "@/components/docs/search";
 import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
-
-import { ModeToggle } from "./mode-toggle";
 
 interface NavBarProps {
   scroll?: boolean;
@@ -108,23 +105,20 @@ export function NavBar({ scroll = false }: NavBarProps) {
           ) : null}
 
           {session ? (
-            <>
-              <ModeToggle />
-              <Link
-                href={session.user.role === "ADMIN" ? "/admin" : "/interviews"}
-                className="hidden md:block"
+            <Link
+              href={session.user.role === "ADMIN" ? "/admin" : "/interviews"}
+              className="hidden md:block"
+            >
+              <Button
+                className="gap-2 px-5"
+                variant="default"
+                size="sm"
+                rounded="full"
               >
-                <Button
-                  className="gap-2 px-5"
-                  variant="default"
-                  size="sm"
-                  rounded="full"
-                >
-                  <span>Interviews</span>
-                  <LogIn className="size-4" />
-                </Button>
-              </Link>
-            </>
+                <span>Interviews</span>
+                <LogIn className="size-4" />
+              </Button>
+            </Link>
           ) : status === "unauthenticated" ? (
             <Button
               className="hidden gap-2 px-5 md:flex"
