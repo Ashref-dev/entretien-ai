@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,9 +22,11 @@ export function UpgradeCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="md:max-xl:px-4">
-        <Button size="sm" className="w-full">
-          Upgrade
-        </Button>
+        <Link href="/pricing">
+          <Button size="sm" className="w-full" variant="default" rounded="full">
+            Upgrade
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

@@ -4,17 +4,19 @@ import { env } from "@/env.mjs";
 export const pricingData: SubscriptionPlan[] = [
   {
     title: "Starter",
-    description: "For Beginners",
+    description: "Perfect for Interview Preparation",
     benefits: [
-      "Up to 100 monthly posts",
-      "Basic analytics and reporting",
-      "Access to standard templates",
+      "Generate up to 10 AI-powered mock interviews",
+      "Comprehensive interview history tracking",
+      "Detailed performance analytics",
+      "Question-by-question feedback analysis",
+      "Interview confidence scoring",
     ],
     limitations: [
-      "No priority access to new features.",
-      "Limited customer support",
-      "No custom branding",
-      "Limited access to business resources.",
+      "Limited to 10 interview generations",
+      "No direct AI interview chat",
+      "Basic feedback only",
+      "No custom interview focus areas",
     ],
     prices: {
       monthly: 0,
@@ -27,137 +29,80 @@ export const pricingData: SubscriptionPlan[] = [
   },
   {
     title: "Pro",
-    description: "Unlock Advanced Features",
+    description: "For Serious Job Seekers",
     benefits: [
-      "Up to 500 monthly posts",
-      "Advanced analytics and reporting",
-      "Access to business templates",
-      "Priority customer support",
-      "Exclusive webinars and training.",
+      "Unlimited AI interview generations",
+      "Interactive AI interview chat assistant",
+      "Deep-dive feedback analysis",
+      "Custom interview focus areas",
+      "Question-specific improvement insights",
+      "Real-time performance tracking",
+      "Priority access to new features",
     ],
-    limitations: [
-      "No custom branding",
-      "Limited access to business resources.",
-    ],
+    limitations: [],
     prices: {
-      monthly: 15,
-      yearly: 144,
+      monthly: 10,
+      yearly: 90,
     },
     stripeIds: {
       monthly: env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID,
       yearly: env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID,
     },
   },
-  {
-    title: "Business",
-    description: "For Power Users",
-    benefits: [
-      "Unlimited posts",
-      "Real-time analytics and reporting",
-      "Access to all templates, including custom branding",
-      "24/7 business customer support",
-      "Personalized onboarding and account management.",
-    ],
-    limitations: [],
-    prices: {
-      monthly: 30,
-      yearly: 300,
-    },
-    stripeIds: {
-      monthly: env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID,
-      yearly: env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID,
-    },
-  },
 ];
 
-export const plansColumns = [
-  "starter",
-  "pro",
-  "business",
-  "enterprise",
-] as const;
+export const plansColumns = ["starter", "pro"] as const;
 
 export const comparePlans: PlansRow[] = [
   {
-    feature: "Access to Analytics",
+    feature: "AI Interview Generation",
+    starter: "10 interviews",
+    pro: "Unlimited",
+    tooltip: "Generate realistic mock interviews tailored to your experience",
+  },
+  {
+    feature: "Interview History",
     starter: true,
     pro: true,
-    business: true,
-    enterprise: "Custom",
-    tooltip: "All plans include basic analytics for tracking performance.",
+    tooltip: "Track all your past interviews and progress over time",
   },
   {
-    feature: "Custom Branding",
-    starter: null,
-    pro: "500/mo",
-    business: "1,500/mo",
-    enterprise: "Unlimited",
-    tooltip: "Custom branding is available from the Pro plan onwards.",
-  },
-  {
-    feature: "Priority Support",
-    starter: null,
-    pro: "Email",
-    business: "Email & Chat",
-    enterprise: "24/7 Support",
-  },
-  {
-    feature: "Advanced Reporting",
-    starter: null,
-    pro: null,
-    business: true,
-    enterprise: "Custom",
+    feature: "Performance Analytics",
+    starter: "Basic",
+    pro: "Advanced",
     tooltip:
-      "Advanced reporting is available in Business and Enterprise plans.",
+      "Detailed insights into your interview performance and improvements",
   },
   {
-    feature: "Dedicated Manager",
+    feature: "AI Chat Assistant",
     starter: null,
-    pro: null,
-    business: null,
-    enterprise: true,
-    tooltip: "Enterprise plan includes a dedicated account manager.",
-  },
-  {
-    feature: "API Access",
-    starter: "Limited",
-    pro: "Standard",
-    business: "Enhanced",
-    enterprise: "Full",
-  },
-  {
-    feature: "Monthly Webinars",
-    starter: false,
     pro: true,
-    business: true,
-    enterprise: "Custom",
-    tooltip: "Pro and higher plans include access to monthly webinars.",
-  },
-  {
-    feature: "Custom Integrations",
-    starter: false,
-    pro: false,
-    business: "Available",
-    enterprise: "Available",
     tooltip:
-      "Custom integrations are available in Business and Enterprise plans.",
+      "Chat directly with AI about specific interview questions and answers",
   },
   {
-    feature: "Roles and Permissions",
+    feature: "Feedback Analysis",
+    starter: "Question-level",
+    pro: "Deep-dive & Custom",
+    tooltip: "Get detailed feedback on your interview responses",
+  },
+  {
+    feature: "Custom Focus Areas",
     starter: null,
-    pro: "Basic",
-    business: "Advanced",
-    enterprise: "Advanced",
-    tooltip:
-      "User roles and permissions management improves with higher plans.",
+    pro: true,
+    tooltip: "Specify areas you want to improve in your interviews",
   },
   {
-    feature: "Onboarding Assistance",
-    starter: false,
-    pro: "Self-service",
-    business: "Assisted",
-    enterprise: "Full Service",
-    tooltip: "Higher plans include more comprehensive onboarding assistance.",
+    feature: "Response Analysis",
+    starter: "Basic",
+    pro: "Advanced",
+    tooltip:
+      "In-depth analysis of your interview responses and communication style",
   },
-  // Add more rows as needed
+  {
+    feature: "Progress Tracking",
+    starter: "Basic",
+    pro: "Comprehensive",
+    tooltip: "Track your improvement across multiple interviews",
+  },
 ];

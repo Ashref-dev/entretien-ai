@@ -38,7 +38,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
         className={cn(
           "relative flex flex-col overflow-hidden rounded-3xl border shadow-sm",
           offer.title.toLocaleLowerCase() === "pro"
-            ? "-m-0.5 border-2 border-cyan-400"
+            ? "-m-0.5 border-2 border-primary"
             : "",
         )}
         key={offer.title}
@@ -80,7 +80,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
           <ul className="space-y-2 text-left text-sm font-medium leading-normal">
             {offer.benefits.map((feature) => (
               <li className="flex items-start gap-x-3" key={feature}>
-                <Icons.check className="size-5 shrink-0 text-cyan-500" />
+                <Icons.check className="size-5 shrink-0 text-primary" />
                 <p>{feature}</p>
               </li>
             ))}
@@ -155,7 +155,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
               className="rounded-full px-5 data-[state=on]:!bg-primary data-[state=on]:!text-primary-foreground"
               aria-label="Toggle yearly billing"
             >
-              Yearly (-20%)
+              Yearly (-25%)
             </ToggleGroupItem>
             <ToggleGroupItem
               value="monthly"
@@ -179,9 +179,9 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
             className="font-medium text-primary hover:underline"
             href="mailto:support@saas-starter.com"
           >
-            support@saas-starter.com
+            hi@ashref.tn
           </a>{" "}
-          for to contact our support team.
+          to contact our support team.
           <br />
           <strong>
             You can test the subscriptions and won&apos;t be charged.
