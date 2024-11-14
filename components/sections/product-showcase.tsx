@@ -134,28 +134,33 @@ export const InfiniteMovingCards = ({
 const products = [
   {
     image: "/_static/landing/shot1.jpg",
-    name: "AI-Powered Analytics Dashboard",
-    description: "Real-time data visualization with predictive insights",
+    name: "Real-Time Interview Simulator",
+    description:
+      "Practice with our AI interviewer that adapts to your responses and provides instant feedback",
   },
   {
     image: "/_static/landing/shot1.jpg",
-    name: "Smart Document Processing",
-    description: "Automated document analysis and data extraction",
+    name: "Technical Assessment Engine",
+    description:
+      "Master coding challenges and system design interviews with real FAANG-style questions",
   },
   {
     image: "/_static/landing/shot1.jpg",
-    name: "Natural Language Interface",
-    description: "Conversational AI for seamless user interactions",
+    name: "Communication Coach",
+    description:
+      "Perfect your delivery with AI-powered feedback on clarity, confidence, and professional presence",
   },
   {
     image: "/_static/landing/shot1.jpg",
-    name: "Automated Workflow Engine",
-    description: "Streamline business processes with intelligent automation",
+    name: "Behavioral Interview Mastery",
+    description:
+      "Compare with the optimized answers and get instant feedback on your soft skills",
   },
   {
     image: "/_static/landing/shot1.jpg",
-    name: "Advanced Security Suite",
-    description: "AI-driven threat detection and prevention system",
+    name: "Performance Analytics",
+    description:
+      "Track your progress across multiple mock interviews with detailed scoring and improvement insights",
   },
 ];
 
@@ -163,8 +168,8 @@ export default function ProductShowcase() {
   return (
     <div className="dark:bg-grid-white/[0.05] relative flex h-[40rem] flex-col items-center justify-center overflow-hidden rounded-md bg-white antialiased dark:bg-black">
       <div className="flex flex-col items-center justify-center">
-        <h2 className="z-10 mb-8 text-center text-3xl font-bold">
-          Ace your next interview
+        <h2 className="z-10 mb-8 text-center font-urban text-3xl font-bold">
+          Everything You Need to Land Your Dream Tech Role
         </h2>
         <InfiniteMovingCards items={products} direction="right" speed="slow" />
       </div>

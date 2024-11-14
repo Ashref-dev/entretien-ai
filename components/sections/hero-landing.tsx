@@ -31,7 +31,7 @@ export default async function HeroLanding() {
                 </Badge>
               </div>
               <p className="text-sm font-medium text-white/90">
-                Revolutionizing Interview Preparation with AI
+                Join 10,000+ professionals who mastered their interviews
               </p>
               <ArrowRightIcon className="size-3" />
             </Link>
@@ -47,14 +47,14 @@ export default async function HeroLanding() {
             </div>
 
             <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[66px]">
-              Nail Every Interview with Entretien AI
+              Master Tech Interviews with AI-Powered Practice
             </h1>
 
             <p className="max-w-2xl text-balance leading-normal text-white sm:text-xl sm:leading-8">
-              Walk into your dream job interview with unshakeable confidence.
-              Our AI-powered mock interviews simulate the real thing, providing
-              instant feedback and expert coaching that turns interview anxiety
-              into your competitive advantage.
+              Transform interview anxiety into your competitive advantage. Our AI creates 
+              realistic mock interviews tailored to your role, provides real-time feedback, 
+              and helps you land offers at top companies. 95% of our users report increased 
+              confidence after just 3 practice sessions.
             </p>
           </div>
         </div>

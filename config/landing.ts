@@ -2,48 +2,47 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "Interview Excellence",
+    title: "AI-Powered Interview Excellence",
     description:
-      "Experience the future of interview preparation with our advanced AI platform. Get personalized questions, real-time feedback, and expert analysis tailored to your specific role and experience level.",
+      "Practice with an AI that thinks like a senior interviewer. Get role-specific questions and expert feedback that's indistinguishable from real tech interviews at FAANG companies.",
     image: "/_static/landing/shot1.jpg",
     list: [
       {
-        title: "Role-Specific",
-        description: "Customized questions for any job position or industry.",
+        title: "Industry-Specific Training",
+        description: "Tailored questions for Software Engineering, Data Science, Product Management and more.",
         icon: "briefcase",
       },
       {
-        title: "Instant Feedback",
-        description: "Real-time analysis and scoring of your responses.",
+        title: "Real-Time Performance Analysis",
+        description: "Get instant feedback on technical accuracy, communication clarity, and delivery confidence.",
         icon: "messageCircle",
       },
       {
-        title: "Comprehensive",
-        description: "Cover technical, behavioral, and soft skills assessment.",
+        title: "FAANG-Level Preparation",
+        description: "Practice with questions sourced from actual interviews at top tech companies.",
         icon: "brain",
       },
     ],
   },
   {
-    title: "Perfect Your Interview Skills",
+    title: "Land Your Dream Tech Role",
     description:
-      "Practice makes perfect. Our platform provides a safe environment to rehearse your answers, improve your communication, and build confidence for the real interview.",
+      "Turn practice into job offers. Our platform analyzes your responses, identifies improvement areas, and provides actionable feedback that helps you stand out in technical and behavioral interviews.",
     image: "/_static/landing/shot2.jpg",
     list: [
       {
-        title: "Adaptive Learning",
-        description: "Questions adjust based on your performance and progress.",
+        title: "Personalized Learning Path",
+        description: "AI adapts questions based on your experience level and previous responses.",
         icon: "trending-up",
       },
       {
-        title: "Expert Guidance",
-        description: "Access to optimal answers and industry best practices.",
+        title: "Success Blueprints",
+        description: "Access proven answer frameworks from candidates who landed $200K+ offers.",
         icon: "award",
       },
       {
-        title: "Detailed Analytics",
-        description:
-          "Track your improvement with comprehensive performance metrics.",
+        title: "Interview Analytics",
+        description: "Track confidence scores, technical accuracy, and communication improvements across sessions.",
         icon: "pieChart",
       },
     ],
@@ -52,42 +51,42 @@ export const infos: InfoLdg[] = [
 
 export const features: FeatureLdg[] = [
   {
-    title: "Resume Analysis",
+    title: "Smart Resume Analysis",
     description:
-      "AI-powered resume scanning to generate relevant interview questions.",
+      "Our AI reads your resume and generates interview questions matching your exact experience level and tech stack.",
     link: "/features/resume-analysis",
     icon: "fileText",
   },
   {
-    title: "Voice Recognition",
+    title: "Advanced Speech Analysis",
     description:
-      "Practice speaking your answers with real-time speech analysis.",
+      "Eliminate filler words and perfect your delivery with real-time feedback on pace, clarity, and confidence.",
     link: "/features/voice-recognition",
     icon: "mic",
   },
   {
-    title: "Performance Tracking",
-    description: "Monitor your progress and identify areas for improvement.",
+    title: "Success Metrics Dashboard",
+    description: "Visualize your improvement across technical knowledge, communication skills, and interview confidence.",
     link: "/features/analytics",
     icon: "lineChart",
   },
   {
-    title: "Expert Feedback",
+    title: "Senior Interviewer Feedback",
     description:
-      "Detailed feedback on technical accuracy and communication skills.",
+      "Get detailed feedback on both technical accuracy and soft skills from an AI trained on thousands of successful interviews.",
     link: "/features/feedback",
     icon: "messageSquare",
   },
   {
-    title: "Multiple Industries",
+    title: "Tech Industry Coverage",
     description:
-      "Specialized questions for tech, finance, healthcare, and more.",
+      "Specialized tracks for Frontend, Backend, Full-Stack, DevOps, ML/AI, and other in-demand roles.",
     link: "/features/industries",
     icon: "buildings",
   },
   {
-    title: "Interview History",
-    description: "Review past sessions and track your improvement over time.",
+    title: "Progress Tracking",
+    description: "See your growth with detailed session recordings and improvement analytics over time.",
     link: "/features/history",
     icon: "history",
   },
