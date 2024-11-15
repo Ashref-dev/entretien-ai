@@ -65,12 +65,13 @@ async function evaluateAnswer(
     "technicalScore": <number between 0 and 100>,
     "communicationScore": <number between 0 and 100>,
     "problemSolvingScore": <number between 0 and 100>,
-    "feedback": "Provide constructive feedback covering strengths and areas for improvement. Avoid special characters and line breaks."
+    "feedback": "Provide constructive feedback covering strengths and areas for improvement. Avoid special characters and line breaks, and don't use markdown, speak in first person (you are the interview reviewer)."
+  }
   }
 
   IMPORTANT:
   1. Use only double quotes (")
-  2. Ensure feedback text is a single line without special characters or line breaks.
+  2. Ensure feedback is not Markdown,i t must be plain text is a single line without special characters or line breaks.
   3. All scores must be numbers without quotes.
   4. Return only the JSON object with no additional text or formatting.
   5. If the user's answer is a simple repetition of the question or almost a repetition of the question, or a simple yes or no, always assign a score of 0. 

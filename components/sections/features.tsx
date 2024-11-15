@@ -1,7 +1,4 @@
-import Link from "next/link";
-
 import { features } from "@/config/landing";
-import { Button } from "@/components/ui/button";
 import { HeaderSection } from "@/components/shared/header-section";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
@@ -38,7 +35,7 @@ export default function Features() {
                       {feature.description}
                     </p>
 
-                    <div className="-mb-5 flex gap-3 border-t border-muted py-4 md:-mb-7">
+                    {/* <div className="-mb-5 flex gap-3 border-t border-muted py-4 md:-mb-7">
                       <Button
                         variant="secondary"
                         size="sm"
@@ -50,7 +47,7 @@ export default function Features() {
                           <Icons.arrowUpRight className="size-4" />
                         </Link>
                       </Button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               );

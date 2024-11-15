@@ -56,7 +56,7 @@ export async function generateInterviewQuestions(data: CreateInterviewInput) {
       IMPORTANT FORMATTING RULES:
       1. Code examples should be on a single line with spaces instead of newlines
       2. Use only simple quotes or escaped quotes in code examples
-      3. Avoid special characters or control characters
+      3. Avoid special characters or control characters, answer in simple text only, DO NOT USE MARKDOWN
       4. All text content should be on a single line
       5. All the 5 questions should be phrased like a question, with a question mark at the end.
   
@@ -66,7 +66,7 @@ export async function generateInterviewQuestions(data: CreateInterviewInput) {
           {
             "id": "unique-id-1",
             "aiQuestion": "detailed technical question focusing on one of the skills to assess",
-            "aiAnswer": "detailed expected answer showing mastery of the skill,preferably without code unless the question requires it, then a little code is enough, also make sure the the answer takes into account the user's resume info.",
+            "aiAnswer": "detailed expected answer showing mastery of the skill,preferably without code unless the question requires it,the answer must be natural and brief (max 6 lines) like a real interview answer and DO NOT USE MARKDOWN, answer in plain text only, then a little code is enough, also make sure the the answer takes into account the user's resume info.",
             "userAnswer": "",
             "questionFeedback": "Detailed feedback criteria for evaluating the answer"
           }

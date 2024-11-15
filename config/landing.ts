@@ -5,7 +5,7 @@ export const infos: InfoLdg[] = [
     title: "AI-Powered Interview Prep",
     description:
       "Practice with an AI that thinks like a senior interviewer. Get role-specific questions and expert feedback that's indistinguishable from real tech interviews at FAANG companies.",
-    image: "/_static/landing/shot1.jpg",
+    image: "/_static/landing/shot4.webp",
     list: [
       {
         title: "Industry-Specific Training",
@@ -31,7 +31,7 @@ export const infos: InfoLdg[] = [
     title: "Land Your Dream Tech Role",
     description:
       "Turn practice into job offers. Our platform analyzes your responses, identifies improvement areas, and provides actionable feedback that helps you stand out in technical and behavioral interviews.",
-    image: "/_static/landing/shot2.jpg",
+    image: "/_static/landing/shot5.webp",
     list: [
       {
         title: "Personalized Learning Path",

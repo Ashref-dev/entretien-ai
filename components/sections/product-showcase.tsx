@@ -133,26 +133,26 @@ export const InfiniteMovingCards = ({
 
 const products = [
   {
-    image: "/_static/landing/shot1.jpg",
+    image: "/_static/landing/shot5.webp",
     name: "Real-Time Interview Simulator",
     description:
       "Practice with our AI interviewer that adapts to your responses and provides instant feedback",
   },
 
   {
-    image: "/_static/landing/shot2.jpg",
+    image: "/_static/landing/shot2.webp",
     name: "Communication Coach",
     description:
       "Perfect your delivery with AI-powered feedback on clarity, confidence, and professional presence",
   },
   {
-    image: "/_static/landing/shot1.jpg",
+    image: "/_static/landing/shot3.webp",
     name: "Behavioral Interview Mastery",
     description:
       "Compare with the optimized answers and get instant feedback on your soft skills",
   },
   {
-    image: "/_static/landing/shot2.jpg",
+    image: "/_static/landing/shot4.webp",
     name: "Performance Analytics",
     description:
       "Track your progress across multiple mock interviews with detailed scoring and improvement insights",
