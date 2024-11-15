@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { IconDotsVertical } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { EllipsisVertical } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { SparklesCore } from "@/components/ui/sparkles";
 import { SparklesCore } from "@/components/ui/sparkles";
 
 interface CompareProps {
@@ -38,7 +39,7 @@ export const Compare = ({
 
   const [isMouseOver, setIsMouseOver] = useState(false);
 
-  const autoplayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoplayRef = useRef<any>(null);
 
   const startAutoplay = useCallback(() => {
     if (!autoplay) return;
@@ -112,15 +113,18 @@ export const Compare = ({
       }
     },
     [slideMode, isDragging],
+    [slideMode, isDragging],
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => handleStart(e.clientX),
     [handleStart],
+    [handleStart],
   );
   const handleMouseUp = useCallback(() => handleEnd(), [handleEnd]);
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => handleMove(e.clientX),
+    [handleMove],
     [handleMove],
   );
 
@@ -130,6 +134,7 @@ export const Compare = ({
         handleStart(e.touches[0].clientX);
       }
     },
+    [handleStart, autoplay],
     [handleStart, autoplay],
   );
 
@@ -146,12 +151,13 @@ export const Compare = ({
       }
     },
     [handleMove, autoplay],
+    [handleMove, autoplay],
   );
 
   return (
     <div
       ref={sliderRef}
-      className={cn("h-[400px] w-[400px] overflow-hidden", className)}
+      className={cn("size-[400px] overflow-hidden", className)}
       style={{
         position: "relative",
         cursor: slideMode === "drag" ? "grab" : "col-resize",
@@ -167,7 +173,7 @@ export const Compare = ({
     >
       <AnimatePresence initial={false}>
         <motion.div
-          className="absolute top-0 z-30 m-auto h-full w-px bg-gradient-to-b from-transparent from-[5%] via-indigo-500 to-transparent to-[95%]"
+          className="absolute top-0 z-30 m-auto h-full w-px bg-gradient-to-b from-transparent from-5% via-indigo-500 to-transparent to-95%"
           style={{
             left: `${sliderXPercent}%`,
             top: "0",
@@ -178,28 +184,31 @@ export const Compare = ({
           <div className="absolute left-0 top-1/2 z-20 h-full w-36 -translate-y-1/2 bg-gradient-to-r from-indigo-400 via-transparent to-transparent opacity-50 [mask-image:radial-gradient(100px_at_left,white,transparent)]" />
           <div className="absolute left-0 top-1/2 z-10 h-1/2 w-10 -translate-y-1/2 bg-gradient-to-r from-cyan-400 via-transparent to-transparent opacity-100 [mask-image:radial-gradient(50px_at_left,white,transparent)]" />
           <div className="absolute -right-10 top-1/2 h-3/4 w-10 -translate-y-1/2 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
+          <div className="absolute left-0 top-1/2 z-20 h-full w-36 -translate-y-1/2 bg-gradient-to-r from-indigo-400 via-transparent to-transparent opacity-50 [mask-image:radial-gradient(100px_at_left,white,transparent)]" />
+          <div className="absolute left-0 top-1/2 z-10 h-1/2 w-10 -translate-y-1/2 bg-gradient-to-r from-cyan-400 via-transparent to-transparent opacity-100 [mask-image:radial-gradient(50px_at_left,white,transparent)]" />
+          <div className="absolute -right-10 top-1/2 h-3/4 w-10 -translate-y-1/2 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
             <MemoizedSparklesCore
               background="transparent"
               minSize={0.4}
               maxSize={1}
               particleDensity={1200}
-              className="h-full w-full"
+              className="size-full"
               particleColor="#FFFFFF"
             />
           </div>
           {showHandlebar && (
-            <div className="absolute -right-2.5 top-1/2 z-30 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md bg-white shadow-[0px_-1px_0px_0px_#FFFFFF40]">
-              <IconDotsVertical className="h-4 w-4 text-black" />
+            <div className="absolute -right-2.5 top-1/2 z-30 flex size-5 -translate-y-1/2 items-center justify-center rounded-md bg-white shadow-[0px_-1px_0px_0px_#FFFFFF40]">
+              <EllipsisVertical className="size-4 text-black" />
             </div>
           )}
         </motion.div>
       </AnimatePresence>
-      <div className="pointer-events-none relative z-20 h-full w-full overflow-hidden">
+      <div className="pointer-events-none relative z-20 size-full overflow-hidden">
         <AnimatePresence initial={false}>
           {firstImage ? (
             <motion.div
               className={cn(
-                "absolute inset-0 z-20 h-full w-full flex-shrink-0 select-none overflow-hidden rounded-2xl",
+                "absolute inset-0 z-20 size-full shrink-0 select-none overflow-hidden rounded-2xl",
                 firstImageClassName,
               )}
               style={{
@@ -211,7 +220,7 @@ export const Compare = ({
                 alt="first image"
                 src={firstImage}
                 className={cn(
-                  "absolute inset-0 z-20 h-full w-full flex-shrink-0 select-none rounded-2xl",
+                  "absolute inset-0 z-20 size-full shrink-0 select-none rounded-2xl",
                   firstImageClassName,
                 )}
                 draggable={false}
@@ -225,7 +234,7 @@ export const Compare = ({
         {secondImage ? (
           <motion.img
             className={cn(
-              "absolute left-0 top-0 z-[19] h-full w-full select-none rounded-2xl",
+              "absolute left-0 top-0 z-[19] size-full select-none rounded-2xl",
               secondImageClassname,
             )}
             alt="second image"
