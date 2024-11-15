@@ -7,7 +7,7 @@ export function CompareDemo() {
     <div className="container mx-auto py-20">
       <div className="mb-16 text-center">
         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Ideal answers tailored for your resume
+          Ideal Answers Tailored For Your Resume
         </h2>
         <p className="mt-4 text-xl text-muted-foreground">
           See optimal answers for every situation

@@ -6,7 +6,6 @@ import { EllipsisVertical } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { SparklesCore } from "@/components/ui/sparkles";
-import { SparklesCore } from "@/components/ui/sparkles";
 
 interface CompareProps {
   firstImage?: string;
@@ -113,18 +112,15 @@ export const Compare = ({
       }
     },
     [slideMode, isDragging],
-    [slideMode, isDragging],
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => handleStart(e.clientX),
     [handleStart],
-    [handleStart],
   );
   const handleMouseUp = useCallback(() => handleEnd(), [handleEnd]);
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => handleMove(e.clientX),
-    [handleMove],
     [handleMove],
   );
 
@@ -134,7 +130,6 @@ export const Compare = ({
         handleStart(e.touches[0].clientX);
       }
     },
-    [handleStart, autoplay],
     [handleStart, autoplay],
   );
 
@@ -150,7 +145,6 @@ export const Compare = ({
         handleMove(e.touches[0].clientX);
       }
     },
-    [handleMove, autoplay],
     [handleMove, autoplay],
   );
 
@@ -181,9 +175,6 @@ export const Compare = ({
           }}
           transition={{ duration: 0 }}
         >
-          <div className="absolute left-0 top-1/2 z-20 h-full w-36 -translate-y-1/2 bg-gradient-to-r from-indigo-400 via-transparent to-transparent opacity-50 [mask-image:radial-gradient(100px_at_left,white,transparent)]" />
-          <div className="absolute left-0 top-1/2 z-10 h-1/2 w-10 -translate-y-1/2 bg-gradient-to-r from-cyan-400 via-transparent to-transparent opacity-100 [mask-image:radial-gradient(50px_at_left,white,transparent)]" />
-          <div className="absolute -right-10 top-1/2 h-3/4 w-10 -translate-y-1/2 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
           <div className="absolute left-0 top-1/2 z-20 h-full w-36 -translate-y-1/2 bg-gradient-to-r from-indigo-400 via-transparent to-transparent opacity-50 [mask-image:radial-gradient(100px_at_left,white,transparent)]" />
           <div className="absolute left-0 top-1/2 z-10 h-1/2 w-10 -translate-y-1/2 bg-gradient-to-r from-cyan-400 via-transparent to-transparent opacity-100 [mask-image:radial-gradient(50px_at_left,white,transparent)]" />
           <div className="absolute -right-10 top-1/2 h-3/4 w-10 -translate-y-1/2 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
