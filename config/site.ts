@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
     twitter: "https://www.linkedin.com/in/rayenfassatoui/",
     github: "https://github.com/rayenfassatoui",
   },
-  mailSupport: "hi@ashref.tn",
+  mailSupport: "support@entretien-ai.com",
 };
 
 export const footerLinks: SidebarNavItem[] = [
