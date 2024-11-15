@@ -129,7 +129,7 @@ export function CreateInterviewModal({
     );
   };
 
-  const handleFileUpload = (files: File[]) => {
+  const handleFileUpload = async (files: File[]) => {
     const file = files[0] || null;
     if (file) {
       if (!file.type.includes("pdf")) {
@@ -143,7 +143,49 @@ export function CreateInterviewModal({
         return;
       }
 
-      setResume(file);
+      try {
+        // First check PDF header
+        const headerChunk = file.slice(0, 4);
+        const headerBuffer = await headerChunk.arrayBuffer();
+        const header = new Uint8Array(headerBuffer);
+        
+        if (header[0] !== 0x25 || header[1] !== 0x50 || 
+            header[2] !== 0x44 || header[3] !== 0x46) {
+          toast.error("The PDF file appears to be corrupted or invalid");
+          return;
+        }
+
+        // Check if PDF contains text by reading a portion of it
+        const reader = new FileReader();
+        
+        const checkPdfText = new Promise((resolve, reject) => {
+          reader.onload = async (e) => {
+            const text = e.target?.result as string;
+            // Check if the PDF contains any text content
+            // This regex looks for common PDF text markers
+            const hasText = /\/Text|\/Font|\/Contents/i.test(text);
+            resolve(hasText);
+          };
+          reader.onerror = () => reject(new Error("Failed to read PDF"));
+          
+          // Read first 5KB of the file to check for text markers
+          const chunk = file.slice(0, 5120);
+          reader.readAsBinaryString(chunk);
+        });
+
+        const hasText = await checkPdfText;
+        
+        if (!hasText) {
+          toast.error("The PDF appears to be empty or contains no readable text");
+          return;
+        }
+
+        setResume(file);
+      } catch (error) {
+        console.error("Error validating PDF:", error);
+        toast.error("Unable to read the PDF file. The file might be corrupted");
+        return;
+      }
     } else {
       setResume(null);
     }
