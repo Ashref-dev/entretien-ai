@@ -4,6 +4,12 @@ import { withContentlayer } from "next-contentlayer2";
 import "./env.mjs";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
+  },
+
   images: {
     remotePatterns: [
       {
