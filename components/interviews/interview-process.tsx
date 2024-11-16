@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { evaluateInterview } from "@/actions/ai-interview-evaluate";
 import { Interview } from "@/types";
 import {
   Check,
@@ -241,6 +240,9 @@ export default function InterviewProcess({
     if (isRecording) {
       toggleRecording();
     }
+    if (isVideoOn) {
+      toggleVideo();
+    }
 
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -255,13 +257,21 @@ export default function InterviewProcess({
 
     toast.promise(
       (async () => {
-        const result = await evaluateInterview({
-          interviewId: interview.id,
-          interviewData: updatedInterviewData,
-          difficulty: interview.difficulty || "MID_LEVEL",
-          yearsOfExperience: interview.yearsOfExperience,
-          duration: elapsedTime,
+        const response = await fetch("/api/interview/evaluate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            interviewId: interview.id,
+            interviewData: updatedInterviewData,
+            difficulty: interview.difficulty || "MID_LEVEL",
+            yearsOfExperience: interview.yearsOfExperience,
+            duration: elapsedTime,
+          }),
         });
+
+        const result = await response.json();
 
         if (!result.success) {
           throw new Error(result.error);

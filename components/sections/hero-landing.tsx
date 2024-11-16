@@ -14,7 +14,7 @@ export default async function HeroLanding() {
     <section className="relative pt-6 sm:pt-10 lg:pt-16">
       <div className="container relative flex max-w-6xl flex-col items-center gap-5 text-center">
         {/* // le contenaire de le shader gradient  */}
-        <div className="relative flex w-full justify-center overflow-hidden rounded-3xl py-12">
+        <div className="relative flex w-full justify-center overflow-hidden rounded-3xl py-12 ">
           <BackgroundShader />
 
           <div className="relative z-50 flex max-w-5xl flex-col items-center gap-5 text-center">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
 import clsx from "clsx";
 
@@ -8,6 +9,45 @@ export default function BackgroundShader({
 }: {
   className?: string;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const preventDefault = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    // Prevent all touch events
+    container.addEventListener("touchstart", preventDefault, {
+      passive: false,
+    });
+    container.addEventListener("touchmove", preventDefault, { passive: false });
+    container.addEventListener("touchend", preventDefault, { passive: false });
+    container.addEventListener("wheel", preventDefault, { passive: false });
+    container.addEventListener("gesturestart", preventDefault, {
+      passive: false,
+    });
+    container.addEventListener("gesturechange", preventDefault, {
+      passive: false,
+    });
+    container.addEventListener("gestureend", preventDefault, {
+      passive: false,
+    });
+
+    return () => {
+      container.removeEventListener("touchstart", preventDefault);
+      container.removeEventListener("touchmove", preventDefault);
+      container.removeEventListener("touchend", preventDefault);
+      container.removeEventListener("wheel", preventDefault);
+      container.removeEventListener("gesturestart", preventDefault);
+      container.removeEventListener("gesturechange", preventDefault);
+      container.removeEventListener("gestureend", preventDefault);
+    };
+  }, []);
+
   return (
     <div
       className={clsx(
@@ -34,6 +74,8 @@ export default function BackgroundShader({
           height: "100%",
           width: "100%",
           backgroundColor: "var(--gradient-2)",
+          pointerEvents: "none",
+          touchAction: "none",
         }}
       >
         <ShaderGradient

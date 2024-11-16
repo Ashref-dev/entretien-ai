@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { generateInterviewQuestions } from "@/actions/ai-interview-generate";
+import { useRouter } from "next/navigation";
 import { InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@radix-ui/react-dialog";
@@ -97,24 +97,46 @@ export function CreateInterviewModal({
     toast.promise(
       (async () => {
         try {
-          const result = await generateInterviewQuestions({
-            pdf: resume,
-            ...values,
-            skillsAssessed: [],
+          const formData = new FormData();
+          formData.append("pdf", resume);
+          formData.append("jobTitle", values.jobTitle);
+          formData.append("jobDescription", values.jobDescription);
+          formData.append("difficulty", values.difficulty);
+          formData.append(
+            "yearsOfExperience",
+            values.yearsOfExperience.toString(),
+          );
+          if (values.targetCompany)
+            formData.append("targetCompany", values.targetCompany);
+
+          const response = await fetch("/api/interview", {
+            method: "POST",
+            body: formData,
           });
 
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.error || "Failed to generate interview questions",
+            );
+          }
+
+          const result = await response.json();
+
           if (!result.success) {
-            throw new Error(result.error);
+            throw new Error(
+              result.error || "Failed to generate interview questions",
+            );
           }
 
           onCreateInterview({
             ...values,
             resume,
             skillsAssessed: [],
-            interviewData: result.data!.interviewData,
+            interviewData: result.data.interviewData,
           });
 
-          onOpenChange(false);
+          form.reset();
         } catch (error) {
           console.error("Error creating interview:", error);
           setIsLoading(false);
