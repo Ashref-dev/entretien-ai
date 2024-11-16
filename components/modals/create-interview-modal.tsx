@@ -144,12 +144,7 @@ export function CreateInterviewModal({
       }
 
       try {
-        // First check PDF header signature
-        const headerChunk = file.slice(0, 4);
-        const headerBuffer = await headerChunk.arrayBuffer();
-        const header = new Uint8Array(headerBuffer);
-
-       
+        // First check for validity
 
         setResume(file);
       } catch (error) {
