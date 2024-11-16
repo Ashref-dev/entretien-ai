@@ -36,6 +36,28 @@ export default function BackgroundShader({
     container.addEventListener("gestureend", preventDefault, {
       passive: false,
     });
+    container.addEventListener("pinch", preventDefault, { passive: false });
+    container.addEventListener("pinchstart", preventDefault, {
+      passive: false,
+    });
+    container.addEventListener("pinchend", preventDefault, { passive: false });
+    container.addEventListener("pinchcancel", preventDefault, {
+      passive: false,
+    });
+
+    // Prevent double-tap to zoom
+    let lastTap = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        e.preventDefault();
+      }
+      lastTap = now;
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
 
     return () => {
       container.removeEventListener("touchstart", preventDefault);
@@ -45,6 +67,11 @@ export default function BackgroundShader({
       container.removeEventListener("gesturestart", preventDefault);
       container.removeEventListener("gesturechange", preventDefault);
       container.removeEventListener("gestureend", preventDefault);
+      container.removeEventListener("pinch", preventDefault);
+      container.removeEventListener("pinchstart", preventDefault);
+      container.removeEventListener("pinchend", preventDefault);
+      container.removeEventListener("pinchcancel", preventDefault);
+      container.removeEventListener("touchstart", handleTouchStart);
     };
   }, []);
 
@@ -64,6 +91,7 @@ export default function BackgroundShader({
         overscrollBehavior: "none",
         overscrollBehaviorY: "none",
         overscrollBehaviorX: "none",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       <ShaderGradientCanvas

@@ -1,4 +1,5 @@
-"use client";;
+"use client";
+
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ export function ModeToggle() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="z-[100]">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           <Icons.sun className="mr-2 size-4" />
           <span>Light</span>

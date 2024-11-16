@@ -179,7 +179,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
             className="font-medium text-primary hover:underline"
             href="mailto:support@saas-starter.com"
           >
-            hi@ashref.tn
+            support@entretien-ai.com
           </a>{" "}
           to contact our support team.
           <br />
