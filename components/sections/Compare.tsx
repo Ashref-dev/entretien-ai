@@ -19,7 +19,8 @@ export function CompareDemo() {
           style={{
             transform: "rotateX(15deg) translateZ(80px)",
           }}
-         className="mx-auto h-1/2 w-3/4 max-w-xl rounded-3xl border border-neutral-200 bg-neutral-100 p-1 dark:border-neutral-800 dark:bg-neutral-900 md:h-3/4 md:p-4"
+         className="mx-auto h-1/2 w-3/4 max-w-xl rounded-3xl border border-neutral-200 bg-neutral-100 p-1 dark:border-neutral-800 dark:bg-neutral-900 md:h-[85%] md:p-4"
+         
           
         >
           <Compare
