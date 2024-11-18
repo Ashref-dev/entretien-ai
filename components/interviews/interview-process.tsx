@@ -91,7 +91,7 @@ export default function InterviewProcess({
       text: "🔍 Analyzing your responses...",
     },
     {
-      text: "🗣️ Asking Balti for feedback...",
+      text: "💬 Looking for company data...",
     },
     {
       text: "⚙️ Checking technical accuracy...",
@@ -265,7 +265,7 @@ export default function InterviewProcess({
           body: JSON.stringify({
             interviewId: interview.id,
             interviewData: updatedInterviewData,
-            difficulty: interview.difficulty || "MID_LEVEL",
+            difficulty: interview.difficulty,
             yearsOfExperience: interview.yearsOfExperience,
             duration: elapsedTime,
           }),

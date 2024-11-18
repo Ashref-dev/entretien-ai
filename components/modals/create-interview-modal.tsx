@@ -318,7 +318,7 @@ export function CreateInterviewModal({
                             <FormMessage />
                           </FormItem>
                         )}
-                      />
+                      />  
                     </div>
 
                     <FormField

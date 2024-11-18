@@ -3,26 +3,21 @@ import Marquee from "@/components/ui/marquee";
 
 const logos = [
   {
-    name: "Microsoft",
-    url: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    name: "Perplexity",
+    url: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
   },
 
   {
-    name: "Google",
-    url: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-  },
-
-  {
-    name: "IBM",
-    url: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
+    name: "XAI",
+    url: "https://upload.wikimedia.org/wikipedia/commons/9/93/XAI_Logo.svg",
   },
   {
-    name: "Oracle",
-    url: "https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg",
+    name: "Meta",
+    url: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg",
   },
   {
-    name: "Intel",
-    url: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Intel_logo_%282006-2020%29.svg",
+    name: "Anthropic",
+    url: "https://upload.wikimedia.org/wikipedia/commons/7/78/Anthropic_logo.svg",
   },
 ];
 
@@ -33,7 +28,7 @@ const LogoCard = ({ url, name }: { url: string; name: string }) => {
   return (
     <figure
       className={cn(
-        "relative mx-4 flex w-48 cursor-pointer items-center justify-center overflow-hidden rounded-xl p-4",
+        "relative mx-4 flex w-48 cursor-pointer items-center justify-center overflow-hidden rounded-xl px-8 py-4",
         // light styles
         "bg-gray-950/[.03] hover:bg-gray-950/[.10]",
         // dark styles
@@ -44,7 +39,7 @@ const LogoCard = ({ url, name }: { url: string; name: string }) => {
       <img
         src={url}
         alt={`${name} logo`}
-        className="h-10 w-auto object-contain grayscale transition-all duration-200 hover:grayscale-0"
+        className="h-12 w-auto object-contain grayscale transition-all duration-200 hover:grayscale-0 dark:invert"
       />
     </figure>
   );

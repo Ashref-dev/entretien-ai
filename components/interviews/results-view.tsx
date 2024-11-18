@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { saveInterviewData } from "@/actions/save-interview-data";
 import { toast } from "sonner";
 
+import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { useInterview } from "./interview-context";
@@ -46,6 +47,20 @@ export default function ResultsView() {
       toast.error("Failed to save interview data. Please try again.");
     }
   };
+
+  if (error) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4 p-4 text-center">
+        <p className="text-lg text-destructive">
+          An error has occurred, please try again. If the error persists, please
+          contact support.
+        </p>
+        <Button onClick={() => router.push("/interviews")}>
+          Return to Interviews
+        </Button>
+      </div>
+    );
+  }
 
   if (!interviewData) {
     return (
