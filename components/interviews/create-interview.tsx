@@ -19,14 +19,14 @@ const CreateInterview = () => {
     jobDescription: string;
     resume: File | null;
     difficulty: InterviewDifficulty;
-    yearsOfExperience: number;
+    yearsOfExperience: string;
     skillsAssessed: string[];
     targetCompany: string;
     interviewData: any;
   }) => {
     const interview: Interview = {
       id: crypto.randomUUID(),
-      userId: "", // You'll need to get this from your auth context
+      userId: "", // temp value
       jobTitle: data.jobTitle,
       jobDescription: data.jobDescription,
       resume: data.resume,

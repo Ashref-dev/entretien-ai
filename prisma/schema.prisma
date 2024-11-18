@@ -83,7 +83,7 @@ model Interview {
   jobTitle            String
   jobDescription      String
   difficulty          InterviewDifficulty @default(JUNIOR)
-  yearsOfExperience   Int                 @default(0)
+  yearsOfExperience   String               
   interviewScore      Float?
   targetCompany       String?
   overAllFeedback     String?

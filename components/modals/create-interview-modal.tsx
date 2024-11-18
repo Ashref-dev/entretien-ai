@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
-import { Loader } from "lucide-react";
+import { Info, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -37,6 +36,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { FileUpload } from "../ui/file-upload";
 
@@ -45,7 +50,7 @@ const formSchema = z.object({
   jobTitle: z.string().min(4, "Job title is required"),
   jobDescription: z.string().min(4, "Job description is required"),
   difficulty: InterviewDifficultyEnum,
-  yearsOfExperience: z.number().min(0).max(30),
+  yearsOfExperience: z.string().min(1, "Experience level is required"),
   targetCompany: z.string().optional(),
 });
 
@@ -57,7 +62,7 @@ interface CreateInterviewModalProps {
     jobDescription: string;
     resume: File | null;
     difficulty: InterviewDifficulty;
-    yearsOfExperience: number;
+    yearsOfExperience: string;
     skillsAssessed: string[];
     targetCompany?: string;
     interviewData: any;
@@ -80,8 +85,8 @@ export function CreateInterviewModal({
     defaultValues: {
       jobTitle: "",
       jobDescription: "",
-      difficulty: "MID_LEVEL",
-      yearsOfExperience: 1,
+      difficulty: "JUNIOR",
+      yearsOfExperience: "",
       targetCompany: "",
     },
   });
@@ -180,178 +185,199 @@ export function CreateInterviewModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        isGlowing={isLoading}
-        className="fade-up max-h-[90vh] overflow-y-auto rounded-lg duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
-      >
-        <DialogHeader className="space-y-4 pb-6">
-          <DialogTitle className="text-2xl font-bold tracking-tight">
-            Create New Interview
-          </DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground">
-            Using your resume and job description, we&apos;ll craft the perfect
-            interview answers.
-          </DialogDescription>
-        </DialogHeader>
+    <TooltipProvider>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent
+          isGlowing={isLoading}
+          className="fade-up max-h-[90vh] overflow-y-auto rounded-lg duration-300 animate-in fade-in-0 sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[1000px]"
+        >
+          <DialogHeader className="space-y-4 pb-6">
+            <DialogTitle className="text-2xl font-bold tracking-tight">
+              Create New Interview
+            </DialogTitle>
+            <DialogDescription className="text-base text-muted-foreground">
+              Using your resume and the job description, we&apos;ll create a
+              mock interview to help you practice.
+            </DialogDescription>
+          </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              {/* Left Column - Main Information */}
-              <div className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={form.control}
-                    name="jobTitle"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Job Title</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. Frontend Developer"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="targetCompany"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Target Company (Optional)</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. Google, Meta, etc."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                {/* Left Column - Main Information */}
+                <div className="space-y-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                  >
                     <FormField
                       control={form.control}
-                      name="difficulty"
+                      name="jobTitle"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Difficulty Level</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select difficulty" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="JUNIOR">Junior</SelectItem>
-                              <SelectItem value="MID_LEVEL">
-                                Mid Level
-                              </SelectItem>
-                              <SelectItem value="SENIOR">Senior</SelectItem>
-                              <SelectItem value="LEAD">Lead</SelectItem>
-                              <SelectItem value="PRINCIPAL">
-                                Principal
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="yearsOfExperience"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Years of Experience</FormLabel>
+                          <FormLabel>Job Title</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              min="0"
-                              max="30"
+                              placeholder="e.g. Frontend Developer"
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="jobDescription"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Job Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter the job description here..."
-                            className="min-h-[200px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="targetCompany"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Company Name{" "}
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="inline size-3.5 cursor-help text-muted-foreground" />
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <p className="w-44 text-xs">
+                                  We&apos;ll try to tailor questions to the
+                                  company if data is available.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g. Google, Meta, etc."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="difficulty"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Job Seniority Level</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select seniority" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="JUNIOR">Junior</SelectItem>
+                                <SelectItem value="MID_LEVEL">
+                                  Mid Level
+                                </SelectItem>
+                                <SelectItem value="SENIOR">Senior</SelectItem>
+                                <SelectItem value="LEAD">Lead</SelectItem>
+                                <SelectItem value="PRINCIPAL">
+                                  Principal
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="yearsOfExperience"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Required Job Experience</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select experience level" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="0_1">0-1 year</SelectItem>
+                                <SelectItem value="1_3">1-3 years</SelectItem>
+                                <SelectItem value="3_5">3-5 years</SelectItem>
+                                <SelectItem value="5_7">5-7 years</SelectItem>
+                                <SelectItem value="7_plus">7+ years</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />  
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="jobDescription"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Job Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter the job description here..."
+                              className="min-h-[170px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Right Column - Resume Upload */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <Label className="text-sm font-medium">Upload Resume</Label>
+                  <div className="group mt-2 h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
+                    <FileUpload onChange={handleFileUpload} />
+                  </div>
                 </motion.div>
               </div>
 
-              {/* Right Column - Resume Upload */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
               >
-                <Label className="text-sm font-medium">Upload Resume</Label>
-                <div className="group h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
-                  <FileUpload onChange={handleFileUpload} />
-                </div>
+                <Button
+                  type="submit"
+                  className="w-full transition-all duration-200 hover:scale-[1.01]"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <Loader className="size-4 animate-spin" />
+                      <span>Creating Interview...</span>
+                    </div>
+                  ) : (
+                    "Create Interview"
+                  )}
+                </Button>
               </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-            >
-              <Button
-                type="submit"
-                className="w-full transition-all duration-200 hover:scale-[1.01]"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <Loader className="size-4 animate-spin" />
-                    <span>Creating Interview...</span>
-                  </div>
-                ) : (
-                  "Create Interview"
-                )}
-              </Button>
-            </motion.div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 }
