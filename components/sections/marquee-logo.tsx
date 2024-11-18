@@ -6,22 +6,12 @@ const logos = [
     name: "Microsoft",
     url: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
   },
-  {
-    name: "Apple",
-    url: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-  },
+
   {
     name: "Google",
     url: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
   },
-  {
-    name: "Amazon",
-    url: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-  },
-  {
-    name: "Facebook",
-    url: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
-  },
+
   {
     name: "IBM",
     url: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
@@ -45,15 +35,16 @@ const LogoCard = ({ url, name }: { url: string; name: string }) => {
       className={cn(
         "relative mx-4 flex w-48 cursor-pointer items-center justify-center overflow-hidden rounded-xl p-4",
         // light styles
-        "bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        "bg-gray-950/[.03] hover:bg-gray-950/[.10]",
         // dark styles
-        "dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+        "dark:bg-gray-50/[.05] dark:hover:bg-gray-50/[.15]",
       )}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
         alt={`${name} logo`}
-        className="h-12 w-auto object-contain grayscale transition-all duration-200 hover:grayscale-0"
+        className="h-10 w-auto object-contain grayscale transition-all duration-200 hover:grayscale-0"
       />
     </figure>
   );

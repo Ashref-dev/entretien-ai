@@ -116,7 +116,7 @@ export type Interview = {
   jobTitle: string;
   jobDescription: string;
   difficulty: InterviewDifficulty;
-  yearsOfExperience: number;
+  yearsOfExperience: string;
   interviewScore: number | null;
   targetCompany?: string | null;
   overAllFeedback?: string | null;
