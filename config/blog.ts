@@ -1,29 +1,29 @@
 export const BLOG_CATEGORIES: {
   title: string;
-  slug: "news" | "education";
+  slug: "news" | "education" | "interviews" | "ai";
   description: string;
 }[] = [
   {
     title: "News",
     slug: "news",
-    description: "Updates and announcements from Next Entretien AI.",
+    description: "Updates and announcements from Entretien AI.",
   },
   {
-    title: "Education",
-    slug: "education",
-    description: "Educational content about SaaS management.",
+    title: "Interview Preparation",
+    slug: "interviews",
+    description: "Interviews and tips for technical interviews.",
   },
 ];
 
 export const BLOG_AUTHORS = {
-  mickasmt: {
-    name: "mickasmt",
+  rayen: {
+    name: "Rayen Fassatoui",
     image: "/_static/avatars/mickasmt.png",
-    twitter: "miickasmt",
+    twitter: "rayen",
   },
-  shadcn: {
-    name: "shadcn",
+  ashref: {
+    name: "Ashref Ben Abdallah",
     image: "/_static/avatars/shadcn.jpeg",
-    twitter: "shadcn",
+    twitter: "ashref",
   },
 };

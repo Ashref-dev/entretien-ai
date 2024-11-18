@@ -1,0 +1,156 @@
+---
+title: "Demystifying Technical Interviews: A Junior Developer's Survival Guide"
+description: "A comprehensive guide to mastering whiteboard coding challenges for junior developers."
+image: /_static/blog/blog-post-3.jpg
+date: "2023-01-02"
+authors:
+  - rayen
+categories:
+  - interviews
+related:
+  - blog-2
+  - blog-3
+---
+
+<Callout type="info" twClass="mt-0">
+  Technical interviews can be intimidating, but with the right preparation and mindset, you can approach them with confidence. This guide will help you navigate the challenges of whiteboard coding interviews.
+</Callout>
+
+## Understanding the Basics
+
+Technical interviews, particularly whiteboard coding challenges, aren't just about finding the correct solution—they're about demonstrating your problem-solving process and communication skills. As a junior developer, it's crucial to understand that interviewers are often more interested in how you think than whether you get the perfect answer.
+
+## Strategies for Handling Algorithmic Problems
+
+### 1. The UMPIRE Method
+
+Follow this systematic approach to tackle any algorithmic problem:
+
+- **Understand** the problem completely
+- **Match** the problem with known patterns
+- **Plan** your approach
+- **Implement** your solution
+- **Review** your code
+- **Evaluate** time and space complexity
+
+### 2. Start with Examples
+
+Always begin by:
+
+1. Writing down the input and expected output
+2. Creating additional test cases
+3. Identifying edge cases
+4. Discussing these with your interviewer
+
+```javascript
+// Example: Finding duplicate numbers
+function findDuplicates(nums) {
+  // Start with a simple example
+  // Input: [1, 2, 3, 2, 4]
+  // Expected Output: [2]
+  
+  const seen = new Set();
+  const duplicates = new Set();
+  
+  for (const num of nums) {
+    if (seen.has(num)) {
+      duplicates.add(num);
+    }
+    seen.add(num);
+  }
+  
+  return Array.from(duplicates);
+}
+```
+
+## Breaking Down Communication During Problem-Solving
+
+### Active Communication Strategies
+
+1. **Clarify Requirements**
+   - Ask questions about input constraints
+   - Confirm expected output format
+   - Discuss performance requirements
+
+2. **Explain Your Approach**
+   - Share high-level strategy before coding
+   - Discuss trade-offs between different approaches
+   - Mention potential optimizations
+
+### Example Dialog
+
+> "Before I start coding, I'd like to confirm my understanding. We need to find duplicates in an array of integers. Should I consider negative numbers? Is there a constraint on the array size?"
+
+## Techniques for Thinking Out Loud
+
+### 1. Verbalize Your Thought Process
+
+```python
+def solve_problem(input):
+    # Verbalize: "First, I'll check if the input is valid"
+    if not input:
+        return None
+        
+    # Verbalize: "I'll create a hash map to track frequencies"
+    frequency = {}
+    
+    # Verbalize: "Now, I'll iterate through the input..."
+```
+
+### 2. Structured Problem Breakdown
+
+- Start with the naive solution
+- Analyze its complexity
+- Discuss potential optimizations
+- Implement the improved version
+
+## Common Pitfalls to Avoid
+
+1. **Diving Into Code Too Quickly**
+   - Take time to understand and plan
+   - Discuss your approach first
+
+2. **Staying Silent**
+   - Keep talking through your process
+   - Share your reasoning for decisions
+
+3. **Ignoring Hints**
+   - Listen actively to interviewer suggestions
+   - Use them as guidance
+
+## Practice Tips
+
+1. **Mock Interviews**
+   - Practice with friends or mentors
+   - Record yourself solving problems
+   - Review and improve your communication
+
+2. **Time Management**
+   - Allocate time for:
+     - Problem understanding (5 minutes)
+     - Solution planning (5 minutes)
+     - Implementation (20 minutes)
+     - Testing (5 minutes)
+
+<Image
+  src="/_static/blog/whiteboard-interview.jpg"
+  width="718"
+  height="404"
+  alt="Developer at a whiteboard during technical interview"
+/>
+
+## Final Thoughts
+
+Remember that technical interviews are a skill that improves with practice. Focus on clear communication, structured problem-solving, and maintaining a calm demeanor. Even if you don't immediately know the solution, demonstrating a methodical approach and strong communication skills can leave a positive impression.
+
+The key is not just to solve the problem, but to show your potential as a team member who can think critically and communicate effectively under pressure.
+
+---
+
+## Additional Resources
+
+- [LeetCode](https://leetcode.com) for practice problems
+- [Pramp](https://www.pramp.com) for peer mock interviews
+- [AlgoExpert](https://www.algoexpert.io) for structured interview prep
+
+Remember: The best way to get better at technical interviews is through consistent practice and feedback. Start preparing early, and don't get discouraged by initial challenges.
