@@ -1,140 +1,130 @@
-<a href="https://next-saas-stripe-starter.vercel.app">
-  <img alt="Entretien AI" src="public/_static/og.jpg">
-  <h1 align="center">Next SaaS Stripe Starter</h1>
-</a>
+<img alt="Entretien AI" src="public/_static/og.jpg">
 
-<p align="center">
-  Start at full speed with Entretien AI !
- 
-
+<p align="center" style="margin-top: 20px">
+  <p align="center">
+    Entretien AI - Master Your Interview Game
+    <br>
+    <a href="https://entretien-ai.com"><strong>Get Started »</strong></a>
+    <br />
+    <br />
+    <a href="https://entretien-ai.com/about">About</a>
+    ·
+    <a href="https://entretien-ai.com">Website</a>
+    ·
+    <a href="https://entretien-ai.com/blog">Blog</a>
+    ·
+    <a href="https://entretien-ai.com/pricing">Pricing</a>
+  </p>
 </p>
 
-### Todo:
+## About Entretien AI
 
-  - make LLM only return JSON usign libraries to constrain grammar
-    
-  - Optimize LLm prompt
- 
+Master the art of interviewing with Entretien AI. Our cutting-edge platform uses advanced AI technology to provide personalized interview preparation, helping you transform interview anxiety into confident performance. Whether you're targeting tech giants or startups, we'll help you showcase your best self.
 
-  - add expressive loading tothe process page when the llm is generating the responses.
-  - Migrate to bun
-  - Deploy to vercel and test.
+## Key Features
 
+- **AI-Powered Mock Interviews**: Experience realistic interview simulations with our advanced AI system
+- **Real-Time Feedback**: Get instant analysis on your responses, body language, and delivery
+- **Technical Interview Prep**: Specialized tracks for software engineering roles across all levels
+- **Performance Analytics**: Track your progress with detailed metrics and improvement insights
+- **Custom Interview Paths**: Tailored preparation paths based on your target role and company
+- **Comprehensive Feedback**: Detailed analysis of technical accuracy, communication skills, and presentation
 
-<p align="center">
-  <a href="https://twitter.com/miickasmt">
-    <img src="https://img.shields.io/twitter/follow/miickasmt?style=flat&label=miickasmt&logo=twitter&color=0bf&logoColor=fff" alt="Mickasmt Twitter follower count" />
-  </a>
+## Tech Stack
+
+<p align="left">
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js%2015-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js 15"></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React%2019-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 19"></a>
+  <a href="https://www.typescriptlang.org"><img src="https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square" alt="TypeScript"></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://www.prisma.io"><img src="https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma"></a>
 </p>
 
-<p align="center">
-  <a href="#introduction"><strong>Introduction</strong></a> ·
-  <a href="#installation"><strong>Installation</strong></a> ·
-  <a href="#tech-stack--features"><strong>Tech Stack + Features</strong></a> ·
-  <a href="#author"><strong>Author</strong></a> ·
-  <a href="#credits"><strong>Credits</strong></a>
-</p>
-<br/>
+### Frontend
+- [Next.js 15](https://nextjs.org/) - React Framework
+- [React 19](https://react.dev/) - UI Library
+- [TypeScript](https://www.typescriptlang.org/) - Programming Language
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [shadcn/ui](https://ui.shadcn.com/) - UI Components
 
-## Introduction
+### Backend & Database
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [Prisma](https://www.prisma.io/) - ORM
+- [Neon](https://neon.tech/) - Serverless Postgres
+- [Auth.js v5](https://authjs.dev/) - Authentication
+- [Server Actions](https://nextjs.org/docs/app/api-reference/functions/server-actions) - API Endpoints
 
-Empower your next project with the stack of Next.js 14, Prisma, Neon, Auth.js v5, Resend, React Email, Shadcn/ui, and Stripe.
-<br/>
-All seamlessly integrated with the Entretien AI to accelerate your development and saas journey.
+### Email & Communications
+- [Resend](https://resend.com/) - Email Infrastructure
+- [React Email](https://react.email/) - Email Templates
 
-## Installation
+### Payments
+- [Stripe](https://stripe.com/) - Payment Processing
 
-Clone & create this repo locally with the following command:
+## Getting Started
 
-```bash
-npx create-next-app my-saas-project --example "https://github.com/mickasmt/next-saas-stripe-starter"
-```
+### Prerequisites
 
-Or, deploy with Vercel:
+- Deno, bun or node.js 18.x or higher
+- PostgreSQL database
+- Stripe account
+- Resend API key
+- Together.ai API key
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmickasmt%2Fnext-saas-stripe-starter)
+### Installation
 
-### Steps
-
-1. Install dependencies using pnpm:
-
-```sh
-pnpm install
-```
-
-2. Copy `.env.example` to `.env.local` and update the variables.
+1. Clone the repository:
 
 ```sh
-cp .env.example .env.local
+git clone https://github.com/rayenfassatoui/entretien-ai
 ```
 
-3. Start the development server:
+2. Install dependencies:
 
 ```sh
-pnpm run dev
+bun install
 ```
 
-> [!NOTE]  
-> I use [npm-check-updates](https://www.npmjs.com/package/npm-check-updates) package for update this project.
->
-> Use this command for update your project: `ncu -i --format group`
+3. Copy the example environment file:
 
-## Roadmap
-- [ ] Upgrade eslint to v9
-- [ ] Add resend for success subscriptions
+```sh
+cp .env.example .env
+```
 
-## Tech Stack + Features
+4. Set up your environment variables:
+- NEXTAUTH_URL
+- NEXTAUTH_SECRET
+- NEXT_PUBLIC_APP_URL
+- DATABASE_URL
+- AI_API_KEY
 
-### Frameworks
+5. Initialize the database:
 
-- [Next.js](https://nextjs.org/) – React framework for building performant apps with the best developer experience
-- [Auth.js](https://authjs.dev/) – Handle user authentication with ease with providers like Google, Twitter, GitHub, etc.
-- [Prisma](https://www.prisma.io/) – Typescript-first ORM for Node.js
-- [React Email](https://react.email/) – Versatile email framework for efficient and flexible email development
+```sh
+bun prisma db push
+```
 
-### Platforms
+6. Run the development server:
 
-- [Vercel](https://vercel.com/) – Easily preview & deploy changes with git
-- [Resend](https://resend.com/) – A powerful email framework for streamlined email development
-- [Neon](https://neon.tech/) – Serverless Postgres with autoscaling, branching, bottomless storage and generous free tier.
+```sh
+bun dev
+```
 
-### UI
+## Contributing
 
-- [Tailwind CSS](https://tailwindcss.com/) – Utility-first CSS framework for rapid UI development
-- [Shadcn/ui](https://ui.shadcn.com/) – Re-usable components built using Radix UI and Tailwind CSS
-- [Framer Motion](https://framer.com/motion) – Motion library for React to animate components with ease
-- [Lucide](https://lucide.dev/) – Beautifully simple, pixel-perfect icons
-- [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) – Optimize custom fonts and remove external network requests for improved performance
-- [`ImageResponse`](https://nextjs.org/docs/app/api-reference/functions/image-response) – Generate dynamic Open Graph images at the edge
+We welcome contributions! Please see our contribution guidelines for details.
 
-### Hooks and Utilities
+## Contact
 
-- `useIntersectionObserver` – React hook to observe when an element enters or leaves the viewport
-- `useLocalStorage` – Persist data in the browser's local storage
-- `useScroll` – React hook to observe scroll position ([example](https://github.com/mickasmt/precedent/blob/main/components/layout/navbar.tsx#L12))
-- `nFormatter` – Format numbers with suffixes like `1.2k` or `1.2M`
-- `capitalize` – Capitalize the first letter of a string
-- `truncate` – Truncate a string to a specified length
-- [`use-debounce`](https://www.npmjs.com/package/use-debounce) – Debounce a function call / state update
+For support or inquiries, contact us at support@entretien-ai.com
 
-### Code Quality
+## Privacy & Security
 
-- [TypeScript](https://www.typescriptlang.org/) – Static type checker for end-to-end typesafety
-- [Prettier](https://prettier.io/) – Opinionated code formatter for consistent code style
-- [ESLint](https://eslint.org/) – Pluggable linter for Next.js and TypeScript
+We take your privacy seriously. See our [Privacy Policy](https://entretien-ai.com/privacy) for details about:
+- Data collection and usage
+- Security measures
+- Your privacy rights
 
-### Miscellaneous
+## License
 
-- [Vercel Analytics](https://vercel.com/analytics) – Track unique visitors, pageviews, and more in a privacy-friendly way
-
-## Author
-
-Created by [@miickasmt](https://twitter.com/miickasmt) in 2023, released under the [MIT license](https://github.com/shadcn/taxonomy/blob/main/LICENSE.md).
-
-## Credits
-
-This project was inspired by shadcn's [Taxonomy](https://github.com/shadcn-ui/taxonomy), Steven Tey’s [Precedent](https://github.com/steven-tey/precedent), and Antonio Erdeljac's [Next 13 AI SaaS](https://github.com/AntonioErdeljac/next13-ai-saas).
-
-- Shadcn ([@shadcn](https://twitter.com/shadcn))
-- Steven Tey ([@steventey](https://twitter.com/steventey))
-- Antonio Erdeljac ([@YTCodeAntonio](https://twitter.com/AntonioErdeljac))
+Open Source but you can't sell it, but you can use it for free for non commercial use.
