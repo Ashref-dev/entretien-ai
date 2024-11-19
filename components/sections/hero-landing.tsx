@@ -47,7 +47,7 @@ export default async function HeroLanding() {
             </div>
 
             <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[66px]">
-              Master Tech Interviews with AI-Powered Practice
+              Land Your Dream Job With Our Interview Practice
             </h1>
 
             <p className="max-w-2xl text-balance leading-normal text-white sm:text-xl sm:leading-8">
