@@ -1,14 +1,14 @@
 "use client";
 
-import { Check, List } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { Check, List } from "lucide-react";
 import { Drawer } from "vaul";
 
-import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 import { BLOG_CATEGORIES } from "@/config/blog";
 import { cn } from "@/lib/utils";
+import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
 export function BlogHeaderLayout() {
   const [open, setOpen] = useState(false);
@@ -46,7 +46,7 @@ export function BlogHeaderLayout() {
                 active={category.slug === slug}
               />
             ))}
-            <CategoryLink title="Guides" href="/guides" active={false} />
+            {/* <CategoryLink title="Guides" href="/guides" active={false} /> */}
           </ul>
         </nav>
       </MaxWidthWrapper>
@@ -59,7 +59,10 @@ export function BlogHeaderLayout() {
           <List className="size-[18px]" />
           <p className="ml-2.5 text-sm font-medium">Categories</p>
         </Drawer.Trigger>
-        <Drawer.Overlay className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm" onClick={closeDrawer} />
+        <Drawer.Overlay
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm"
+          onClick={closeDrawer}
+        />
         <Drawer.Portal>
           <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mt-24 overflow-hidden rounded-t-[10px] border bg-background">
             <div className="sticky top-0 z-20 flex w-full items-center justify-center bg-inherit">
