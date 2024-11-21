@@ -97,89 +97,73 @@ export function CreateInterviewForm({
 
     setIsLoading(true);
 
-    toast.promise(
-      (async () => {
-        try {
-          const formData = new FormData();
-          formData.append("pdf", resume);
-          formData.append("jobTitle", values.jobTitle);
-          formData.append("jobDescription", values.jobDescription);
-          formData.append("difficulty", values.difficulty);
-          formData.append(
-            "yearsOfExperience",
-            values.yearsOfExperience.toString(),
-          );
-          if (values.targetCompany)
-            formData.append("targetCompany", values.targetCompany);
+    try {
+      const formData = new FormData();
+      formData.append("pdf", resume);
+      formData.append("jobTitle", values.jobTitle);
+      formData.append("jobDescription", values.jobDescription);
+      formData.append("difficulty", values.difficulty);
+      formData.append("yearsOfExperience", values.yearsOfExperience.toString());
+      if (values.targetCompany) formData.append("targetCompany", values.targetCompany);
 
-          const response = await fetch("/api/interview", {
-            method: "POST",
-            body: formData,
-          });
+      const response = await fetch("/api/interview", {
+        method: "POST",
+        body: formData,
+      });
 
-          const reader = response.body?.getReader();
-          if (!reader) throw new Error("No reader available");
+      const initialResult = await response.json();
 
-          let finalResult: InterviewResponse | null = null;
+      if (!initialResult.success) {
+        throw new Error(initialResult.error || "Failed to create interview");
+      }
 
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+      // Start polling for status
+      const pollInterval = 2000; // 2 seconds
+      const pollTimeout = 180000; // 3 minutes
+      const startTime = Date.now();
 
-            const text = new TextDecoder().decode(value);
-            const messages = text.split("\n").filter(Boolean);
+      const checkStatus = async (): Promise<any> => {
+        const statusResponse = await fetch(`/api/interview?id=${initialResult.interviewId}`);
+        const result = await statusResponse.json();
+        console.log("🚀 ~ checkStatus ~ result:", result)
 
-            for (const message of messages) {
-              if (message.includes("data:")) {
-                const jsonStr = message.replace("data:", "").trim();
-
-                try {
-                  const data = JSON.parse(jsonStr);
-                  if (data.type === "loading") {
-                    console.log("Loading:", data.message);
-                    continue;
-                  }
-                  if (data.success) {
-                    console.log("Success");
-                    finalResult = data;
-                  } else {
-                    console.log("Error:", data.error);
-                    throw new Error(
-                      data.error || "Failed to generate interview questions",
-                    );
-                  }
-                } catch (e) {
-                  console.error("Parse error:", e);
-                }
-              }
-            }
-          }
-
-          if (!finalResult || !finalResult.success) {
-            throw new Error("Failed to generate interview questions");
-          }
-
-          onSubmitInterview({
-            ...values,
-            resume,
-            skillsAssessed: [],
-            interviewData: finalResult.data.interviewData,
-          });
-
-          form.reset();
-          return finalResult;
-        } catch (error) {
-          console.error("Error creating interview:", error);
-          setIsLoading(false);
-          throw error;
+        if (!result.success) {
+          throw new Error(result.error || "Failed to check interview status");
         }
-      })(),
-      {
-        loading: "Creating your interview...",
-        success: "Interview created successfully!",
-        error: "Failed to create interview",
-      },
-    );
+
+        switch (result.status) {
+          case 'COMPLETED':
+            return result.data;
+          case 'ERROR':
+            throw new Error(result.error || "Interview processing failed");
+          case 'PROCESSING':
+            if (Date.now() - startTime > pollTimeout) {
+              throw new Error("Interview processing timed out");
+            }
+            await new Promise(resolve => setTimeout(resolve, pollInterval));
+            return checkStatus();
+          default:
+            throw new Error("Unknown interview status");
+        }
+      };
+
+      const finalResult = await checkStatus();
+
+      onSubmitInterview({
+        ...values,
+        resume,
+        skillsAssessed: [],
+        interviewData: finalResult.interviewData,
+      });
+
+      form.reset();
+      setIsLoading(false);
+
+    } catch (error) {
+      console.error("Error creating interview:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to create interview");
+      setIsLoading(false);
+    }
   };
 
   const handleFileUpload = async (files: File[]) => {

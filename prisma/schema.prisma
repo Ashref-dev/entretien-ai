@@ -98,6 +98,8 @@ model Interview {
   updatedAt           DateTime            @default(now()) @map("updated_at")
   interviewData       InterviewData[]
   user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status              String              @default("PROCESSING")
+  errorMessage        String?
 
   @@index([userId])
   @@map("interviews")
