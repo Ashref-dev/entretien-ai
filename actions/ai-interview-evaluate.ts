@@ -13,7 +13,7 @@ type InterviewRequestBody = {
     userAnswer: string;
   }>;
   difficulty: InterviewDifficulty;
-  yearsOfExperience: number;
+  yearsOfExperience: string;
   duration: number;
   interviewId: string;
 };
@@ -245,7 +245,7 @@ export async function evaluateInterview(data: InterviewRequestBody) {
           item.aiAnswer,
           item.userAnswer,
           difficulty,
-          yearsOfExperience,
+          parseInt(yearsOfExperience),
         );
         return {
           ...item,
