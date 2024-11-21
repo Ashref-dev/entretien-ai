@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { InterviewDifficulty } from "@/types";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { v4 as uuidv4 } from "uuid";
@@ -6,30 +6,44 @@ import { v4 as uuidv4 } from "uuid";
 import { callLLM } from "@/lib/llm";
 
 export async function POST(request: NextRequest) {
-  try {
-    const formData = await request.formData();
-    const pdf = formData.get("pdf") as File;
-    const jobTitle = formData.get("jobTitle") as string;
-    const jobDescription = formData.get("jobDescription") as string;
-    const difficulty = formData.get("difficulty") as InterviewDifficulty;
-    const yearsOfExperience = Number(formData.get("yearsOfExperience"));
-    const targetCompany = formData.get("targetCompany") as string | undefined;
+  const encoder = new TextEncoder();
+  const stream = new TransformStream();
+  const writer = stream.writable.getWriter();
 
-    if (!pdf) {
-      throw new Error("Invalid PDF file");
+  // Start sending periodic loading messages
+  const loadingInterval = setInterval(async () => {
+    try {
+      await writer.write(encoder.encode(`data: ${JSON.stringify({ type: "loading", message: "loading..." })}\n\n`));
+    } catch (e) {
+      // Ignore write errors after stream is closed
     }
+  }, 1000);
 
-    const pdfLoader = new PDFLoader(pdf, {
-      parsedItemSeparator: " ",
-    });
-    const docs = await pdfLoader.load();
-    const selectedDocuments = docs.filter(
-      (doc) => doc.pageContent !== undefined,
-    );
-    const texts = selectedDocuments.map((doc) => doc.pageContent);
-    const interviewId = uuidv4();
+  const processInterview = async () => {
+    try {
+      const formData = await request.formData();
+      const pdf = formData.get("pdf") as File;
+      const jobTitle = formData.get("jobTitle") as string;
+      const jobDescription = formData.get("jobDescription") as string;
+      const difficulty = formData.get("difficulty") as InterviewDifficulty;
+      const yearsOfExperience = Number(formData.get("yearsOfExperience"));
+      const targetCompany = formData.get("targetCompany") as string | undefined;
 
-    const prompt = `
+      if (!pdf) {
+        throw new Error("Invalid PDF file");
+      }
+
+      const pdfLoader = new PDFLoader(pdf, {
+        parsedItemSeparator: " ",
+      });
+      const docs = await pdfLoader.load();
+      const selectedDocuments = docs.filter(
+        (doc) => doc.pageContent !== undefined,
+      );
+      const texts = selectedDocuments.map((doc) => doc.pageContent);
+      const interviewId = uuidv4();
+
+      const prompt = `
         Respond ONLY with a valid JSON object. Do not include any additional text or explanations.
         You are an expert technical interviewer. Based on the following:
         - Resume content
@@ -76,81 +90,83 @@ export async function POST(request: NextRequest) {
         8. All code examples must be on a single line
         `;
 
-    const aiResponseContent = await callLLM(prompt);
+      const aiResponseContent = await callLLM(prompt);
 
-    // Clean and format the response
-    const cleanedResponse = aiResponseContent
-      .replace(/\n\s*/g, " ")
-      .replace(/`{3}[\w]*\n?|\n?`{3}/g, "")
-      .replace(/\\n/g, " ")
-      .replace(/\\"/g, '"')
-      .replace(/\\/g, "\\\\")
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+      // Clean and format the response
+      const cleanedResponse = aiResponseContent
+        .replace(/\n\s*/g, " ")
+        .replace(/`{3}[\w]*\n?|\n?`{3}/g, "")
+        .replace(/\\n/g, " ")
+        .replace(/\\"/g, '"')
+        .replace(/\\/g, "\\\\")
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
 
-    // Extract only the JSON content between curly braces
-    const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
-    const jsonContent = jsonMatch ? jsonMatch[0] : "{}";
+      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
+      const jsonContent = jsonMatch ? jsonMatch[0] : "{}";
 
-    // Parse the cleaned JSON
-    let aiResponse: { interviewData: any[] };
-    try {
-      aiResponse = JSON.parse(jsonContent);
-    } catch (parseError) {
-      console.error("Error parsing cleaned JSON:", parseError);
-      throw new Error("Invalid JSON format in AI response");
-    }
+      let aiResponse: { interviewData: any[] };
+      try {
+        aiResponse = JSON.parse(jsonContent);
+      } catch (parseError) {
+        throw new Error("Invalid JSON format in AI response");
+      }
 
-    // Validate and format the data
-    if (!aiResponse.interviewData || !Array.isArray(aiResponse.interviewData)) {
-      throw new Error("AI response does not contain interview data array");
-    }
+      if (!aiResponse.interviewData || !Array.isArray(aiResponse.interviewData)) {
+        throw new Error("AI response does not contain interview data array");
+      }
 
-    // Format the data
-    const formattedData = {
-      interviewData: aiResponse.interviewData
-        .slice(0, 5)
-        .map((item, index) => ({
-          id: item.id || `q${index + 1}-${uuidv4()}`,
+      const formattedData = {
+        interviewData: aiResponse.interviewData
+          .slice(0, 5)
+          .map((item, index) => ({
+            id: item.id || `q${index + 1}-${uuidv4()}`,
+            interviewId: interviewId,
+            aiQuestion: item.aiQuestion?.replace(/\n\s*/g, " ") || `Question ${index + 1}`,
+            aiAnswer: item.aiAnswer?.replace(/\n\s*/g, " ") || "Expected answer not provided",
+            userAnswer: "",
+            questionFeedback: item.questionFeedback?.replace(/\n\s*/g, " ") || "Detailed feedback for the answer not provided",
+          })),
+      };
+
+      while (formattedData.interviewData.length < 5) {
+        formattedData.interviewData.push({
+          id: `q${formattedData.interviewData.length + 1}-${uuidv4()}`,
           interviewId: interviewId,
-          aiQuestion:
-            item.aiQuestion?.replace(/\n\s*/g, " ") || `Question ${index + 1}`,
-          aiAnswer:
-            item.aiAnswer?.replace(/\n\s*/g, " ") ||
-            "Expected answer not provided",
+          aiQuestion: `Additional Question ${formattedData.interviewData.length + 1}`,
+          aiAnswer: "Expected answer not provided",
           userAnswer: "",
-          questionFeedback:
-            item.questionFeedback?.replace(/\n\s*/g, " ") ||
-            "Detailed feedback for the answer not provided",
-        })),
-    };
+          questionFeedback: "Detailed feedback for the answer not provided",
+        });
+      }
 
-    // Fill in any missing questions
-    while (formattedData.interviewData.length < 5) {
-      formattedData.interviewData.push({
-        id: `q${formattedData.interviewData.length + 1}-${uuidv4()}`,
-        interviewId: interviewId,
-        aiQuestion: `Additional Question ${formattedData.interviewData.length + 1}`,
-        aiAnswer: "Expected answer not provided",
-        userAnswer: "",
-        questionFeedback: "Detailed feedback for the answer not provided",
-      });
+      // When sending the final result, format it as an event
+      await writer.write(encoder.encode(`data: ${JSON.stringify({ success: true, data: formattedData })}\n\n`));
+      clearInterval(loadingInterval);
+      await writer.close();
+
+    } catch (error) {
+      clearInterval(loadingInterval);
+      await writer.write(
+        encoder.encode(
+          `data: ${JSON.stringify({
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to generate interview questions",
+          })}\n\n`
+        )
+      );
+      await writer.close();
     }
+  };
 
-    return NextResponse.json({
-      success: true,
-      data: formattedData,
-    });
-  } catch (error) {
-    console.error("Error generating interview questions:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to generate interview questions",
-      },
-      { status: 500 },
-    );
-  }
+  // Start processing in the background
+  processInterview();
+
+  // Return the readable stream
+  return new Response(stream.readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }

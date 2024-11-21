@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
@@ -86,11 +87,13 @@ const CreateInterview = () => {
         </motion.div>
       </motion.div>
 
-      <CreateInterviewModal
-        onCreateInterview={handleCreateInterview}
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
+      <TooltipProvider>
+        <CreateInterviewModal
+          onCreateInterview={handleCreateInterview}
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+        />
+      </TooltipProvider>
     </div>
   );
 };
