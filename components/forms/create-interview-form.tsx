@@ -104,7 +104,8 @@ export function CreateInterviewForm({
       formData.append("jobDescription", values.jobDescription);
       formData.append("difficulty", values.difficulty);
       formData.append("yearsOfExperience", values.yearsOfExperience.toString());
-      if (values.targetCompany) formData.append("targetCompany", values.targetCompany);
+      if (values.targetCompany)
+        formData.append("targetCompany", values.targetCompany);
 
       const response = await fetch("/api/interview", {
         method: "POST",
@@ -123,24 +124,25 @@ export function CreateInterviewForm({
       const startTime = Date.now();
 
       const checkStatus = async (): Promise<any> => {
-        const statusResponse = await fetch(`/api/interview?id=${initialResult.interviewId}`);
+        const statusResponse = await fetch(
+          `/api/interview?id=${initialResult.interviewId}`,
+        );
         const result = await statusResponse.json();
-        console.log("🚀 ~ checkStatus ~ result:", result)
 
         if (!result.success) {
           throw new Error(result.error || "Failed to check interview status");
         }
 
         switch (result.status) {
-          case 'COMPLETED':
+          case "COMPLETED":
             return result.data;
-          case 'ERROR':
+          case "ERROR":
             throw new Error(result.error || "Interview processing failed");
-          case 'PROCESSING':
+          case "PROCESSING":
             if (Date.now() - startTime > pollTimeout) {
               throw new Error("Interview processing timed out");
             }
-            await new Promise(resolve => setTimeout(resolve, pollInterval));
+            await new Promise((resolve) => setTimeout(resolve, pollInterval));
             return checkStatus();
           default:
             throw new Error("Unknown interview status");
@@ -158,10 +160,11 @@ export function CreateInterviewForm({
 
       form.reset();
       setIsLoading(false);
-
     } catch (error) {
       console.error("Error creating interview:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to create interview");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create interview",
+      );
       setIsLoading(false);
     }
   };

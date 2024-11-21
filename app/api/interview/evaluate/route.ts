@@ -222,21 +222,47 @@ export async function POST(request: Request) {
     }
 
     const data = (await request.json()) as InterviewRequestBody;
-    const {
-      interviewId,
-      interviewData,
-      difficulty,
-      yearsOfExperience,
-      duration,
-    } = data;
+    const { interviewId } = data;
 
-    if (!interviewData || !Array.isArray(interviewData)) {
-      return NextResponse.json(
-        { success: false, error: "Invalid data" },
-        { status: 400 },
-      );
-    }
+    // Update interview status to processing
+    await prisma.interview.update({
+      where: { id: interviewId },
+      data: { status: "PROCESSING" },
+    });
 
+    // Start background processing
+    processInterview(data).catch((error) => {
+      console.error("Error processing interview:", error);
+      prisma.interview.update({
+        where: { id: interviewId },
+        data: {
+          status: "ERROR",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+    });
+
+    return NextResponse.json({ success: true, status: "PROCESSING" });
+  } catch (error) {
+    console.error("Error initiating interview evaluation:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to process interview" },
+      { status: 500 },
+    );
+  }
+}
+
+async function processInterview(data: InterviewRequestBody) {
+  const {
+    interviewId,
+    interviewData,
+    difficulty,
+    yearsOfExperience,
+    duration,
+  } = data;
+
+  try {
     // Validate difficulty enum
     const validDifficulties = [
       "JUNIOR",
@@ -245,6 +271,7 @@ export async function POST(request: Request) {
       "LEAD",
       "PRINCIPAL",
     ];
+
     if (!validDifficulties.includes(difficulty)) {
       return NextResponse.json(
         { success: false, error: "Invalid difficulty level" },
@@ -315,6 +342,7 @@ export async function POST(request: Request) {
     const updatedInterview = await prisma.interview.update({
       where: { id: interviewId },
       data: {
+        status: "COMPLETED",
         interviewScore,
         technicalScore,
         communicationScore,
@@ -341,16 +369,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: updatedInterview });
   } catch (error) {
-    console.error("Error evaluating interview:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to evaluate interview",
+    console.error("Error processing interview:", error);
+    prisma.interview.update({
+      where: { id: interviewId },
+      data: {
+        status: "ERROR",
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
-    );
+    });
   }
 }
