@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { cn, constructMetadata } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@/components/analytics";
+import JsonLdWrapper from "@/components/json-ld-wrapper";
 import ModalProvider from "@/components/modals/providers";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 
@@ -23,26 +24,27 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link
           rel="icon"
           type="image/x-icon"
-          href="_static/favicons/favicon.ico"
+          href="/_static/favicons/favicon.ico"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="_static/favicons/favicon-32x32.png"
+          href="/_static/favicons/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="_static/favicons/favicon-16x16.png"
+          href="/_static/favicons/favicon-16x16.png"
         />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="_static/favicons/apple-touch-icon.png"
+          href="/_static/favicons/apple-touch-icon.png"
         />
-        <link rel="manifest" href="_static/favicons/site.webmanifest" />
+        <link rel="manifest" href="/_static/favicons/site.webmanifest" />
+        <JsonLdWrapper type="website" />
       </head>
       <body
         className={cn(

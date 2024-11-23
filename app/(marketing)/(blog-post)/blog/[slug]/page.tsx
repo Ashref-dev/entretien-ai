@@ -24,6 +24,7 @@ import Author from "@/components/content/author";
 import BlurImage from "@/components/shared/blur-image";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 import { DashboardTableOfContents } from "@/components/shared/toc";
+import JsonLdWrapper from '@/components/json-ld-wrapper'
 
 export async function generateStaticParams() {
   return allPosts.map((post) => ({
@@ -90,6 +91,11 @@ export default async function PostPage({
 
   return (
     <>
+      <JsonLdWrapper 
+        type="blog" 
+        post={post}
+        includeService={true}
+      />
       <MaxWidthWrapper className="pt-6 md:pt-10">
         <div className="flex flex-col space-y-4">
           <div className="flex items-center space-x-4">
