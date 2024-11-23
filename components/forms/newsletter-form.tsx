@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -33,44 +33,41 @@ export function NewsletterForm() {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     form.reset();
     toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+      title: "Thanks for subscribing!",
+      description: "You'll receive our next newsletter in your inbox.",
     });
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-2 sm:max-w-sm"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="hidden">
-                Subscribe to our newsletter
-              </FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  className="rounded-lg px-4"
-                  placeholder="balti@mail.com"
-                  {...field}
-                />
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="email"
+                    className="rounded-md border-muted-foreground/20 bg-background/50 px-4 placeholder:text-muted-foreground/50 focus:border-primary"
+                    placeholder="Enter your email"
+                    {...field}
+                  />
+                  <Button 
+                    type="submit" 
+                    size="sm" 
+                    className="rounded-full px-4 hover:bg-primary/90"
+                  >
+                    <Send className="mr-2 size-4" />
+                    Subscribe
+                  </Button>
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="mt-1.5 text-xs" />
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" rounded="full" className="px-4">
-          Subscribe
-        </Button>
       </form>
     </Form>
   );
