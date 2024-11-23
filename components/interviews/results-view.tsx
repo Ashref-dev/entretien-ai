@@ -1,8 +1,6 @@
-"use client";
-
+"use client";;
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { saveInterviewData } from "@/actions/save-interview-data";
 import { toast } from "sonner";
 
 import { Button } from "../ui/button";

@@ -16,16 +16,28 @@ export function constructMetadata({
   image = siteConfig.ogImage,
   icons = {
     icon: [
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      {
+        url: "/_static/favicons/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/_static/favicons/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
     ],
     apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/_static/favicons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
     other: [
       {
         rel: "manifest",
-        url: "/site.webmanifest",
+        url: "/_static/favicons/site.webmanifest",
       },
     ],
   },
@@ -45,22 +57,31 @@ export function constructMetadata({
     title,
     description,
     keywords: [
-      "Next.js",
-      "React",
-      "Prisma",
-      "Neon",
-      "Auth.js",
-      "shadcn ui",
-      "Resend",
-      "React Email",
-      "Stripe",
+      "Technical Interview Preparation",
+      "AI Interview Practice",
+      "Software Developer Jobs",
+      "Coding Interview Questions",
+      "Junior Developer Career",
+      "Interview Confidence",
+      "Mock Technical Interviews",
+      "Software Engineering Interview",
+      "Entry Level Developer",
+      "Interview Skills",
+      "Job Hunt Tips",
+      "Tech Career Guide",
+      "System Design Interview",
+      "Behavioral Interview",
+      "Interview AI Coach",
     ],
     authors: [
       {
-        name: "mickasmt",
+        name: "Ashref Ben Abdallah",
+      },
+      {
+        name: "Rayen Fassatoui",
       },
     ],
-    creator: "mickasmt",
+    creator: "Ashref & Rayen",
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -74,11 +95,11 @@ export function constructMetadata({
       title,
       description,
       images: [image],
-      creator: "@miickasmt",
+      creator: "@entretien_ai",
     },
     icons,
     metadataBase: new URL(siteConfig.url),
-    manifest: "/site.webmanifest",
+    manifest: "/_static/favicons/site.webmanifest",
     ...(noIndex && {
       robots: {
         index: false,
