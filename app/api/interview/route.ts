@@ -36,7 +36,18 @@ export async function POST(request: NextRequest) {
     });
 
     // Start background processing
-    processInterview(interview.id, formData).catch(console.error);
+    processInterview(interview.id, formData).catch((error) => {
+      console.error("Error in background processing:", error);
+      prisma.interview
+        .update({
+          where: { id: interview.id },
+          data: {
+            status: "ERROR",
+            errorMessage: error.message,
+          },
+        })
+        .catch(console.error);
+    });
 
     return new Response(
       JSON.stringify({
@@ -169,21 +180,23 @@ async function processInterview(interviewId: string, formData: FormData) {
         })),
     };
 
-    // Update interview with generated data
+    // Update existing interview with generated data
     await prisma.interview.update({
       where: { id: interviewId },
       data: {
         status: "COMPLETED",
         interviewData: {
-          create: formattedData.interviewData.map(
-            ({ interviewId, ...item }) => ({
-              ...item,
-            }),
-          ),
+          create: formattedData.interviewData.map((item) => ({
+            aiQuestion: item.aiQuestion,
+            aiAnswer: item.aiAnswer,
+            userAnswer: item.userAnswer,
+            questionFeedback: item.questionFeedback,
+          })),
         },
       },
     });
   } catch (error) {
+    console.error("Error in processInterview:", error);
     await prisma.interview.update({
       where: { id: interviewId },
       data: {
@@ -191,6 +204,7 @@ async function processInterview(interviewId: string, formData: FormData) {
         errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
     });
+    throw error; // Re-throw to be caught by the caller
   }
 }
 

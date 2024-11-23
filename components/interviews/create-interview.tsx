@@ -16,6 +16,8 @@ const CreateInterview = () => {
   const { setCurrentStep, setInterviewData } = useInterview();
 
   const handleCreateInterview = (data: {
+    id: string;
+    userId: string;
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
@@ -23,11 +25,11 @@ const CreateInterview = () => {
     yearsOfExperience: string;
     skillsAssessed: string[];
     targetCompany: string;
-    interviewData: any;
+    interviewData: Interview["interviewData"];
   }) => {
     const interview: Interview = {
-      id: crypto.randomUUID(),
-      userId: "", // temp value
+      id: data.id,
+      userId: data.userId,
       jobTitle: data.jobTitle,
       jobDescription: data.jobDescription,
       resume: data.resume,

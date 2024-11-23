@@ -21,30 +21,37 @@ export default function ResultsView() {
 
   const handleSaveInterviewData = async () => {
     setError(null);
-    if (!interviewData) {
-      setError("No interview data available");
-      return;
-    }
-    if (!interviewData.difficulty) {
-      setError("Interview difficulty is required");
-      return;
-    }
 
     try {
-      const result = await saveInterviewData(interviewData);
-
-      if (result.success) {
-        toast.success("Interview data saved successfully");
-        router.push(`/interviews/${result.id}`);
-      } else {
-        throw new Error(result.error);
+      if (!interviewData) {
+        setError("No interview data available");
+        return;
       }
+
+      // Check required fields
+      if (!interviewData.difficulty) {
+        setError("Interview difficulty is required");
+        return;
+      }
+
+      // Check if questions/answers exist
+      if (
+        !interviewData.interviewData ||
+        interviewData.interviewData.length === 0
+      ) {
+        setError("No questions and answers available");
+        return;
+      }
+
+      // If all validations pass, proceed to results
+      toast.success("Interview data validated successfully");
+      router.push(`/interviews/${interviewData.id}`);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unexpected error occurred";
-      console.error("Error saving interview data:", error);
+      console.error("Error validating interview data:", error);
       setError(errorMessage);
-      toast.error("Failed to save interview data. Please try again.");
+      toast.error("Failed to validate interview data. Please try again.");
     }
   };
 

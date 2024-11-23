@@ -58,6 +58,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface CreateInterviewFormProps {
   onSubmitInterview: (data: {
+    id: string;
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
@@ -113,6 +114,7 @@ export function CreateInterviewForm({
       });
 
       const initialResult = await response.json();
+      console.log("🚀 ~ onSubmit ~ initialResult:", initialResult)
 
       if (!initialResult.success) {
         throw new Error(initialResult.error || "Failed to create interview");
@@ -123,11 +125,12 @@ export function CreateInterviewForm({
       const pollTimeout = 180000; // 3 minutes
       const startTime = Date.now();
 
-      const checkStatus = async (): Promise<any> => {
+      const checkStatus = async (): Promise<Interview> => {
         const statusResponse = await fetch(
           `/api/interview?id=${initialResult.interviewId}`,
         );
         const result = await statusResponse.json();
+        console.log("🚀 ~ checkStatus ~ result:", result)
 
         if (!result.success) {
           throw new Error(result.error || "Failed to check interview status");
@@ -149,13 +152,15 @@ export function CreateInterviewForm({
         }
       };
 
-      const finalResult = await checkStatus();
+      const finalResult: Interview = await checkStatus();
+      console.log("🚀 ~ onSubmit ~ finalResult:", finalResult);
 
       onSubmitInterview({
         ...values,
         resume,
         skillsAssessed: [],
         interviewData: finalResult.interviewData,
+        id: finalResult.id,
       });
 
       form.reset();

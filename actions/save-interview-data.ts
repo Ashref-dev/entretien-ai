@@ -13,7 +13,10 @@ export async function saveInterviewData(interviewData: Interview) {
     // const validatedData = SaveInterviewSchema.parse(interviewData);
     const validatedData = interviewData;
 
-    const savedInterview = await prisma.interview.create({
+    const savedInterview = await prisma.interview.update({
+      where: {
+        id: validatedData.id,
+      },
       data: {
         resume: validatedData.resume ? (validatedData.resume as File).name : "",
         jobTitle: validatedData.jobTitle,

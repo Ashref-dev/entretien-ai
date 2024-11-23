@@ -15,6 +15,7 @@ import { CreateInterviewForm } from "../forms/create-interview-form";
 
 interface CreateInterviewModalProps {
   onCreateInterview: (data: {
+    id: string;
     jobTitle: string;
     jobDescription: string;
     resume: File | null;
