@@ -8,7 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
   AZURE_WEBAPP_NAME: entretien-ai-docker
 
 jobs:
@@ -21,6 +20,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set lowercase repository name
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
       - name: Log in to GitHub container registry
         uses: docker/login-action@v3
