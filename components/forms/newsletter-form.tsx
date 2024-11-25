@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -54,9 +54,9 @@ export function NewsletterForm() {
                     placeholder="Enter your email"
                     {...field}
                   />
-                  <Button
-                    type="submit"
-                    size="sm"
+                  <Button 
+                    type="submit" 
+                    size="sm" 
                     className="rounded-full px-4 hover:bg-primary/90"
                   >
                     <Send className="mr-2 size-4" />
