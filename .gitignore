@@ -46,3 +46,5 @@ next-env.d.ts
 # mac metadata
 .DS_Store
 **/.DS_Store
+
+publishProfileDocker.xml
