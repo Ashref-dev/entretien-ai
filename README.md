@@ -128,3 +128,9 @@ We take your privacy seriously. See our [Privacy Policy](https://entretien-ai.co
 ## License
 
 Open Source but you can't sell it, but you can use it for free for non commercial use.
+
+## Environment Variables in production
+
+For production builds, the application uses `.env.production` with dummy values during build time. The actual runtime values are provided by Azure App Service environment variables.
+
+Do not modify `.env.production` with real values as it's committed to the repository.
