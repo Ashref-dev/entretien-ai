@@ -3,11 +3,11 @@
 import dynamic from "next/dynamic";
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 
 const AnimatedIcon = dynamic(
