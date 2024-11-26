@@ -5,14 +5,13 @@ FROM base AS deps
 
 WORKDIR /app
 
-# Copy prisma schema first
+# Copy prisma schema 
 COPY prisma ./prisma
 
 # Install dependencies based on the preferred package manager
 COPY bun.lockb package.json ./
 
-RUN bun install --frozen-lockfile
-
+RUN bun install --frozen-lockfile --production
 
 # Rebuild the source code only when needed
 FROM base AS builder
