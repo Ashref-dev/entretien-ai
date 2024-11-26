@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -10,7 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MovingBorderButton } from "@/components/ui/moving-border-button";
-import { AnimatedIcon } from "@/components/shared/animated-icon";
+
+const AnimatedIcon = dynamic(
+  () =>
+    import("@/components/shared/animated-icon").then((mod) => mod.AnimatedIcon),
+  { ssr: false },
+);
 
 export const metadata = constructMetadata({
   title: "About – Entretien AI",
