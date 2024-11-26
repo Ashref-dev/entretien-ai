@@ -13,7 +13,7 @@ import Testimonials from "@/components/sections/testimonials";
 export default function IndexPage() {
   return (
     <>
-      <BackgroundShader className="absolute z-0 h-screen w-full" />
+      {/* <BackgroundShader className="absolute h-screen w-full" /> */}
 
       <HeroLanding />
 
