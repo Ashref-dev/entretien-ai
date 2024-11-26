@@ -5,6 +5,9 @@ FROM base AS deps
 
 WORKDIR /app
 
+# Copy prisma schema first
+COPY prisma ./prisma
+
 # Install dependencies based on the preferred package manager
 COPY bun.lockb package.json ./
 

@@ -177,7 +177,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
           Email{" "}
           <a
             className="font-medium text-primary hover:underline"
-            href="mailto:support@saas-starter.com"
+            href="support@entretien-ai.com"
           >
             support@entretien-ai.com
           </a>{" "}
