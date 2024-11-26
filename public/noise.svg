@@ -1,0 +1,16 @@
+<svg viewBox="0 0 200 200" xmlns='http://www.w3.org/2000/svg'>
+  <filter id='noiseFilter'>
+    <feTurbulence 
+      type='fractalNoise' 
+      baseFrequency='4' 
+      numOctaves='3' 
+      stitchTiles='stitch'/>
+    <feComponentTransfer>
+      <feFuncR type="linear" slope="3" intercept="-1"/>
+      <feFuncG type="linear" slope="3" intercept="-1"/>
+      <feFuncB type="linear" slope="3" intercept="-1"/>
+    </feComponentTransfer>
+    <feConvolveMatrix order="3" kernelMatrix="1 -1 1 -1 -1 -1 1 -1 1"/>
+  </filter>
+  <rect width='100%' height='100%' filter='url(#noiseFilter)'/>
+</svg>

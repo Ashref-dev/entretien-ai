@@ -1,4 +1,5 @@
-"use client";;
+"use client";
+
 import { useContext } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -16,6 +17,8 @@ import { DocsSearch } from "@/components/docs/search";
 import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
+
+import { ModeToggle } from "./mode-toggle";
 
 interface NavBarProps {
   scroll?: boolean;
@@ -80,9 +83,9 @@ export function NavBar({ scroll = false }: NavBarProps) {
             </nav>
           ) : null}
         </div>
-
         {/* Right section: User actions */}
         <div className="flex items-center space-x-3">
+          <ModeToggle />
           {documentation ? (
             <div className="hidden flex-1 items-center space-x-4 sm:justify-end lg:flex">
               <div className="hidden lg:flex lg:grow-0">

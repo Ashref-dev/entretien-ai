@@ -1,4 +1,5 @@
 import { infos } from "@/config/landing";
+import BackgroundShader from "@/components/sections/background-shader";
 import BentoGrid from "@/components/sections/bentogrid";
 import { CompareDemo } from "@/components/sections/Compare";
 import Features from "@/components/sections/features";
@@ -12,6 +13,8 @@ import Testimonials from "@/components/sections/testimonials";
 export default function IndexPage() {
   return (
     <>
+      <BackgroundShader className="absolute z-0 h-screen w-full" />
+
       <HeroLanding />
 
       <MarqueeLogo />

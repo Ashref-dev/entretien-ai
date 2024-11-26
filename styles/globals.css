@@ -110,6 +110,7 @@
     var(--gradient-2) 100%
   );
 }
+
 .background-gradient-reverse {
   background: linear-gradient(
     45deg,
@@ -164,5 +165,6 @@
 }
 
 .animate-scroll {
-  animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+  animation: scroll var(--animation-duration, 40s)
+    var(--animation-direction, forwards) linear infinite;
 }

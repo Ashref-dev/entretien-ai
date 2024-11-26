@@ -6,7 +6,10 @@ const logos = [
     name: "Perplexity",
     url: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
   },
-
+  {
+    name: "Anthropic",
+    url: "https://upload.wikimedia.org/wikipedia/commons/7/78/Anthropic_logo.svg",
+  },
   {
     name: "XAI",
     url: "https://upload.wikimedia.org/wikipedia/commons/9/93/XAI_Logo.svg",
@@ -15,6 +18,11 @@ const logos = [
     name: "Meta",
     url: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg",
   },
+  {
+    name: "Perplexity",
+    url: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
+  },
+
   {
     name: "Anthropic",
     url: "https://upload.wikimedia.org/wikipedia/commons/7/78/Anthropic_logo.svg",
@@ -28,7 +36,7 @@ const LogoCard = ({ url, name }: { url: string; name: string }) => {
   return (
     <figure
       className={cn(
-        "relative mx-4 flex w-48 cursor-pointer items-center justify-center overflow-hidden rounded-xl px-8 py-4",
+        "relative z-50 mx-4 flex w-48 cursor-pointer items-center justify-center overflow-hidden rounded-xl px-8 py-4",
         // light styles
         "bg-gray-950/[.03] hover:bg-gray-950/[.10]",
         // dark styles
@@ -58,15 +66,15 @@ export function MarqueeDemo() {
           <LogoCard key={logo.name} {...logo} />
         ))}
       </Marquee>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background" />
+      {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background/100 to-background/0" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background/100 to-background/0" /> */}
     </div>
   );
 }
 
 const MarqueeLogo = () => {
   return (
-    <div className="mt-8">
+    <div className="relative z-50 mt-8">
       <h2 className="text-center text-lg font-medium text-muted-foreground">
         Trusted by engineers from top companies
       </h2>
