@@ -12,6 +12,7 @@ COPY .env.production .env
 
 # Install dependencies and generate prisma client
 RUN bun install --frozen-lockfile --production
+RUN bunx prisma generate
 
 # Rebuild the source code only when needed
 FROM base AS builder
