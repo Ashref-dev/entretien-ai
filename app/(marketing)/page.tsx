@@ -12,7 +12,7 @@ import Testimonials from "@/components/sections/testimonials";
 export default function IndexPage() {
   return (
     <>
-      <HeroLanding />
+      {/* <HeroLanding /> */}
 
       <MarqueeLogo />
       <HeroScroll />
