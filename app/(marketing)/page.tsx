@@ -15,7 +15,7 @@ export default function IndexPage() {
     <>
       {/* <BackgroundShader className="absolute h-screen w-full" /> */}
 
-      <HeroLanding />
+      {/* <HeroLanding /> */}
 
       <MarqueeLogo />
       <HeroScroll />
