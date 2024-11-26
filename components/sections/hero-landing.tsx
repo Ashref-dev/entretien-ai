@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
@@ -9,7 +11,7 @@ import { Icons } from "../shared/icons";
 import BackgroundShader from "./background-shader";
 import HeroCTA from "./hero-cta";
 
-export default async function HeroLanding() {
+export default function HeroLanding() {
   return (
     <section className="relative pt-6 sm:pt-10 lg:pt-16">
       <div className="container relative flex max-w-6xl flex-col items-center gap-5 text-center">
