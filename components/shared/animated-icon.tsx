@@ -1,6 +1,17 @@
 "use client";
 
-import { AnimatedIconWrapper } from "./animated-icon-wrapper";
+import dynamic from "next/dynamic";
+
+const AnimatedIconWrapper = dynamic(
+  () =>
+    import("./animated-icon-wrapper").then((mod) => mod.AnimatedIconWrapper),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="size-40 animate-pulse rounded-xl bg-muted" />
+    ),
+  },
+);
 
 /**
  * A collection of animated icons using Lottie animations.

@@ -62,7 +62,7 @@ export default function HeroLanding() {
               Get instant feedback, improve fast, and land your dream role. 95%
               of users increased confidence after just 3 sessions.
             </p>
-            {/* <HeroCTA /> */}
+            <HeroCTA />
           </div>
         </div>
       </div>
