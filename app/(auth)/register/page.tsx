@@ -4,7 +4,6 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { UserAuthForm } from "@/components/forms/user-auth-form";
-import BackgroundGradient from "@/components/sections/background-shader";
 import { Icons } from "@/components/shared/icons";
 
 export const metadata = {
@@ -25,7 +24,7 @@ export default function RegisterPage() {
         Login
       </Link>
       <div className="relative hidden h-full overflow-hidden lg:block">
-        <BackgroundGradient />
+        {/* <BackgroundShaderClient className="absolute h-screen w-full" /> */}
       </div>
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
