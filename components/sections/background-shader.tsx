@@ -15,7 +15,7 @@ const ShaderGradient = dynamic(
   { ssr: false },
 );
 
-export default function BackgroundShader({
+export function BackgroundShader({
   className,
 }: {
   className?: string;
