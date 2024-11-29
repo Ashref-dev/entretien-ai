@@ -28,7 +28,7 @@ export default function IndexPage() {
       <CompareDemo />
       <InfoLanding data={infos[1]} />
       <Features />
-      {/* <ProductShowcase /> */}
+      <ProductShowcase />
       <Testimonials />
     </>
   );
