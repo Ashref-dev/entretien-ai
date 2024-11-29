@@ -1,4 +1,5 @@
 import { infos } from "@/config/landing";
+import BackgroundShaderClient from "@/components/sections/background-shader-client";
 import BentoGrid from "@/components/sections/bentogrid";
 import { CompareDemo } from "@/components/sections/Compare";
 import Features from "@/components/sections/features";
@@ -12,6 +13,9 @@ import Testimonials from "@/components/sections/testimonials";
 export default function IndexPage() {
   return (
     <>
+      {/* // aniamted background shader  */}
+      <BackgroundShaderClient className="absolute inset-0 z-[-1] h-screen w-full animate-fade-in opacity-0 [animation-delay:2000ms]" />
+
       <HeroLanding />
 
       <MarqueeLogo />
@@ -24,7 +28,7 @@ export default function IndexPage() {
       <CompareDemo />
       <InfoLanding data={infos[1]} />
       <Features />
-      <ProductShowcase />
+      {/* <ProductShowcase /> */}
       <Testimonials />
     </>
   );

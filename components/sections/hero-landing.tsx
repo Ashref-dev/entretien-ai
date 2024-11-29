@@ -30,6 +30,7 @@ export default function HeroLanding() {
                 "z-50 flex items-center gap-1 rounded-full border px-3 py-2 backdrop-blur-md transition-colors duration-300",
                 "border-black/20 bg-white/10 hover:bg-black/20",
                 "dark:border-white/20 dark:bg-neutral-800/10 dark:hover:bg-white/20",
+                "animate-fade-down opacity-0 [animation-delay:2200ms]",
               )}
               target="_blank"
             >
@@ -44,7 +45,7 @@ export default function HeroLanding() {
               <ArrowRightIcon className="size-3 text-black dark:text-white" />
             </Link>
 
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex animate-fade-down items-center justify-center gap-4 opacity-0 [animation-delay:1600ms]">
               <AnimatedIcon
                 icon="consultation"
                 className="size-40 brightness-[3] invert dark:invert-0"
@@ -54,15 +55,17 @@ export default function HeroLanding() {
               />
             </div>
 
-            <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight text-black dark:text-white sm:text-5xl md:text-6xl lg:text-[66px]">
+            <h1 className="animate-fade-up text-balance font-urban text-4xl font-extrabold tracking-tight text-black opacity-0 [animation-delay:100ms] dark:text-white sm:text-5xl md:text-6xl lg:text-[66px]">
               Land Your Dream Job With Our Interview Practice
             </h1>
 
-            <p className="max-w-2xl text-balance leading-normal text-black/90 dark:text-white sm:text-xl sm:leading-8">
+            <p className="max-w-2xl animate-fade-up text-balance leading-normal text-black/90 opacity-0 [animation-delay:600ms] dark:text-white sm:text-xl sm:leading-8">
               Get instant feedback, improve fast, and land your dream role. 95%
               of users increased confidence after just 3 sessions.
             </p>
-            <HeroCTA />
+            <div className="animate-fade-up opacity-0 [animation-delay:1100ms]">
+              <HeroCTA />
+            </div>
           </div>
         </div>
       </div>

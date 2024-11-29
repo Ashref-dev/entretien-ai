@@ -134,3 +134,17 @@ Open Source but you can't sell it, but you can use it for free for non commercia
 For production builds, the application uses `.env.production` with dummy values during build time. The actual runtime values are provided by Azure App Service environment variables.
 
 Do not modify `.env.production` with real values as it's committed to the repository.
+
+
+## the shader gradients
+here's the links to the used gradients:
+
+```
+
+Gradeint 1:
+https://www.shadergradient.co/customize?animate=on&axesHelper=on&bgColor1=%23000000&bgColor2=%23000000&brightness=1&cAzimuthAngle=180&cDistance=5.7&cPolarAngle=115&cameraZoom=1&color1=%23268c9a&color2=%239224b3&color3=%23000000&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&grain=on&lightType=3d&pixelDensity=1&positionX=-0.5&positionY=0.1&positionZ=-1&range=enabled&rangeEnd=40&rangeStart=0&reflection=0.1&rotationX=0&rotationY=0&rotationZ=235&shader=defaults&toggleAxis=true&type=waterPlane&uAmplitude=0&uDensity=1.1&uFrequency=5.5&uSpeed=0.1&uStrength=2.4&uTime=0.2&wireframe=false&zoomOut=false
+
+Gradeint 2:
+https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColor1=%23af38ff&bgColor2=%23910aff&brightness=1.6&cAzimuthAngle=180&cDistance=3.7&cPolarAngle=100&cameraZoom=12.5&color1=%23809bd6&color2=%23910aff&color3=%23af38ff&destination=onCanvas&embedMode=off&envPreset=lobby&format=gif&fov=40&frameRate=10&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=0.9&positionX=0&positionY=0&positionZ=0&range=enabled&rangeEnd=40&rangeStart=0&reflection=0.5&rotationX=0&rotationY=0&rotationZ=180&shader=defaults&type=plane&uAmplitude=7&uDensity=1.1&uFrequency=5.5&uSpeed=0.4&uStrength=1.5&uTime=0&wireframe=false
+
+```

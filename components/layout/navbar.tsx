@@ -42,7 +42,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
   return (
     <header
-      className={`sticky top-0 z-[999] flex w-full justify-center bg-background/60 backdrop-blur-xl transition-all ${
+      className={`sticky top-0 z-[999] flex w-full animate-fade-down justify-center bg-background/60 opacity-0 backdrop-blur-xl transition-all [animation-delay:2200ms] ${
         scroll ? (scrolled ? "border-b" : "bg-transparent") : "border-b"
       }`}
     >

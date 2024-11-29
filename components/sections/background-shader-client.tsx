@@ -8,7 +8,7 @@ const BackgroundShader = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="fixed inset-0 z-[-1]">
+      <div className="fixed inset-0 z-[-1] hidden">
         <div
           className="absolute inset-0 brightness-200 dark:brightness-50 dark:contrast-150"
           style={{

@@ -55,7 +55,7 @@ export function FeaturesGrid() {
       {features.map((feature, index) => (
         <div
           key={index}
-          className="animate-fade-in-up"
+          className="animate-fade-up"
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <Card className="group transition-all duration-300 hover:shadow-lg">
