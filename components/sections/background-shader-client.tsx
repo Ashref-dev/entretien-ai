@@ -24,7 +24,7 @@ const BackgroundShaderClient = ({ className }: { className: string }) => {
   }
 
   return (
-    <div className="absolute inset-0 z-[-1] h-[calc(100vh+400px)]">
+    <div className="absolute inset-0 z-[-1] h-[calc(100vh+400px)] animate-fade-in opacity-0 [animation-delay:1000ms]">
       <div
         className="absolute inset-0 brightness-200 dark:brightness-50 dark:contrast-150"
         style={{
