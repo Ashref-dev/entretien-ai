@@ -14,7 +14,7 @@ export default function IndexPage() {
   return (
     <>
       {/* // aniamted background shader  */}
-      <BackgroundShaderClient className="absolute inset-0 z-[-1] h-screen w-full animate-fade-in opacity-0 [animation-delay:2000ms]" />
+      <BackgroundShaderClient className="absolute inset-0 z-[-1] h-[calc(100vh+200px)] w-full animate-fade-in opacity-0 [animation-delay:2200ms]" />
 
       <HeroLanding />
 

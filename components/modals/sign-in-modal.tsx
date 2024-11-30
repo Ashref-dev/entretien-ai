@@ -5,7 +5,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { signIn } from "next-auth/react";
 
@@ -28,6 +28,9 @@ function SignInModal({
     <Modal showModal={showSignInModal} setShowModal={setShowSignInModal}>
       <VisuallyHidden>
         <DialogTitle>Sign In</DialogTitle>
+        <DialogDescription>
+          Sign in to your account to continue.
+        </DialogDescription>
       </VisuallyHidden>
       <div className="w-full">
         <div className="flex flex-col items-center justify-center space-y-3 border-b bg-background px-4 py-6 pt-8 text-center md:px-16">
@@ -40,7 +43,7 @@ function SignInModal({
           </p>
         </div>
 
-        <div className="flex flex-col space-y-4 bg-secondary/50 px-4 py-8 md:px-16">
+        <div className="flex flex-col space-y-4 px-4 py-8 md:px-16">
           <Button
             variant="default"
             disabled={signInClicked}

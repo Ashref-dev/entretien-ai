@@ -18,7 +18,7 @@ const pricingFaqData = [
     id: "item-2",
     question: "How much does the Basic Monthly plan cost?",
     answer:
-      "The Basic Monthly plan is priced at $15 per month. It provides access to our core features and is billed on a monthly basis.",
+      "The Basic Monthly plan is priced at $10 per month. It provides access to our core features and is billed on a monthly basis.",
   },
   {
     id: "item-3",

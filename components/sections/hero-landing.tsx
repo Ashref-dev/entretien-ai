@@ -36,10 +36,10 @@ export default function HeroLanding() {
             >
               <div className="flex items-center gap-2">
                 <Badge className="gap-1.5 bg-primary/80 text-white transition-colors">
-                  <Icons.xTwitter className="size-4 text-black dark:text-white" />
+                  <Icons.xTwitter className="size-3 text-black dark:text-white sm:size-4" />
                 </Badge>
               </div>
-              <p className="text-sm font-medium text-black/90 dark:text-white/90">
+              <p className="text-xs font-medium text-black/90 dark:text-white/90 sm:text-sm">
                 Interview preparation in the AI era
               </p>
               <ArrowRightIcon className="size-3 text-black dark:text-white" />

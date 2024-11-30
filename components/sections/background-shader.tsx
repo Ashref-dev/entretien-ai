@@ -123,6 +123,21 @@ export function BackgroundShader({
       >
         <ShaderGradient control="query" urlString={gradientUrl} />
       </ShaderGradientCanvas>
+      <div
+          className="absolute inset-x-0 bottom-0 h-64"
+          style={{
+            background: `linear-gradient(to top, 
+            hsl(var(--background)) 0%,
+            hsl(var(--background)) 15%,
+            hsl(var(--background) / 0.95) 30%,
+            hsl(var(--background) / 0.8) 45%,
+            hsl(var(--background) / 0.6) 60%,
+            hsl(var(--background) / 0.3) 75%,
+            hsl(var(--background) / 0.1) 90%,
+            transparent 100%
+          )`,
+          }}
+        />
     </div>
   );
 }

@@ -47,7 +47,7 @@ const LogoCard = ({ url, name }: { url: string; name: string }) => {
       <img
         src={url}
         alt={`${name} logo`}
-        className="h-12 w-auto object-contain grayscale transition-all duration-200 hover:grayscale-0 dark:invert"
+        className="h-12 w-auto object-contain contrast-200 grayscale transition-all duration-200 hover:grayscale-0 dark:invert"
       />
     </figure>
   );
