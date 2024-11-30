@@ -59,7 +59,7 @@ export default function HeroLanding() {
               Land Your Dream Job With Our Interview Practice
             </h1>
 
-            <p className="max-w-2xl animate-fade-up text-balance leading-normal text-black/90 opacity-0 [animation-delay:600ms] dark:text-white sm:text-xl sm:leading-8">
+            <p className="max-w-2xl animate-fade-up text-balance font-medium leading-normal text-black/90 opacity-0 [animation-delay:600ms] dark:text-white sm:text-xl sm:leading-8">
               Get instant feedback, improve fast, and land your dream role. 95%
               of users increased confidence after just 3 sessions.
             </p>

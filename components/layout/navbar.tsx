@@ -73,7 +73,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
                     "flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm",
                     item.href.startsWith(`/${selectedLayout}`)
                       ? "text-foreground"
-                      : "text-foreground/60",
+                      : "text-foreground/80",
                     item.disabled && "cursor-not-allowed opacity-80",
                   )}
                 >
