@@ -114,7 +114,7 @@ export function CreateInterviewForm({
       });
 
       const initialResult = await response.json();
-      console.log("🚀 ~ onSubmit ~ initialResult:", initialResult)
+      console.log("🚀 ~ onSubmit ~ initialResult:", initialResult);
 
       if (!initialResult.success) {
         throw new Error(initialResult.error || "Failed to create interview");
@@ -122,7 +122,7 @@ export function CreateInterviewForm({
 
       // Start polling for status
       const pollInterval = 2000; // 2 seconds
-      const pollTimeout = 180000; // 3 minutes
+      const pollTimeout = 120000; // 120 seconds
       const startTime = Date.now();
 
       const checkStatus = async (): Promise<Interview> => {
@@ -130,7 +130,7 @@ export function CreateInterviewForm({
           `/api/interview?id=${initialResult.interviewId}`,
         );
         const result = await statusResponse.json();
-        console.log("🚀 ~ checkStatus ~ result:", result)
+        console.log("🚀 ~ checkStatus ~ result:", result);
 
         if (!result.success) {
           throw new Error(result.error || "Failed to check interview status");
@@ -143,6 +143,13 @@ export function CreateInterviewForm({
             throw new Error(result.error || "Interview processing failed");
           case "PROCESSING":
             if (Date.now() - startTime > pollTimeout) {
+              // Cleanup the timed out interview
+              await fetch(
+                `/api/interview/cleanup?id=${initialResult.interviewId}`,
+                {
+                  method: "DELETE",
+                },
+              );
               throw new Error("Interview processing timed out");
             }
             await new Promise((resolve) => setTimeout(resolve, pollInterval));
@@ -153,6 +160,7 @@ export function CreateInterviewForm({
       };
 
       const finalResult: Interview = await checkStatus();
+
       console.log("🚀 ~ onSubmit ~ finalResult:", finalResult);
 
       onSubmitInterview({
