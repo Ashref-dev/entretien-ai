@@ -37,7 +37,7 @@ export function constructMetadata({
     other: [
       {
         rel: "manifest",
-        url: "/_static/favicons/site.webmanifest",
+        url: "/_static/site.webmanifest",
       },
     ],
   },
@@ -99,7 +99,7 @@ export function constructMetadata({
     },
     icons,
     metadataBase: new URL(siteConfig.url),
-    manifest: "/_static/favicons/site.webmanifest",
+    manifest: "/site.webmanifest",
     ...(noIndex && {
       robots: {
         index: false,
