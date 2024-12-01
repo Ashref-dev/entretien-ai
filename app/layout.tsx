@@ -42,7 +42,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           sizes="180x180"
           href="_static/favicons/apple-touch-icon.png"
         />
-        <link rel="manifest" href="_static/favicons/site.webmanifest" />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body
         className={cn(
