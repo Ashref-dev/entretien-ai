@@ -72,7 +72,17 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
               <div className="flex h-14 items-center gap-2 p-4 lg:h-[60px]">
-                {isSidebarExpanded ? <ProjectSwitcher /> : null}
+                {/* {isSidebarExpanded ? <ProjectSwitcher /> : null} */}
+                {isSidebarExpanded ? (
+                  <div className="flex w-full items-center">
+                    <Link href="/" className="flex items-center space-x-2">
+                      <Icons.logo className="size-6" />
+                      <span className="font-urban text-lg font-bold">
+                        {siteConfig.name}
+                      </span>
+                    </Link>
+                  </div>
+                ) : null}
 
                 <Button
                   size="icon"
