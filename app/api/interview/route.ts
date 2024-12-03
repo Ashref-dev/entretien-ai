@@ -69,7 +69,19 @@ export async function POST(request: NextRequest) {
 }
 
 async function processInterview(interviewId: string, formData: FormData) {
+  console.log(`[${interviewId}] Starting interview processing`);
+
+  // Create an AbortController for the timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    console.log(
+      `[${interviewId}] Interview processing timed out after 120 seconds`,
+    );
+    controller.abort();
+  }, 120000); // 120 seconds timeout
+
   try {
+    console.log(`[${interviewId}] Extracting form data`);
     const pdf = formData.get("pdf") as File;
     const jobTitle = formData.get("jobTitle") as string;
     const jobDescription = formData.get("jobDescription") as string;
@@ -78,17 +90,32 @@ async function processInterview(interviewId: string, formData: FormData) {
     const targetCompany = formData.get("targetCompany") as string;
 
     if (!pdf) {
+      console.error(`[${interviewId}] PDF file is missing`);
       throw new Error("Invalid PDF file");
     }
 
+    console.log(`[${interviewId}] Loading PDF file: ${pdf.name}`);
     const pdfLoader = new PDFLoader(pdf, {
       parsedItemSeparator: " ",
     });
+
+    console.log(`[${interviewId}] Starting PDF parsing`);
     const docs = await pdfLoader.load();
+    console.log(
+      `[${interviewId}] PDF parsed successfully, pages: ${docs.length}`,
+    );
+
     const selectedDocuments = docs.filter(
       (doc) => doc.pageContent !== undefined,
     );
+    console.log(
+      `[${interviewId}] Filtered documents: ${selectedDocuments.length}`,
+    );
+
     const texts = selectedDocuments.map((doc) => doc.pageContent);
+    console.log(
+      `[${interviewId}] Preparing to call LLM with resume content length: ${texts.join(" ").length}`,
+    );
 
     const prompt = `
       Respond ONLY with a valid JSON object. Do not include any additional text or explanations.
@@ -137,9 +164,24 @@ async function processInterview(interviewId: string, formData: FormData) {
       8. All code examples must be on a single line
       `;
 
-    const aiResponseContent = await callLLM(prompt);
+    console.log(
+      `[${interviewId}] Calling LLM with prompt length: ${prompt.length}`,
+    );
+    const aiResponseContent = (await Promise.race([
+      callLLM(prompt),
+      new Promise((_, reject) => {
+        controller.signal.addEventListener("abort", () => {
+          reject(new Error("Interview generation timed out after 120 seconds"));
+        });
+      }),
+    ])) as string;
+    
+    console.log(
+      `[${interviewId}] Received LLM response, length: ${aiResponseContent.length}`,
+    );
 
     // Clean and format the response
+    console.log(`[${interviewId}] Cleaning and formatting LLM response`);
     const cleanedResponse = aiResponseContent
       .replace(/\n\s*/g, " ")
       .replace(/`{3}[\w]*\n?|\n?`{3}/g, "")
@@ -150,18 +192,31 @@ async function processInterview(interviewId: string, formData: FormData) {
 
     const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
     const jsonContent = jsonMatch ? jsonMatch[0] : "{}";
+    console.log(
+      `[${interviewId}] Extracted JSON content length: ${jsonContent.length}`,
+    );
 
     let aiResponse: { interviewData: any[] };
     try {
       aiResponse = JSON.parse(jsonContent);
+      console.log(`[${interviewId}] Successfully parsed JSON response`);
     } catch (parseError) {
+      console.error(
+        `[${interviewId}] Failed to parse JSON response:`,
+        parseError,
+      );
+      console.error(`[${interviewId}] Raw JSON content:`, jsonContent);
       throw new Error("Invalid JSON format in AI response");
     }
 
     if (!aiResponse.interviewData || !Array.isArray(aiResponse.interviewData)) {
+      console.error(`[${interviewId}] Invalid response structure:`, aiResponse);
       throw new Error("AI response does not contain interview data array");
     }
 
+    console.log(
+      `[${interviewId}] Formatting interview data, questions count: ${aiResponse.interviewData.length}`,
+    );
     const formattedData = {
       interviewData: aiResponse.interviewData
         .slice(0, 5)
@@ -180,6 +235,7 @@ async function processInterview(interviewId: string, formData: FormData) {
         })),
     };
 
+    console.log(`[${interviewId}] Updating interview in database`);
     // Update existing interview with generated data
     await prisma.interview.update({
       where: { id: interviewId },
@@ -195,8 +251,13 @@ async function processInterview(interviewId: string, formData: FormData) {
         },
       },
     });
+    console.log(`[${interviewId}] Interview processing completed successfully`);
   } catch (error) {
-    console.error("Error in processInterview:", error);
+    console.error(`[${interviewId}] Error in processInterview:`, error);
+    console.error(
+      `[${interviewId}] Error stack:`,
+      error instanceof Error ? error.stack : "No stack trace",
+    );
     await prisma.interview.update({
       where: { id: interviewId },
       data: {
@@ -205,6 +266,9 @@ async function processInterview(interviewId: string, formData: FormData) {
       },
     });
     throw error; // Re-throw to be caught by the caller
+  } finally {
+    console.log(`[${interviewId}] Cleaning up resources`);
+    clearTimeout(timeoutId);
   }
 }
 
