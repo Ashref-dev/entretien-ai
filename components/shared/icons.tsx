@@ -14,6 +14,7 @@ import {
   CreditCard,
   File,
   FileClock,
+  FilePenLine,
   FileText,
   HelpCircle,
   Home,
@@ -199,4 +200,5 @@ export const Icons = {
   award: Award,
   pieChart: PieChart,
   buildings: Building,
+  filePenLine: FilePenLine,
 };
