@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Interview } from "@/types";
 import {
@@ -65,11 +65,15 @@ function formatTime(seconds: number) {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+interface InterviewProcessProps {
+  interview: Interview;
+  initialStream?: MediaStream | null;
+}
+
 export default function InterviewProcess({
   interview,
-}: {
-  interview: Interview;
-}) {
+  initialStream,
+}: InterviewProcessProps) {
   const router = useRouter();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -78,7 +82,9 @@ export default function InterviewProcess({
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [transcripts, setTranscripts] = useState<string[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(
+    null,
+  ) as RefObject<HTMLVideoElement>;
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [hasRecorded, setHasRecorded] = useState<boolean[]>([]);
   const [isTypingMode, setIsTypingMode] = useState(false);
@@ -88,6 +94,7 @@ export default function InterviewProcess({
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
   const [isReady, setIsReady] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const loadingStates = [
     {
@@ -125,17 +132,39 @@ export default function InterviewProcess({
   }, [questions.length]);
 
   useEffect(() => {
-    if (videoRef.current && isVideoOn) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch((err) => console.error("Error accessing webcam:", err));
+    if (isVideoOn) {
+      if (initialStream) {
+        setStream(initialStream);
+        if (videoRef.current) {
+          videoRef.current.srcObject = initialStream;
+        }
+      } else {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((mediaStream) => {
+            setStream(mediaStream);
+            if (videoRef.current) {
+              videoRef.current.srcObject = mediaStream;
+            }
+          })
+          .catch((err) => console.error("Error accessing webcam:", err));
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
     }
 
+    const currentVideoRef = videoRef.current;
+
+    return () => {
+      if (!currentVideoRef) {
+        stream?.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [isVideoOn, initialStream]);
+
+  useEffect(() => {
     const SpeechRecognitionAPI =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
@@ -174,7 +203,8 @@ export default function InterviewProcess({
         recognitionRef.current.stop();
       }
     };
-  }, [isVideoOn, currentQuestionIndex]);
+  }, [currentQuestionIndex]);
+
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -237,7 +267,18 @@ export default function InterviewProcess({
     }
   };
 
-  const toggleVideo = () => setIsVideoOn(!isVideoOn);
+  const toggleVideo = () => {
+    setIsVideoOn(!isVideoOn);
+    if (!isVideoOn) {
+      if (stream && videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
 
   const finishInterview = async () => {
     console.log("Starting interview finish process...");
@@ -355,7 +396,16 @@ export default function InterviewProcess({
   };
 
   if (!isReady) {
-    return <InterviewGetReady onReady={() => setIsReady(true)} />;
+    return (
+      <InterviewGetReady
+        onReady={() => {setIsReady(true)}}
+        initialStream={stream}
+        videoRef={videoRef}
+        isVideoOn={isVideoOn}
+        setIsVideoOn={setIsVideoOn}
+        setStream={setStream}
+      />
+    );
   }
 
   return (

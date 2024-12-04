@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { ChevronRight, Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -11,6 +11,10 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface InterviewGetReadyProps {
   onReady: () => void;
+  initialStream: MediaStream | null;
+  videoRef: RefObject<HTMLVideoElement>;
+  isVideoOn: boolean;
+  setIsVideoOn: (value: boolean) => void;
 }
 
 interface SpeechRecognition extends EventTarget {
@@ -27,26 +31,22 @@ interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList;
 }
 
-export default function InterviewGetReady({ onReady }: InterviewGetReadyProps) {
+export default function InterviewGetReady({
+  onReady,
+  initialStream,
+  videoRef,
+  isVideoOn,
+  setIsVideoOn,
+  setStream,
+}: InterviewGetReadyProps & {
+  setStream: (stream: MediaStream | null) => void;
+}) {
   const [isMicOn, setIsMicOn] = useState(true);
-  const [isVideoOn, setIsVideoOn] = useState(true);
   const [transcript, setTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (videoRef.current && isVideoOn) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch((err) => console.error("Error accessing webcam:", err));
-    }
-
     const SpeechRecognitionAPI =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
@@ -75,7 +75,7 @@ export default function InterviewGetReady({ onReady }: InterviewGetReadyProps) {
         recognitionRef.current.stop();
       }
     };
-  }, [isVideoOn]);
+  }, []);
 
   const toggleMic = () => {
     setIsMicOn(!isMicOn);
