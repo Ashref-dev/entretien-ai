@@ -34,10 +34,10 @@ export async function generateMetadata({
       description: description,
     });
   } catch (error) {
-    console.error('Metadata generation error:', error);
+    console.error("Metadata generation error:", error);
     return constructMetadata({
-      title: 'Entretien AI',
-      description: 'Loading...',
+      title: "Entretien AI",
+      description: "Loading...",
     });
   }
 }
@@ -59,7 +59,7 @@ export default async function PagePage({
       page.images?.map(async (src: string) => ({
         src,
         blurDataURL: await getBlurDataURL(src),
-      })) ?? []
+      })) ?? [],
     );
 
     return (
@@ -77,7 +77,7 @@ export default async function PagePage({
       </article>
     );
   } catch (error) {
-    console.error('Page rendering error:', error);
-    return <div>Something went wrong. Please try again later.</div>;
+    console.error("Page rendering error:", error);
+    notFound();
   }
 }
