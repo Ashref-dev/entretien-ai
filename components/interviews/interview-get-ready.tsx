@@ -1,23 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CameraIcon } from "lucide-react";
+import { ChevronRight, Mic, MicOff, Video, VideoOff } from "lucide-react";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-
-import { Icons } from "../shared/icons";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MovingBorderButton } from "@/components/ui/moving-border-button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface InterviewGetReadyProps {
-  onStart: () => void;
-  mediaStream: MediaStream | null;
+  onReady: () => void;
 }
 
 interface SpeechRecognition extends EventTarget {
@@ -34,73 +27,28 @@ interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList;
 }
 
-interface SpeechRecognitionResultList {
-  length: number;
-  item(index: number): SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  isFinal: boolean;
-  [index: number]: SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-  transcript: string;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: new () => SpeechRecognition;
-    webkitSpeechRecognition: new () => SpeechRecognition;
-  }
-}
-
-export function InterviewGetReady({ onStart, mediaStream }: InterviewGetReadyProps) {
-  const [isCameraReady, setIsCameraReady] = useState(false);
-  const [isAudioReady, setIsAudioReady] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
+export default function InterviewGetReady({ onReady }: InterviewGetReadyProps) {
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(true);
   const [transcript, setTranscript] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    const initializeDevices = async () => {
-      try {
-        if (!mediaStream) {
-          return;
-        }
+    if (videoRef.current && isVideoOn) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch((err) => console.error("Error accessing webcam:", err));
+    }
 
-        const videoTracks = mediaStream.getVideoTracks();
-        const audioTracks = mediaStream.getAudioTracks();
-
-        setIsCameraReady(videoTracks.length > 0);
-        setIsAudioReady(audioTracks.length > 0);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream;
-        }
-
-        // Only set error if we actually have no tracks after initialization
-        if (videoTracks.length === 0 || audioTracks.length === 0) {
-          setError("Unable to access camera or microphone. Please ensure you have granted the necessary permissions.");
-        } else {
-          setError(null);
-        }
-      } catch (err) {
-        console.error("Error setting up devices:", err);
-        setError("An error occurred while setting up your devices.");
-      } finally {
-        setIsInitializing(false);
-      }
-    };
-
-    initializeDevices();
-  }, [mediaStream]);
-
-  useEffect(() => {
-    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognitionAPI =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
       recognitionRef.current.continuous = true;
@@ -118,7 +66,7 @@ export function InterviewGetReady({ onStart, mediaStream }: InterviewGetReadyPro
           }
         }
 
-        setTranscript((prev) => prev.trim() + " " + finalTranscript.trim());
+        setTranscript((prev) => prev + finalTranscript);
       };
     }
 
@@ -127,7 +75,19 @@ export function InterviewGetReady({ onStart, mediaStream }: InterviewGetReadyPro
         recognitionRef.current.stop();
       }
     };
-  }, []);
+  }, [isVideoOn]);
+
+  const toggleMic = () => {
+    setIsMicOn(!isMicOn);
+    if (recognitionRef.current) {
+      if (isMicOn) {
+        recognitionRef.current.stop();
+        setIsRecording(false);
+      }
+    }
+  };
+
+  const toggleVideo = () => setIsVideoOn(!isVideoOn);
 
   const toggleRecording = () => {
     setIsRecording(!isRecording);
@@ -143,97 +103,142 @@ export function InterviewGetReady({ onStart, mediaStream }: InterviewGetReadyPro
     }
   };
 
-  return (
-    <Card className="mx-auto w-full max-w-3xl">
-      <CardHeader>
-        <CardTitle className="text-center text-2xl font-bold">
-          Let&apos;s Get Ready for Your Interview
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {isInitializing ? (
-          <div className="text-center text-muted-foreground">
-            <p>Initializing camera and microphone...</p>
-          </div>
-        ) : error ? (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        ) : (
-          <>
-            <div className="space-y-4">
-              <div className="text-center text-muted-foreground">
-                <p>
-                  Please test your camera and microphone before starting the
-                  interview.
-                </p>
-                <p>Make sure you&apos;re in a quiet, well-lit environment.</p>
-              </div>
+  const handleStart = () => {
+    const container = document.getElementById("get-ready-container");
+    if (container) {
+      container.classList.remove("opacity-100");
+      container.classList.add("opacity-0");
+    }
+    setTimeout(onReady, 600);
+  };
 
-              <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+  return (
+    <div
+      id="get-ready-container"
+      className="duration-600 container relative mx-auto space-y-8 p-6 opacity-100 transition-opacity"
+    >
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 blur-[80px]" />
+      </div>
+
+      <div className="animate-fade-up space-y-3 text-center opacity-0 [animation-delay:100ms]">
+        <h1 className="text-4xl font-bold tracking-tight">Get Ready</h1>
+        <p className="text-lg text-muted-foreground">
+          Let&apos;s make sure everything works perfectly for your interview
+        </p>
+      </div>
+
+      <div className="flex animate-fade-up justify-end opacity-0 [animation-delay:200ms]">
+        <ToggleGroup type="multiple" variant="outline">
+          <ToggleGroupItem
+            value="mic"
+            aria-label="Toggle microphone"
+            onClick={toggleMic}
+          >
+            {isMicOn ? (
+              <Mic className="size-4" />
+            ) : (
+              <MicOff className="size-4" />
+            )}
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="video"
+            aria-label="Toggle video"
+            onClick={toggleVideo}
+          >
+            {isVideoOn ? (
+              <Video className="size-4" />
+            ) : (
+              <VideoOff className="size-4" />
+            )}
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card className="animate-fade-up overflow-hidden border-2 bg-card/50 opacity-0 backdrop-blur-sm [animation-delay:400ms]">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Camera Preview
+              <div
+                className={cn(
+                  "size-2.5 rounded-full transition-all duration-700",
+                  isVideoOn
+                    ? "bg-green-500 shadow-[0_0_8px_2px_rgba(34,197,94,0.2)]"
+                    : "bg-red-500 shadow-[0_0_8px_2px_rgba(239,68,68,0.2)]",
+                )}
+              />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-video overflow-hidden rounded-xl bg-black/90">
+              {isVideoOn ? (
                 <video
                   ref={videoRef}
                   autoPlay
-                  playsInline
                   muted
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
-              </div>
-
-              <div className="flex justify-center gap-8">
-                <div className="flex items-center gap-2">
-                  <CameraIcon
-                    className={
-                      isCameraReady ? "text-green-500" : "text-red-500"
-                    }
-                  />
-                  <span>
-                    {isCameraReady ? "Camera Ready" : "Camera Not Connected"}
-                  </span>
+              ) : (
+                <div className="flex size-full items-center justify-center text-white/70">
+                  Camera Off
                 </div>
-                <div className="flex items-center gap-2">
-                  <Icons.mic
-                    className={isAudioReady ? "text-green-500" : "text-red-500"}
-                  />
-                  <span>
-                    {isAudioReady
-                      ? "Microphone Ready"
-                      : "Microphone Not Connected"}
-                  </span>
-                </div>
-              </div>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle className="text-base">Test Your Microphone</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="min-h-[100px] rounded-lg bg-muted/20 p-3 text-sm">
-                    {transcript || "Your speech will appear here as you speak..."}
-                  </div>
-                  <Button
-                    onClick={toggleRecording}
-                    variant={isRecording ? "destructive" : "default"}
-                    className="w-full"
-                    disabled={!isAudioReady}
-                  >
-                    {isRecording ? "Stop Recording" : "Test Microphone"}
-                  </Button>
-                </CardContent>
-              </Card>
+              )}
             </div>
-          </>
-        )}
-      </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button
-          size="lg"
-          onClick={onStart}
-          disabled={!isCameraReady || !isAudioReady || !!error || isInitializing}
-        >
-          Start Interview
-        </Button>
-      </CardFooter>
-    </Card>
+          </CardContent>
+        </Card>
+
+        <Card className="animate-fade-up border-2 bg-card/50 opacity-0 backdrop-blur-sm [animation-delay:500ms]">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Microphone Test
+              <div
+                className={cn(
+                  "size-2.5 rounded-full transition-all duration-300",
+                  isMicOn
+                    ? "bg-green-500 shadow-[0_0_8px_2px_rgba(34,197,94,0.2)]"
+                    : "bg-red-500 shadow-[0_0_8px_2px_rgba(239,68,68,0.2)]",
+                )}
+              />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <Button
+              onClick={toggleRecording}
+              variant={isRecording ? "destructive" : "default"}
+              className="w-full"
+              disabled={!isMicOn}
+            >
+              {isRecording ? "Stop Test Recording" : "Start Test Recording"}
+            </Button>
+            <div className="min-h-[150px] rounded-xl border bg-black/5 p-4 text-sm backdrop-blur-sm">
+              {transcript || "Your test recording will appear here..."}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="animate-fade-up border-2 bg-card/50 opacity-0 backdrop-blur-sm [animation-delay:700ms]">
+        <CardContent className="py-8">
+          <div className="flex flex-col items-center space-y-6 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Ready to begin your interview?
+            </h2>
+            <p className="max-w-lg text-muted-foreground">
+              Make sure your camera and microphone are working properly. The
+              interview will begin immediately after clicking Start.
+            </p>
+            <MovingBorderButton
+              borderRadius="1rem"
+              className="border-neutral-200 bg-white font-medium text-black dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              onClick={handleStart}
+            >
+              Start Interview
+              <ChevronRight className="ml-2 size-5" />
+            </MovingBorderButton>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

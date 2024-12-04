@@ -22,6 +22,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
+import InterviewGetReady from "./interview-get-ready";
+
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
@@ -85,6 +87,7 @@ export default function InterviewProcess({
   const [loading, setLoading] = useState<boolean>(false);
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
+  const [isReady, setIsReady] = useState(false);
 
   const loadingStates = [
     {
@@ -351,12 +354,21 @@ export default function InterviewProcess({
     return hasRecorded[index] && transcripts[index]?.trim().length > 0;
   };
 
+  if (!isReady) {
+    return <InterviewGetReady onReady={() => setIsReady(true)} />;
+  }
+
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex w-full animate-fade-in items-center justify-center opacity-0">
       {/* Core Loader Modal */}
       <Loader loadingStates={loadingStates} loading={loading} duration={2000} />
-      <div className="container mx-auto space-y-4 p-2 sm:space-y-6 sm:p-4">
-        <h1 className="mb-4 text-center text-2xl font-bold sm:mb-6 sm:text-3xl">
+      <div className="container relative mx-auto space-y-4 p-2 sm:space-y-6">
+        {/* Background Gradient Effect */}
+        <div className="absolute inset-0 -z-20 overflow-hidden opacity-70">
+          <div className="absolute left-1/2 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 blur-[80px]" />
+        </div>
+
+        <h1 className="text-center text-2xl font-bold tracking-tight sm:mb-6 sm:text-3xl">
           Interview Session
         </h1>
 
@@ -396,8 +408,8 @@ export default function InterviewProcess({
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
-          <Card className="col-span-1 md:col-span-2">
-            <CardHeader className="bg-muted/50">
+          <Card className="col-span-1 border-2 bg-card/50 backdrop-blur-sm md:col-span-2">
+            <CardHeader className="bg-muted/30 backdrop-blur-sm">
               <CardTitle className="text-lg sm:text-xl">
                 Question {currentQuestionIndex + 1}
               </CardTitle>
@@ -409,12 +421,12 @@ export default function InterviewProcess({
             </CardContent>
           </Card>
 
-          <Card className="col-span-1">
-            <CardHeader className="bg-muted/50">
+          <Card className="col-span-1 border-2 bg-card/50 backdrop-blur-sm">
+            <CardHeader className="bg-muted/30 backdrop-blur-sm">
               <CardTitle className="text-base sm:text-lg">Webcam</CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
-              <div className="aspect-video overflow-hidden rounded-lg bg-black">
+              <div className="aspect-video overflow-hidden rounded-lg bg-black/90">
                 {isVideoOn ? (
                   <video
                     ref={videoRef}
@@ -423,7 +435,7 @@ export default function InterviewProcess({
                     className="size-full object-cover"
                   />
                 ) : (
-                  <div className="flex size-full items-center justify-center text-white">
+                  <div className="flex size-full items-center justify-center text-white/70">
                     Camera Off
                   </div>
                 )}
@@ -431,8 +443,8 @@ export default function InterviewProcess({
             </CardContent>
           </Card>
 
-          <Card className="col-span-1 flex h-full flex-col">
-            <CardHeader className="flex flex-row items-center justify-between bg-muted/50">
+          <Card className="col-span-1 flex h-full flex-col border-2 bg-card/50 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between bg-muted/30 backdrop-blur-sm">
               <CardTitle className="text-base sm:text-lg">
                 Your Answer
               </CardTitle>
@@ -452,7 +464,7 @@ export default function InterviewProcess({
                 {isTypingMode ? (
                   <Textarea
                     placeholder="Type your answer here..."
-                    className="min-h-40 flex-1 resize-none"
+                    className="min-h-40 flex-1 resize-none bg-white/5 backdrop-blur-sm"
                     value={transcripts[currentQuestionIndex] || ""}
                     onChange={(e) => {
                       const newTranscripts = [...transcripts];
@@ -466,7 +478,7 @@ export default function InterviewProcess({
                     }}
                   />
                 ) : (
-                  <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-muted/20 p-3 text-sm sm:p-4 sm:text-base">
+                  <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-white/5 p-3 text-sm backdrop-blur-sm sm:p-4 sm:text-base">
                     {transcripts[currentQuestionIndex] ||
                       "Your speech will appear here as you speak..."}
                   </div>
@@ -498,7 +510,7 @@ export default function InterviewProcess({
 
           <div className="relative order-first flex-1 px-4 sm:order-none">
             <div className="absolute inset-0 flex items-center">
-              <div className="h-1 w-full rounded-full bg-muted">
+              <div className="h-1 w-full rounded-full bg-muted/30 backdrop-blur-sm">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-300"
                   style={{
@@ -543,17 +555,8 @@ export default function InterviewProcess({
             className="w-full sm:w-[100px]"
             disabled={!isAnswerValid(currentQuestionIndex)}
           >
-            {isLastQuestion ? (
-              <>
-                Finish
-                <Check className="ml-2 size-4" />
-              </>
-            ) : (
-              <>
-                Next
-                <ChevronRight className="ml-2 size-4" />
-              </>
-            )}
+            {isLastQuestion ? "Finish" : "Next"}
+            <ChevronRight className="ml-2 size-4" />
           </Button>
         </div>
       </div>
