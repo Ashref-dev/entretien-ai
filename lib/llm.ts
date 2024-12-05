@@ -21,88 +21,72 @@ function createAIError(
 }
 
 export async function callLLM(prompt: string): Promise<string> {
-  const timeout = 30000; // 30 seconds timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[LLM ${requestId}] Starting LLM call sequence with prompt length: ${prompt.length}`);
+  const startTime = performance.now();
+
+  // Add timeout wrapper
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`[LLM ${requestId}] Global LLM timeout after 30 seconds`));
+    }, 30000); // 30 second timeout
+  });
 
   try {
-    console.log("[LLM] Starting LLM call sequence with prompt length:", prompt.length);
-    const startTime = performance.now();
-
-    const grokPromise = (async () => {
-      try {
-        console.log("[LLM] Attempting Grok AI call...");
-        const grokStartTime = performance.now();
-        const grokResponse = await callGrokAI(prompt);
-        console.log("[LLM] Grok AI call successful", {
-          duration: `${(performance.now() - grokStartTime).toFixed(2)}ms`,
-          responseLength: grokResponse.length,
-        });
-        return grokResponse;
-      } catch (error) {
-        throw createAIError(
-          (error as Error).message || "Unknown Grok error",
-          "Grok",
-          (error as any).statusCode,
-        );
-      }
-    })();
-
-    const groqPromise = (async () => {
-      try {
-        console.log("[LLM] Attempting Groq AI call...");
-        const groqStartTime = performance.now();
-        const groqResponse = await callGroqAI(prompt);
-        console.log("[LLM] Groq AI call successful", {
-          duration: `${(performance.now() - groqStartTime).toFixed(2)}ms`,
-          responseLength: groqResponse.length,
-        });
-        return groqResponse;
-      } catch (error) {
-        throw createAIError(
-          (error as Error).message || "Unknown Groq error",
-          "Groq",
-          (error as any).statusCode,
-        );
-      }
-    })();
-
-    const togetherPromise = (async () => {
-      try {
-        console.log("[LLM] Attempting Together AI call...");
-        const togetherStartTime = performance.now();
-        const togetherResponse = await callTogetherAI(prompt);
-        console.log("[LLM] Together AI call successful", {
-          duration: `${(performance.now() - togetherStartTime).toFixed(2)}ms`,
-          responseLength: togetherResponse.length,
-        });
-        return togetherResponse;
-      } catch (error) {
-        throw createAIError(
-          (error as Error).message || "Unknown Together error",
-          "Together",
-          (error as any).statusCode,
-        );
-      }
-    })();
-
-    // Race all promises with timeout
     const response = await Promise.race([
-      grokPromise,
-      groqPromise,
-      togetherPromise,
-      new Promise((_, reject) => {
-        controller.signal.addEventListener("abort", () => {
-          reject(new Error("LLM call timed out after 30 seconds"));
-        });
-      }),
-    ]);
-
-    clearTimeout(timeoutId);
+      tryAllProviders(prompt, requestId),
+      timeoutPromise
+    ]) as string;
+    
+    console.log(`[LLM ${requestId}] Call successful, total duration: ${(performance.now() - startTime).toFixed(2)}ms`);
     return response;
   } catch (error) {
-    clearTimeout(timeoutId);
-    console.error("[LLM] All AI providers failed:", error);
-    throw new Error("Failed to get a valid response from any AI provider");
+    console.error(`[LLM ${requestId}] Fatal error in LLM call:`, error);
+    throw error;
+  }
+}
+
+async function tryAllProviders(prompt: string, requestId: string): Promise<string> {
+  // Try Grok
+  try {
+    console.log(`[LLM ${requestId}] Attempting Grok AI call...`);
+    const grokStartTime = performance.now();
+    const grokResponse = await callGrokAI(prompt);
+    console.log(`[LLM ${requestId}] Grok AI call successful`, {
+      duration: `${(performance.now() - grokStartTime).toFixed(2)}ms`,
+      responseLength: grokResponse.length,
+    });
+    return grokResponse;
+  } catch (error) {
+    console.error(`[LLM ${requestId}] Grok AI failed:`, error);
+  }
+
+  // Try Groq
+  try {
+    console.log(`[LLM ${requestId}] Attempting Groq AI call...`);
+    const groqStartTime = performance.now();
+    const groqResponse = await callGroqAI(prompt);
+    console.log(`[LLM ${requestId}] Groq AI call successful`, {
+      duration: `${(performance.now() - groqStartTime).toFixed(2)}ms`,
+      responseLength: groqResponse.length,
+    });
+    return groqResponse;
+  } catch (error) {
+    console.error(`[LLM ${requestId}] Groq AI failed:`, error);
+  }
+
+  // Try Together AI
+  try {
+    console.log(`[LLM ${requestId}] Attempting Together AI call (fallback)...`);
+    const togetherStartTime = performance.now();
+    const togetherResponse = await callTogetherAI(prompt);
+    console.log(`[LLM ${requestId}] Together AI call successful`, {
+      duration: `${(performance.now() - togetherStartTime).toFixed(2)}ms`,
+      responseLength: togetherResponse.length,
+    });
+    return togetherResponse;
+  } catch (error) {
+    console.error(`[LLM ${requestId}] Together AI failed:`, error);
+    throw new Error(`[LLM ${requestId}] All AI providers failed`);
   }
 }

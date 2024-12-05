@@ -8,9 +8,13 @@ import { callLLM } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[Interview ${requestId}] Starting interview creation`);
+  
   try {
     const user = await getCurrentUser();
     if (!user) {
+      console.log(`[Interview ${requestId}] Unauthorized request`);
       return new Response(
         JSON.stringify({ success: false, error: "Unauthorized" }),
         { status: 401 },
@@ -19,6 +23,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const interviewId = uuidv4();
+    console.log(`[Interview ${requestId}] Created interview ID: ${interviewId}`);
 
     // Create initial interview record
     const interview = await prisma.interview.create({
@@ -35,19 +40,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Start background processing
-    processInterview(interview.id, formData).catch((error) => {
-      console.error("Error in background processing:", error);
-      prisma.interview
-        .update({
+    console.log(`[Interview ${requestId}] Initial record created, starting background processing`);
+
+    // Start background processing with error handling
+    processInterview(interview.id, formData)
+      .catch((error) => {
+        console.error(`[Interview ${requestId}] Background processing error:`, error);
+        return prisma.interview.update({
           where: { id: interview.id },
           data: {
             status: "ERROR",
-            errorMessage: error.message,
+            errorMessage: error.message || "Unknown error in background processing",
           },
-        })
-        .catch(console.error);
-    });
+        });
+      })
+      .then(() => {
+        console.log(`[Interview ${requestId}] Background processing initiated`);
+      });
 
     return new Response(
       JSON.stringify({
@@ -57,11 +66,11 @@ export async function POST(request: NextRequest) {
       }),
     );
   } catch (error) {
+    console.error(`[Interview ${requestId}] Fatal error:`, error);
     return new Response(
       JSON.stringify({
         success: false,
-        error:
-          error instanceof Error ? error.message : "Failed to create interview",
+        error: error instanceof Error ? error.message : "Failed to create interview",
       }),
       { status: 500 },
     );

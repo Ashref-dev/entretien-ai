@@ -126,37 +126,48 @@ export function CreateInterviewForm({
       const startTime = Date.now();
 
       const checkStatus = async (): Promise<Interview> => {
-        const statusResponse = await fetch(
-          `/api/interview?id=${initialResult.interviewId}`,
-        );
-        const result = await statusResponse.json();
-        console.log("🚀 ~ checkStatus ~ result:", result);
+        const pollStartTime = Date.now();
+        console.log(`[Poll] Starting status check for interview: ${initialResult.interviewId}`);
 
-        if (!result.success) {
-          throw new Error(result.error || "Failed to check interview status");
-        }
+        const poll = async (): Promise<Interview> => {
+          try {
+            const statusResponse = await fetch(
+              `/api/interview?id=${initialResult.interviewId}`,
+            );
+            const result = await statusResponse.json();
+            console.log(`[Poll] Status check result:`, result);
 
-        switch (result.status) {
-          case "COMPLETED":
-            return result.data;
-          case "ERROR":
-            throw new Error(result.error || "Interview processing failed");
-          case "PROCESSING":
-            if (Date.now() - startTime > pollTimeout) {
-              // Cleanup the timed out interview
-              await fetch(
-                `/api/interview/cleanup?id=${initialResult.interviewId}`,
-                {
-                  method: "DELETE",
-                },
-              );
-              throw new Error("Interview processing timed out");
+            if (!result.success) {
+              throw new Error(result.error || "Failed to check interview status");
             }
-            await new Promise((resolve) => setTimeout(resolve, pollInterval));
-            return checkStatus();
-          default:
-            throw new Error("Unknown interview status");
-        }
+
+            switch (result.status) {
+              case "COMPLETED":
+                console.log("[Poll] Interview completed successfully");
+                return result.data;
+              case "ERROR":
+                console.error("[Poll] Interview processing failed:", result.error);
+                throw new Error(result.error || "Interview processing failed");
+              case "PROCESSING":
+                if (Date.now() - pollStartTime > pollTimeout) {
+                  console.error("[Poll] Interview processing timed out");
+                  await fetch(`/api/interview/cleanup?id=${initialResult.interviewId}`, {
+                    method: "DELETE",
+                  });
+                  throw new Error("Interview processing timed out");
+                }
+                await new Promise((resolve) => setTimeout(resolve, pollInterval));
+                return poll();
+              default:
+                throw new Error("Unknown interview status");
+            }
+          } catch (error) {
+            console.error("[Poll] Error during status check:", error);
+            throw error;
+          }
+        };
+
+        return poll();
       };
 
       const finalResult: Interview = await checkStatus();
