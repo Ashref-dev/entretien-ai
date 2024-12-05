@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -10,12 +10,14 @@ import { docsConfig } from "@/config/docs";
 import { marketingConfig } from "@/config/marketing";
 import { cn } from "@/lib/utils";
 import { DocsSidebarNav } from "@/components/docs/sidebar-nav";
+import { ModalContext } from "@/components/modals/providers";
 
 import { ModeToggle } from "./mode-toggle";
 
 export function NavMobile() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const { setShowSignInModal } = useContext(ModalContext);
   const selectedLayout = useSelectedLayoutSegment();
   const documentation = selectedLayout === "docs";
 
@@ -40,21 +42,34 @@ export function NavMobile() {
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "fixed right-2 top-2.5 z-[101] rounded-full p-2 transition-colors duration-200 hover:bg-muted focus:outline-none active:bg-muted md:hidden",
+          "fixed right-2 top-2.5 z-[1000] rounded-full p-2 transition-all duration-300 ease-in-out hover:bg-muted focus:outline-none active:bg-muted md:hidden",
           open && "hover:bg-muted active:bg-muted",
         )}
       >
-        {open ? (
-          <X className="size-5 text-muted-foreground" />
-        ) : (
-          <Menu className="size-5 text-muted-foreground" />
-        )}
+        <div className="relative size-5">
+          <div
+            className={cn(
+              "absolute left-0 top-0 flex size-full items-center justify-center transition-all duration-300",
+              open ? "rotate-180 opacity-100" : "rotate-0 opacity-0",
+            )}
+          >
+            <X className="size-5 text-muted-foreground" />
+          </div>
+          <div
+            className={cn(
+              "absolute left-0 top-0 flex size-full items-center justify-center transition-all duration-300",
+              open ? "rotate-180 opacity-0" : "rotate-0 opacity-100",
+            )}
+          >
+            <Menu className="size-5 text-muted-foreground" />
+          </div>
+        </div>
       </button>
 
       <nav
         className={cn(
-          "fixed inset-0 z-[100] hidden w-full overflow-auto bg-background px-5 py-16 lg:hidden",
-          open && "block",
+          "fixed inset-0 z-[100] w-full overflow-auto bg-background px-5 py-16 transition-all duration-300 ease-in-out lg:hidden",
+          open ? "translate-x-0" : "translate-x-full",
         )}
       >
         <ul className="grid divide-y divide-muted">
@@ -92,20 +107,22 @@ export function NavMobile() {
                   onClick={() => setOpen(false)}
                   className="flex w-full font-medium capitalize"
                 >
-                  interviews
+                  Interviews
                 </Link>
               </li>
             </>
           ) : (
             <>
               <li className="py-3">
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    setShowSignInModal(true);
+                  }}
                   className="flex w-full font-medium capitalize"
                 >
-                  Login
-                </Link>
+                  Sign in
+                </button>
               </li>
             </>
           )}
@@ -121,6 +138,14 @@ export function NavMobile() {
           <ModeToggle />
         </div>
       </nav>
+
+      <div
+        className={cn(
+          "fixed inset-0 z-[90] bg-background/80 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
+          open ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+        onClick={() => setOpen(false)}
+      />
     </>
   );
 }

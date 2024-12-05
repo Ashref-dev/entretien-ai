@@ -410,7 +410,7 @@ export default function InterviewProcess({
   }
 
   return (
-    <div className="flex w-full animate-fade-in items-center justify-center opacity-0">
+    <div className="flex w-full items-center justify-center">
       {/* Core Loader Modal */}
       <Loader loadingStates={loadingStates} loading={loading} duration={2000} />
       <div className="container relative mx-auto space-y-4 p-2 sm:space-y-6">

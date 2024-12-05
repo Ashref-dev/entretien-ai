@@ -22,23 +22,29 @@ function createAIError(
 
 export async function callLLM(prompt: string): Promise<string> {
   const requestId = Math.random().toString(36).substring(7);
-  console.log(`[LLM ${requestId}] Starting LLM call sequence with prompt length: ${prompt.length}`);
+  console.log(
+    `[LLM ${requestId}] Starting LLM call sequence with prompt length: ${prompt.length}`,
+  );
   const startTime = performance.now();
 
   // Add timeout wrapper
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
-      reject(new Error(`[LLM ${requestId}] Global LLM timeout after 30 seconds`));
+      reject(
+        new Error(`[LLM ${requestId}] Global LLM timeout after 30 seconds`),
+      );
     }, 30000); // 30 second timeout
   });
 
   try {
-    const response = await Promise.race([
+    const response = (await Promise.race([
       tryAllProviders(prompt, requestId),
-      timeoutPromise
-    ]) as string;
-    
-    console.log(`[LLM ${requestId}] Call successful, total duration: ${(performance.now() - startTime).toFixed(2)}ms`);
+      timeoutPromise,
+    ])) as string;
+
+    console.log(
+      `[LLM ${requestId}] Call successful, total duration: ${(performance.now() - startTime).toFixed(2)}ms`,
+    );
     return response;
   } catch (error) {
     console.error(`[LLM ${requestId}] Fatal error in LLM call:`, error);
@@ -46,21 +52,10 @@ export async function callLLM(prompt: string): Promise<string> {
   }
 }
 
-async function tryAllProviders(prompt: string, requestId: string): Promise<string> {
-  // Try Grok
-  try {
-    console.log(`[LLM ${requestId}] Attempting Grok AI call...`);
-    const grokStartTime = performance.now();
-    const grokResponse = await callGrokAI(prompt);
-    console.log(`[LLM ${requestId}] Grok AI call successful`, {
-      duration: `${(performance.now() - grokStartTime).toFixed(2)}ms`,
-      responseLength: grokResponse.length,
-    });
-    return grokResponse;
-  } catch (error) {
-    console.error(`[LLM ${requestId}] Grok AI failed:`, error);
-  }
-
+async function tryAllProviders(
+  prompt: string,
+  requestId: string,
+): Promise<string> {
   // Try Groq
   try {
     console.log(`[LLM ${requestId}] Attempting Groq AI call...`);
@@ -73,6 +68,20 @@ async function tryAllProviders(prompt: string, requestId: string): Promise<strin
     return groqResponse;
   } catch (error) {
     console.error(`[LLM ${requestId}] Groq AI failed:`, error);
+  }
+
+  // Try Grok
+  try {
+    console.log(`[LLM ${requestId}] Attempting Grok AI call...`);
+    const grokStartTime = performance.now();
+    const grokResponse = await callGrokAI(prompt);
+    console.log(`[LLM ${requestId}] Grok AI call successful`, {
+      duration: `${(performance.now() - grokStartTime).toFixed(2)}ms`,
+      responseLength: grokResponse.length,
+    });
+    return grokResponse;
+  } catch (error) {
+    console.error(`[LLM ${requestId}] Grok AI failed:`, error);
   }
 
   // Try Together AI

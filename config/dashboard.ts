@@ -15,7 +15,7 @@ export const sidebarLinks: SidebarNavItem[] = [
       {
         href: "/interviews",
         icon: "interviews",
-        title: "interviews",
+        title: "Interviews",
         authorizeOnly: UserRole.USER,
       },
       {
@@ -36,6 +36,7 @@ export const sidebarLinks: SidebarNavItem[] = [
         icon: "filePenLine",
         title: "Resume builder",
         authorizeOnly: UserRole.USER,
+        disabled: true,
       },
 
       {
