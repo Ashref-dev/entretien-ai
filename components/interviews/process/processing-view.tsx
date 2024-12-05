@@ -1,25 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 
-import { useInterview } from "./interview-context";
+import { useInterview } from "../interview-context";
 
 export default function ProcessingView() {
-  const { interviewData, setCurrentStep } = useInterview();
+  const { interviewData } = useInterview();
   const [error, setError] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const processInterview = async () => {
-      if (!interviewData) return;
+      if (!interviewData) {
+        setError(true);
+        return;
+      }
 
       try {
         console.log("Processing interview...");
 
-        setCurrentStep("results");
+        // If all validations pass, proceed to results
+        toast.success("Interview data validated successfully");
+        router.push(`/interviews/${interviewData.id}`);
       } catch (error) {
         console.error("Error processing interview:", error);
         toast.error("Error processing interview, please try again.");

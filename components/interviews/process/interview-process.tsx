@@ -22,7 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-import InterviewGetReady from "./interview-get-ready";
+import InterviewGetReady from "../process/interview-get-ready";
 
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
@@ -204,7 +204,6 @@ export default function InterviewProcess({
       }
     };
   }, [currentQuestionIndex]);
-
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -398,7 +397,9 @@ export default function InterviewProcess({
   if (!isReady) {
     return (
       <InterviewGetReady
-        onReady={() => {setIsReady(true)}}
+        onReady={() => {
+          setIsReady(true);
+        }}
         initialStream={stream}
         videoRef={videoRef}
         isVideoOn={isVideoOn}

@@ -6,10 +6,10 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
-import { CreateInterviewModal } from "../modals/create-interview-modal";
-import { AnimatedIcon } from "../shared/animated-icon";
-import { MovingBorderButton } from "../ui/moving-border-button";
-import { useInterview } from "./interview-context";
+import { CreateInterviewModal } from "../../modals/create-interview-modal";
+import { AnimatedIcon } from "../../shared/animated-icon";
+import { MovingBorderButton } from "../../ui/moving-border-button";
+import { useInterview } from "../interview-context";
 
 const CreateInterview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -2,10 +2,9 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-import CreateInterview from "./create-interview";
+import CreateInterview from "./create/create-interview";
 import { useInterview } from "./interview-context";
-import ProcessingView from "./processing-view";
-import ResultsView from "./results-view";
+import ProcessingView from "./process/processing-view";
 
 export function InterviewContainer() {
   const { currentStep } = useInterview();
@@ -26,7 +25,6 @@ export function InterviewContainer() {
     <div className="rounded-lg border border-dashed p-8 shadow-sm animate-in fade-in-50">
       {currentStep === "initial" && <CreateInterview />}
       {currentStep === "processing" && <ProcessingView />}
-      {currentStep === "results" && <ResultsView />}
     </div>
   );
 }

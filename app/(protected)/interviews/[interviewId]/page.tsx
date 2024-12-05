@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 
 import { prisma } from "@/lib/db";
-import InterviewProcess from "@/components/interviews/interview-process";
+import InterviewProcess from "@/components/interviews/process/interview-process";
 
 import InterviewLoading from "./loading";
 
