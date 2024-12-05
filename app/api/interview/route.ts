@@ -78,18 +78,29 @@ export async function POST(request: NextRequest) {
 }
 
 async function processInterview(interviewId: string, formData: FormData) {
-  console.log(`[${interviewId}] Starting interview processing`);
-
-  // Create an AbortController for the timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
-    console.log(
-      `[${interviewId}] Interview processing timed out after 120 seconds`,
-    );
-    controller.abort();
-  }, 120000); // 120 seconds timeout
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[Interview ${requestId}] Starting interview processing`);
 
   try {
+    // Validate database connection first
+    await prisma.$connect();
+    console.log(`[Interview ${requestId}] Database connection established`);
+
+    // Update interview status
+    await prisma.interview.update({
+      where: { id: interviewId },
+      data: { status: "PROCESSING" },
+    });
+
+    // Create an AbortController for the timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      console.log(
+        `[${interviewId}] Interview processing timed out after 120 seconds`,
+      );
+      controller.abort();
+    }, 120000); // 120 seconds timeout
+
     console.log(`[${interviewId}] Extracting form data`);
     const pdf = formData.get("pdf") as File;
     const jobTitle = formData.get("jobTitle") as string;
@@ -262,22 +273,29 @@ async function processInterview(interviewId: string, formData: FormData) {
     });
     console.log(`[${interviewId}] Interview processing completed successfully`);
   } catch (error) {
-    console.error(`[${interviewId}] Error in processInterview:`, error);
-    console.error(
-      `[${interviewId}] Error stack:`,
-      error instanceof Error ? error.stack : "No stack trace",
-    );
-    await prisma.interview.update({
-      where: { id: interviewId },
-      data: {
-        status: "ERROR",
-        errorMessage: error instanceof Error ? error.message : "Unknown error",
-      },
-    });
-    throw error; // Re-throw to be caught by the caller
-  } finally {
-    console.log(`[${interviewId}] Cleaning up resources`);
-    clearTimeout(timeoutId);
+    console.error(`[Interview ${requestId}] Error in processInterview:`, error);
+    
+    // Attempt to update interview status with error
+    try {
+      await prisma.interview.update({
+        where: { id: interviewId },
+        data: {
+          status: "ERROR",
+          errorMessage: error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      });
+    } catch (updateError) {
+      console.error(`[Interview ${requestId}] Failed to update error status:`, updateError);
+    }
+
+    // Ensure connection is closed
+    try {
+      await prisma.$disconnect();
+    } catch (disconnectError) {
+      console.error(`[Interview ${requestId}] Error disconnecting:`, disconnectError);
+    }
+
+    throw error;
   }
 }
 
