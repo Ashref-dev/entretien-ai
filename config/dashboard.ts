@@ -29,6 +29,7 @@ export const sidebarLinks: SidebarNavItem[] = [
         icon: "fileText",
         title: "My Resumes",
         authorizeOnly: UserRole.USER,
+        disabled: true,
       },
       {
         href: "/builder",
@@ -42,6 +43,7 @@ export const sidebarLinks: SidebarNavItem[] = [
         icon: "billing",
         title: "Billing",
         authorizeOnly: UserRole.USER,
+        disabled: true,
       },
 
       // { href: "/charts", icon: "lineChart", title: "Charts" },
