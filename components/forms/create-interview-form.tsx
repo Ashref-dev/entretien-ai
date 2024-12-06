@@ -4,12 +4,13 @@ import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Info, Loader } from "lucide-react";
+import { FileIcon, Info, Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { InterviewDifficultyEnum } from "@/lib/validations/interview";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -36,6 +37,14 @@ import {
 } from "@/components/ui/tooltip";
 
 import { FileUpload } from "../ui/file-upload";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 // Define the form schema
 const formSchema = z.object({
@@ -45,6 +54,28 @@ const formSchema = z.object({
   yearsOfExperience: z.string().min(1, "Experience level is required"),
   targetCompany: z.string().optional(),
 });
+
+interface Resume {
+  id: string;
+  name: string;
+  size: number;
+  uploadedDate: string;
+}
+
+const resumes: Resume[] = [
+  {
+    id: "1",
+    name: "Resume 1",
+    size: 100,
+    uploadedDate: "2024-01-01",
+  },
+  {
+    id: "2",
+    name: "Resume 2",
+    size: 200,
+    uploadedDate: "2024-01-02",
+  },
+];
 
 interface InterviewResponse {
   success: boolean;
@@ -350,7 +381,58 @@ export function CreateInterviewForm({
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           >
-            <Label className="text-sm font-medium">Upload Resume</Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium">Upload Resume</Label>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary"
+                  >
+                    <Plus className="size-4" />
+                    Add existing resume
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center space-x-2">
+                      Resumes
+                      <Badge variant="secondary" className="ml-2">
+                        {resumes.length}
+                      </Badge>
+                    </SheetTitle>
+                    <SheetDescription>
+                      Choose a resume from recent uploads to use for this
+                      interview.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4 flex flex-col gap-4">
+                    {resumes.map((resume) => (
+                      <div
+                        key={resume.id}
+                        className="flex cursor-pointer items-center justify-between gap-4 rounded-md border border-transparent px-4 py-2 transition-all duration-200 hover:border-primary/20 hover:bg-black/5 dark:hover:border-white/20 dark:hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-4">
+                          <FileIcon className="size-6" />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">
+                              {resume.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {resume.size} KB
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(resume.uploadedDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
             <div className="group mt-2 h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
               <FileUpload onChange={handleFileUpload} />
             </div>
