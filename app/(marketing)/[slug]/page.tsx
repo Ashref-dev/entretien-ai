@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { allPages } from "contentlayer/generated";
 
 import { Mdx } from "@/components/content/mdx-components";
 
 import "@/styles/mdx.css";
 
 import { Metadata } from "next";
+import { allPages } from "@/.contentlayer/generated";
 
 import { constructMetadata, getBlurDataURL } from "@/lib/utils";
 
