@@ -48,7 +48,7 @@ export default function HeroLanding() {
             <div className="flex animate-fade-down items-center justify-center gap-4 opacity-0 [animation-delay:1600ms]">
               <AnimatedIcon
                 icon="consultation"
-                className="size-40 brightness-[3] invert dark:invert-0"
+                className="size-40 brightness-[1] lg:brightness-[3] lg:invert dark:lg:invert-0"
                 playMode="loop"
                 hoverDuration={3000}
                 speed={0.6}
