@@ -19,7 +19,7 @@ const BackgroundShaderClient = ({ className }: { className: string }) => {
       </div>
 
       {/* Show gradient background on smaller screens */}
-      <div className="absolute inset-0 z-[-1] h-[calc(100vh+400px)] animate-fade-in opacity-0 [animation-delay:1000ms] md:hidden">
+      <div className="hidden absolute inset-0 z-[-1] h-[calc(100vh+400px)] animate-fade-in opacity-0 [animation-delay:1000ms] md:hidden">
         <div
           className="absolute inset-0 brightness-200 dark:brightness-50 dark:contrast-150"
           style={{
