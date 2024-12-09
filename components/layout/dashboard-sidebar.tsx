@@ -12,14 +12,19 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ProjectSwitcher from "@/components/dashboard/project-switcher";
 import { UpgradeCard } from "@/components/dashboard/upgrade-card";
 import { Icons } from "@/components/shared/icons";
 
@@ -206,20 +211,24 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col p-0">
+          <SheetTitle className="hidden">Mobile sidebar</SheetTitle>
+          <SheetDescription className="hidden">
+            Access your navigation links in the sidebar
+          </SheetDescription>
           <ScrollArea className="h-full overflow-y-auto">
             <div className="flex h-screen flex-col">
               <nav className="flex flex-1 flex-col gap-y-8 p-6 text-lg font-medium">
                 <Link
                   href="#"
-                  className="flex items-center gap-2 text-lg font-semibold"
+                  className="flex items-center gap-2 font-semibold"
                 >
-                  <Icons.logo className="size-6" />
-                  <span className="font-urban text-xl font-bold">
+                  {/* <Icons.logo className="size-6" /> */}
+                  <span className="font-urban text-lg font-bold">
                     {siteConfig.name}
                   </span>
                 </Link>
 
-                <ProjectSwitcher large />
+                {/* <ProjectSwitcher large /> */}
 
                 {links.map((section) => (
                   <section

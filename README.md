@@ -148,3 +148,79 @@ Gradient 2:
 https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=1.1&cAzimuthAngle=170&cDistance=4.4&cPolarAngle=70&cameraZoom=1&color1=%23b5e1ff&color2=%23f6d1ff&color3=%23ffffff&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=1&positionX=0&positionY=0.9&positionZ=-0.3&range=enabled&rangeEnd=40&rangeStart=0&reflection=0.1&rotationX=45&rotationY=0&rotationZ=0&shader=defaults&type=waterPlane&uAmplitude=0&uDensity=1.2&uFrequency=0&uSpeed=0.1&uStrength=3.4&uTime=0&wireframe=false
 
 ```
+
+
+# Entretien AI TO DOs
+
+## Feature 1: Add LinkedIn Job Import to Interview Creation Modal
+
+### Steps:
+1. **Add LinkedIn Import State**:
+   - Create initial modal state showing LinkedIn import option
+   - Add message: "Import job details from LinkedIn"
+   - Include URL input field and "Import" button
+   - Add "Fill Form Manually" button below
+
+2. **Import Flow**:
+   - When "Import" clicked:
+     - Parse LinkedIn URL and extract job details
+     - Pre-fill existing interview form with parsed data
+     - Show validation/error messages if import fails
+   
+3. **Manual Flow**:
+   - When "Fill Form Manually" clicked:
+     - Switch modal to show existing interview creation form
+     - Preserve all current form functionality
+
+4. **Test Both Flows**:
+   - Verify LinkedIn import works correctly
+   - Ensure manual form entry functions as before
+   - Test error handling for invalid LinkedIn URLs
+   - Validate smooth transition between states
+
+---
+
+## Feature 2: Create a Separate "Get Ready" Page Component
+
+### Steps:
+1. **Build the Component**:
+   - Set up a new component for the "Get Ready" page.
+   - Define a unique route (e.g., `/get-ready`).
+
+2. **Fix Video Initialization**:
+   - Ensure video initialization logic works independently in the "Get Ready" component.
+   - Modify the `interview/IT` component to integrate seamlessly with the new "Get Ready" page.
+
+3. **Test the Video Feed**:
+   - Verify the video works on both the "Get Ready" page and the interview component.
+
+---
+
+## Feature 3: Add Steps and Guidance to "Get Ready" Page
+
+### Steps:
+1. **Design the Guidance Section**:
+   - Create an ordered list or cards showing the steps:
+     1. Receive the question.
+     2. Answer via voice or text.
+     3. Optionally enable video to observe yourself.
+
+2. **Integrate with Video Feed**:
+   - Ensure the video preview can be toggled on or off seamlessly.
+   - Add UI elements to enable/disable voice and text input options.
+
+3. **Enhance User Experience**:
+   - Use tooltips or small animations to make steps more engaging.
+   - Include a brief introductory message about the interview flow.
+
+4. **Test End-to-End Flow**:
+   - Navigate through the "Get Ready" page and validate each step and feature.
+   - Check video feed usability and text/voice input functionality.
+
+---
+
+## Notes:
+- Ensure proper error handling and edge case testing for all features.
+- Use consistent UI/UX design patterns to match the rest of the app.
+- Collect user feedback after implementing the features to refine the experience.
+

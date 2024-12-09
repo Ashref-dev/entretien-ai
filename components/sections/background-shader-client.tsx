@@ -14,12 +14,12 @@ const BackgroundShaderClient = ({ className }: { className: string }) => {
   return (
     <>
       {/* Show shader on md and larger screens */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <BackgroundShader className={clsx(className)} />
       </div>
 
       {/* Show gradient background on smaller screens */}
-      <div className="hidden absolute inset-0 z-[-1] h-[calc(100vh+400px)] animate-fade-in opacity-0 [animation-delay:1000ms] md:hidden">
+      <div className="absolute inset-0 z-[-1] hidden h-[calc(100vh+400px)] animate-fade-in opacity-0 [animation-delay:1000ms] lg:hidden">
         <div
           className="absolute inset-0 brightness-200 dark:brightness-50 dark:contrast-150"
           style={{

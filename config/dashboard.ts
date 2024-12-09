@@ -24,27 +24,26 @@ export const sidebarLinks: SidebarNavItem[] = [
         title: "History",
         authorizeOnly: UserRole.USER,
       },
-      {
-        href: "/resumes",
-        icon: "fileText",
-        title: "My Resumes",
-        authorizeOnly: UserRole.USER,
-        disabled: true,
-      },
-      {
-        href: "/builder",
-        icon: "filePenLine",
-        title: "Resume builder",
-        authorizeOnly: UserRole.USER,
-        disabled: true,
-      },
+      // {
+      //   href: "/resumes",
+      //   icon: "fileText",
+      //   title: "My Resumes",
+      //   authorizeOnly: UserRole.USER,
+      //   disabled: true,
+      // },
+      // {
+      //   href: "/builder",
+      //   icon: "filePenLine",
+      //   title: "Resume builder",
+      //   authorizeOnly: UserRole.USER,
+      //   disabled: true,
+      // },
 
       {
         href: "/billing",
         icon: "billing",
         title: "Billing",
         authorizeOnly: UserRole.USER,
-        disabled: true,
       },
 
       // { href: "/charts", icon: "lineChart", title: "Charts" },
