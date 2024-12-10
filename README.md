@@ -189,7 +189,7 @@ https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColo
 
 2. **Fix Video Initialization**:
    - Ensure video initialization logic works independently in the "Get Ready" component.
-   - Modify the `interview/IT` component to integrate seamlessly with the new "Get Ready" page.
+   - Modify the `interview/interviewId` path component to integrate seamlessly with the new "Get Ready" page.
 
 3. **Test the Video Feed**:
    - Verify the video works on both the "Get Ready" page and the interview component.
