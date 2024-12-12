@@ -22,8 +22,6 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-import InterviewGetReady from "../process/interview-get-ready";
-
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
@@ -67,12 +65,10 @@ function formatTime(seconds: number) {
 
 interface InterviewProcessProps {
   interview: Interview;
-  initialStream?: MediaStream | null;
 }
 
 export default function InterviewProcess({
   interview,
-  initialStream,
 }: InterviewProcessProps) {
   const router = useRouter();
 
@@ -93,7 +89,6 @@ export default function InterviewProcess({
   const [loading, setLoading] = useState<boolean>(false);
   const questions = interview.interviewData;
   const currentQuestion = questions[currentQuestionIndex];
-  const [isReady, setIsReady] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const loadingStates = [
@@ -133,22 +128,15 @@ export default function InterviewProcess({
 
   useEffect(() => {
     if (isVideoOn) {
-      if (initialStream) {
-        setStream(initialStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = initialStream;
-        }
-      } else {
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then((mediaStream) => {
-            setStream(mediaStream);
-            if (videoRef.current) {
-              videoRef.current.srcObject = mediaStream;
-            }
-          })
-          .catch((err) => console.error("Error accessing webcam:", err));
-      }
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((mediaStream) => {
+          setStream(mediaStream);
+          if (videoRef.current) {
+            videoRef.current.srcObject = mediaStream;
+          }
+        })
+        .catch((err) => console.error("Error accessing webcam:", err));
     } else {
       if (videoRef.current) {
         videoRef.current.srcObject = null;
@@ -162,7 +150,7 @@ export default function InterviewProcess({
         stream?.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [isVideoOn, initialStream]);
+  }, [isVideoOn]);
 
   useEffect(() => {
     const SpeechRecognitionAPI =
@@ -393,21 +381,6 @@ export default function InterviewProcess({
   const isAnswerValid = (index: number) => {
     return hasRecorded[index] && transcripts[index]?.trim().length > 0;
   };
-
-  if (!isReady) {
-    return (
-      <InterviewGetReady
-        onReady={() => {
-          setIsReady(true);
-        }}
-        initialStream={stream}
-        videoRef={videoRef}
-        isVideoOn={isVideoOn}
-        setIsVideoOn={setIsVideoOn}
-        setStream={setStream}
-      />
-    );
-  }
 
   return (
     <div className="flex w-full items-center justify-center">

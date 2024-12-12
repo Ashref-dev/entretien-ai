@@ -1,6 +1,7 @@
 "use client";
 
 import { RefObject, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight, Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -10,11 +11,7 @@ import { MovingBorderButton } from "@/components/ui/moving-border-button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface InterviewGetReadyProps {
-  onReady: () => void;
-  initialStream: MediaStream | null;
-  videoRef: RefObject<HTMLVideoElement>;
-  isVideoOn: boolean;
-  setIsVideoOn: (value: boolean) => void;
+  interviewId: string;
 }
 
 interface SpeechRecognition extends EventTarget {
@@ -31,21 +28,65 @@ interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList;
 }
 
-export default function InterviewGetReady({
-  onReady,
-  initialStream,
-  videoRef,
-  isVideoOn,
-  setIsVideoOn,
-  setStream,
-}: InterviewGetReadyProps & {
-  setStream: (stream: MediaStream | null) => void;
-}) {
-  const [isMicOn, setIsMicOn] = useState(true);
-  const [transcript, setTranscript] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+}
 
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+export default function InterviewGetReady({
+  interviewId,
+}: InterviewGetReadyProps) {
+  const router = useRouter();
+  const [isRecording, setIsRecording] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [transcript, setTranscript] = useState("");
+  const videoRef = useRef<HTMLVideoElement | null>(
+    null,
+  ) as RefObject<HTMLVideoElement>;
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  // Initialize video stream
+  useEffect(() => {
+    if (isVideoOn) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((mediaStream) => {
+          setStream(mediaStream);
+          if (videoRef.current) {
+            videoRef.current.srcObject = mediaStream;
+          }
+        })
+        .catch((err) => console.error("Error accessing webcam:", err));
+    } else {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+
+    return () => {
+      stream?.getTracks().forEach((track) => track.stop());
+    };
+  }, [isVideoOn]);
+
+  // Initialize speech recognition
   useEffect(() => {
     const SpeechRecognitionAPI =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -87,9 +128,22 @@ export default function InterviewGetReady({
     }
   };
 
-  const toggleVideo = () => setIsVideoOn(!isVideoOn);
+  const toggleVideo = () => {
+    setIsVideoOn(!isVideoOn);
+    if (!isVideoOn) {
+      if (stream && videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
 
   const toggleRecording = () => {
+    if (!isMicOn) return;
+
     setIsRecording(!isRecording);
     if (!isRecording) {
       setTranscript("");
@@ -104,19 +158,17 @@ export default function InterviewGetReady({
   };
 
   const handleStart = () => {
-    const container = document.getElementById("get-ready-container");
-    if (container) {
-      container.classList.remove("opacity-100");
-      container.classList.add("opacity-0");
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
     }
-    setTimeout(onReady, 600);
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    router.push(`/interviews/${interviewId}`);
   };
 
   return (
-    <div
-      id="get-ready-container"
-      className="duration-600 container relative mx-auto space-y-8 p-6 opacity-100 transition-opacity"
-    >
+    <div className="container relative mx-auto space-y-8 p-6">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 blur-[80px]" />
       </div>

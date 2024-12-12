@@ -180,21 +180,6 @@ https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColo
 
 ---
 
-## Feature 2: Create a Separate "Get Ready" Page Component
-
-### Steps:
-1. **Build the Component**:
-   - Set up a new component for the "Get Ready" page.
-   - Define a unique route (e.g., `/get-ready`).
-
-2. **Fix Video Initialization**:
-   - Ensure video initialization logic works independently in the "Get Ready" component.
-   - Modify the `interview/interviewId` path component to integrate seamlessly with the new "Get Ready" page.
-
-3. **Test the Video Feed**:
-   - Verify the video works on both the "Get Ready" page and the interview component.
-
----
 
 ## Feature 3: Add Steps and Guidance to "Get Ready" Page
 

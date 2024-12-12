@@ -121,7 +121,7 @@ export function InterviewCard({
                 href={
                   allQuestionsAnswered
                     ? `/interviews/${interview.id}/results`
-                    : `/interviews/${interview.id}`
+                    : `/interviews/${interview.id}/getready`
                 }
                 className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted dark:hover:bg-gray-700/50"
               >
