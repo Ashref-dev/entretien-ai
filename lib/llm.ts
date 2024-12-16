@@ -31,9 +31,9 @@ export async function callLLM(prompt: string): Promise<string> {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
       reject(
-        new Error(`[LLM ${requestId}] Global LLM timeout after 30 seconds`),
+        new Error(`[LLM ${requestId}] Global LLM timeout after 120 seconds`),
       );
-    }, 30000); // 30 second timeout
+    }, 120000); // 120 second timeout
   });
 
   try {

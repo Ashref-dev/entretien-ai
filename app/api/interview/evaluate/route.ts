@@ -17,112 +17,112 @@ type InterviewRequestBody = {
   interviewId: string;
 };
 
-async function evaluateAnswer(
-  question: string,
-  aiAnswer: string,
-  userAnswer: string,
-  difficulty: string,
-  yearsOfExperience: number,
-): Promise<{
+// First, let's define a clear interface for our evaluation results
+interface QuestionEvaluation {
   score: number;
-  feedback: string;
   technicalScore: number;
   communicationScore: number;
   problemSolvingScore: number;
-}> {
-  if (!userAnswer || userAnswer.trim() === aiAnswer.trim()) {
-    return {
-      score: 0,
-      feedback: "No answer provided to give feedback on.",
-      technicalScore: 0,
-      communicationScore: 0,
-      problemSolvingScore: 0,
-    };
+  feedback: string;
+}
+
+interface BatchEvaluationResult {
+  evaluations: QuestionEvaluation[];
+}
+
+async function evaluateAnswers(
+  questions: Array<{
+    aiQuestion: string;
+    aiAnswer: string;
+    userAnswer: string;
+  }>,
+  difficulty: string,
+  yearsOfExperience: number,
+): Promise<BatchEvaluationResult> {
+  // Early return for empty questions
+  if (!questions.length) {
+    return { evaluations: [] };
   }
 
   const prompt = `
   You are an expert technical interviewer evaluating a candidate with a difficulty level of ${difficulty} and ${yearsOfExperience} years of experience.
-  Analyze the following technical interview response and provide detailed scores and feedback.
+  Analyze the following technical interview responses and provide detailed scores and feedback for each answer.
 
-  Consider the following evaluation criteria:
-  1. Technical Knowledge: Assess the depth, accuracy, and relevance of the concepts covered.
-  2. Communication: Evaluate clarity, structure, and effectiveness in conveying ideas.
-  3. Problem Solving: Rate the candidate's approach, critical thinking, and methodology.
+  Consider these evaluation criteria for each answer:
+  1. Technical Knowledge: Assess depth, accuracy, and relevance of concepts
+  2. Communication: Evaluate clarity, structure, and effectiveness
+  3. Problem Solving: Rate approach, critical thinking, and methodology
 
   Scoring Rules:
-  - If the user's answer matches the expected answer exactly or very closely, assign a score of 100.
-  - If the user simply repeats the question as the answer, always assign a score of 0.
-  - For answers that are informative but not perfect, assign a moderate score.
+  - Exact/close match to expected answer: score 100
+  - Question repetition or minimal response: score 0
+  - Informative but imperfect answers: moderate score
 
-  Question: ${question}
-  Expected Answer: ${aiAnswer}
-  User's Answer: ${userAnswer}
+  Questions and Answers to Evaluate:
+  ${questions
+    .map(
+      (q, i) => `
+    Question ${i + 1}: ${q.aiQuestion}
+    Expected Answer: ${q.aiAnswer}
+    User's Answer: ${q.userAnswer}
+  `,
+    )
+    .join("\n")}
 
   Provide your response in the following JSON format only:
   {
-    "score": <number between 0 and 100>,
-    "technicalScore": <number between 0 and 100>,
-    "communicationScore": <number between 0 and 100>,
-    "problemSolvingScore": <number between 0 and 100>,
-    "feedback": "Provide constructive feedback covering strengths and areas for improvement. Avoid special characters and line breaks, and don't use markdown, speak in first person (you are the interview reviewer)."
-  }
+    "evaluations": [
+      {
+        "score": <number 0-100>,
+        "technicalScore": <number 0-100>,
+        "communicationScore": <number 0-100>,
+        "problemSolvingScore": <number 0-100>,
+        "feedback": "Constructive feedback, and speak in first person like you're directly talking to the candidate."
+      },
+      // ... one object for each question
+    ]
   }
 
   IMPORTANT:
-  1. Use only double quotes (")
-  2. Ensure feedback is not Markdown,i t must be plain text is a single line without special characters or line breaks.
-  3. All scores must be numbers without quotes.
-  4. Return only the JSON object with no additional text or formatting.
-  5. If the user's answer is a simple repetition of the question or almost a repetition of the question, or a simple yes or no, always assign a score of 0. 
+  1. Use double quotes only
+  2. Feedback must be plain text, single line, no special characters, and in first person, talking to the candidate.
+  3. All scores must be numbers without quotes
+  4. Return only the JSON object
+  5. Zero score for question repetition or yes/no answers
+  `;
 
-  Respond only with JSON.
-`;
-
-  const response = await callLLM(prompt);
   try {
-    // First attempt to parse the response directly
-    try {
-      const result = JSON.parse(response);
-      return {
-        score: result.score || 0,
-        feedback: result.feedback || "Error processing feedback.",
-        technicalScore: result.technicalScore || 0,
-        communicationScore: result.communicationScore || 0,
-        problemSolvingScore: result.problemSolvingScore || 0,
-      };
-    } catch {
-      // If direct parsing fails, try to clean the response
-      const cleanedResponse = response
-        .trim()
-        // Remove any potential markdown code block markers
-        .replace(/```json\s*|\s*```/g, "")
-        // Ensure the response starts with { and ends with }
-        .replace(/^[^{]*({.*})[^}]*$/, "$1")
-        // Fix common JSON formatting issues
-        .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":')
-        // Remove any extra quotes around numbers
-        .replace(/"(\d+)"/g, "$1");
+    const response = await callLLM(prompt);
+    const cleanedResponse = response
+      .trim()
+      .replace(/```json\s*|\s*```/g, "")
+      .replace(/^[^{]*({.*})[^}]*$/, "$1")
+      .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":')
+      .replace(/"(\d+)"/g, "$1");
 
-      console.log("Cleaned AI Response:", cleanedResponse);
+    const result = JSON.parse(cleanedResponse) as BatchEvaluationResult;
 
-      const result = JSON.parse(cleanedResponse);
-      return {
-        score: result.score || 0,
-        feedback: result.feedback || "Error processing feedback.",
-        technicalScore: result.technicalScore || 0,
-        communicationScore: result.communicationScore || 0,
-        problemSolvingScore: result.problemSolvingScore || 0,
-      };
-    }
-  } catch (error) {
-    console.error("Original AI response:", response);
-    console.error("Error parsing AI response:", error);
+    // Validate and sanitize results
     return {
-      score: 0,
-      feedback: "Error processing response.",
-      technicalScore: 0,
-      communicationScore: 0,
-      problemSolvingScore: 0,
+      evaluations: result.evaluations.map((evaluation) => ({
+        score: evaluation.score || 0,
+        technicalScore: evaluation.technicalScore || 0,
+        communicationScore: evaluation.communicationScore || 0,
+        problemSolvingScore: evaluation.problemSolvingScore || 0,
+        feedback: evaluation.feedback || "Error processing feedback.",
+      })),
+    };
+  } catch (error) {
+    console.error("Error evaluating answers:", error);
+    // Return default evaluations for all questions
+    return {
+      evaluations: questions.map(() => ({
+        score: 0,
+        technicalScore: 0,
+        communicationScore: 0,
+        problemSolvingScore: 0,
+        feedback: "Error processing response.",
+      })),
     };
   }
 }
@@ -292,26 +292,18 @@ async function processInterview(data: InterviewRequestBody) {
       );
     }
 
-    // Calculate scores and generate feedback for each question
-    const processedData = await Promise.all(
-      interviewData.map(async (item) => {
-        const evaluation = await evaluateAnswer(
-          item.aiQuestion,
-          item.aiAnswer,
-          item.userAnswer,
-          difficulty,
-          parseInt(yearsOfExperience),
-        );
-        return {
-          ...item,
-          score: evaluation.score,
-          feedback: evaluation.feedback,
-          technicalScore: evaluation.technicalScore,
-          communicationScore: evaluation.communicationScore,
-          problemSolvingScore: evaluation.problemSolvingScore,
-        };
-      }),
+    // Batch evaluate all answers
+    const { evaluations } = await evaluateAnswers(
+      interviewData,
+      difficulty,
+      parseInt(yearsOfExperience),
     );
+
+    // Combine original data with evaluations
+    const processedData = interviewData.map((item, index) => ({
+      ...item,
+      ...evaluations[index],
+    }));
 
     // Calculate average scores across all questions
     const interviewScore =

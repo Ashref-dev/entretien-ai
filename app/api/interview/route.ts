@@ -10,7 +10,7 @@ import { getCurrentUser } from "@/lib/session";
 export async function POST(request: NextRequest) {
   const requestId = Math.random().toString(36).substring(7);
   console.log(`[Interview ${requestId}] Starting interview creation`);
-  
+
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -23,7 +23,9 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const interviewId = uuidv4();
-    console.log(`[Interview ${requestId}] Created interview ID: ${interviewId}`);
+    console.log(
+      `[Interview ${requestId}] Created interview ID: ${interviewId}`,
+    );
 
     // Create initial interview record
     const interview = await prisma.interview.create({
@@ -40,17 +42,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`[Interview ${requestId}] Initial record created, starting background processing`);
+    console.log(
+      `[Interview ${requestId}] Initial record created, starting background processing`,
+    );
 
     // Start background processing with error handling
     processInterview(interview.id, formData)
       .catch((error) => {
-        console.error(`[Interview ${requestId}] Background processing error:`, error);
+        console.error(
+          `[Interview ${requestId}] Background processing error:`,
+          error,
+        );
         return prisma.interview.update({
           where: { id: interview.id },
           data: {
             status: "ERROR",
-            errorMessage: error.message || "Unknown error in background processing",
+            errorMessage:
+              error.message || "Unknown error in background processing",
           },
         });
       })
@@ -70,7 +78,8 @@ export async function POST(request: NextRequest) {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : "Failed to create interview",
+        error:
+          error instanceof Error ? error.message : "Failed to create interview",
       }),
       { status: 500 },
     );
@@ -168,7 +177,7 @@ async function processInterview(interviewId: string, formData: FormData) {
             "aiQuestion": "detailed technical question focusing on one of the skills to assess",
             "aiAnswer": "detailed expected answer showing mastery of the skill,preferably without code unless the question requires it,the answer must be natural and brief (max 6 lines) like a real interview answer and DO NOT USE MARKDOWN, answer in plain text only, then a little code is enough, also make sure the the answer takes into account the user's resume info.",
             "userAnswer": "",
-            "questionFeedback": "Detailed feedback criteria for evaluating the answer"
+            "questionFeedback": ""
           }
         ]
       }
@@ -187,6 +196,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     console.log(
       `[${interviewId}] Calling LLM with prompt length: ${prompt.length}`,
     );
+
     const aiResponseContent = (await Promise.race([
       callLLM(prompt),
       new Promise((_, reject) => {
@@ -195,7 +205,7 @@ async function processInterview(interviewId: string, formData: FormData) {
         });
       }),
     ])) as string;
-    
+
     console.log(
       `[${interviewId}] Received LLM response, length: ${aiResponseContent.length}`,
     );
@@ -249,9 +259,7 @@ async function processInterview(interviewId: string, formData: FormData) {
             item.aiAnswer?.replace(/\n\s*/g, " ") ||
             "Expected answer not provided",
           userAnswer: "",
-          questionFeedback:
-            item.questionFeedback?.replace(/\n\s*/g, " ") ||
-            "Detailed feedback for the answer not provided",
+          questionFeedback: "",
         })),
     };
 
@@ -274,25 +282,32 @@ async function processInterview(interviewId: string, formData: FormData) {
     console.log(`[${interviewId}] Interview processing completed successfully`);
   } catch (error) {
     console.error(`[Interview ${requestId}] Error in processInterview:`, error);
-    
+
     // Attempt to update interview status with error
     try {
       await prisma.interview.update({
         where: { id: interviewId },
         data: {
           status: "ERROR",
-          errorMessage: error instanceof Error ? error.message : "Unknown error occurred",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error occurred",
         },
       });
     } catch (updateError) {
-      console.error(`[Interview ${requestId}] Failed to update error status:`, updateError);
+      console.error(
+        `[Interview ${requestId}] Failed to update error status:`,
+        updateError,
+      );
     }
 
     // Ensure connection is closed
     try {
       await prisma.$disconnect();
     } catch (disconnectError) {
-      console.error(`[Interview ${requestId}] Error disconnecting:`, disconnectError);
+      console.error(
+        `[Interview ${requestId}] Error disconnecting:`,
+        disconnectError,
+      );
     }
 
     throw error;
