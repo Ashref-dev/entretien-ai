@@ -27,7 +27,7 @@ export const BLOG_AUTHORS = {
     twitter: "ashref",
   },
   balti: {
-    name: "AhmedBalti",
+    name: "Ahmed Balti",
     image: "https://avatars.githubusercontent.com/u/85387641?v=4",
     twitter: "balti",
   },

@@ -4,13 +4,12 @@ import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { FileIcon, Info, Loader, Plus } from "lucide-react";
+import { Info, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { InterviewDifficultyEnum } from "@/lib/validations/interview";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -37,14 +36,6 @@ import {
 } from "@/components/ui/tooltip";
 
 import { FileUpload } from "../ui/file-upload";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
 
 // Define the form schema
 const formSchema = z.object({
@@ -158,7 +149,9 @@ export function CreateInterviewForm({
 
       const checkStatus = async (): Promise<Interview> => {
         const pollStartTime = Date.now();
-        console.log(`[Poll] Starting status check for interview: ${initialResult.interviewId}`);
+        console.log(
+          `[Poll] Starting status check for interview: ${initialResult.interviewId}`,
+        );
 
         const poll = async (): Promise<Interview> => {
           try {
@@ -169,7 +162,9 @@ export function CreateInterviewForm({
             console.log(`[Poll] Status check result:`, result);
 
             if (!result.success) {
-              throw new Error(result.error || "Failed to check interview status");
+              throw new Error(
+                result.error || "Failed to check interview status",
+              );
             }
 
             switch (result.status) {
@@ -177,17 +172,25 @@ export function CreateInterviewForm({
                 console.log("[Poll] Interview completed successfully");
                 return result.data;
               case "ERROR":
-                console.error("[Poll] Interview processing failed:", result.error);
+                console.error(
+                  "[Poll] Interview processing failed:",
+                  result.error,
+                );
                 throw new Error(result.error || "Interview processing failed");
               case "PROCESSING":
                 if (Date.now() - pollStartTime > pollTimeout) {
                   console.error("[Poll] Interview processing timed out");
-                  await fetch(`/api/interview/cleanup?id=${initialResult.interviewId}`, {
-                    method: "DELETE",
-                  });
+                  await fetch(
+                    `/api/interview/cleanup?id=${initialResult.interviewId}`,
+                    {
+                      method: "DELETE",
+                    },
+                  );
                   throw new Error("Interview processing timed out");
                 }
-                await new Promise((resolve) => setTimeout(resolve, pollInterval));
+                await new Promise((resolve) =>
+                  setTimeout(resolve, pollInterval),
+                );
                 return poll();
               default:
                 throw new Error("Unknown interview status");
@@ -383,7 +386,7 @@ export function CreateInterviewForm({
           >
             <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">Upload Resume</Label>
-              <Sheet>
+              {/* <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
@@ -431,9 +434,9 @@ export function CreateInterviewForm({
                     ))}
                   </div>
                 </SheetContent>
-              </Sheet>
+              </Sheet> */}
             </div>
-            <div className="group mt-2 h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
+            <div className="group mt-[0.65em] h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
               <FileUpload onChange={handleFileUpload} />
             </div>
           </motion.div>

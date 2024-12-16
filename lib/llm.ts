@@ -23,10 +23,13 @@ export async function callLLM(prompt: string): Promise<string> {
       tryAllProviders(prompt, requestId),
       timeoutPromise,
     ])) as string;
-
+    
     console.log(
       `[LLM ${requestId}] Call successful, total duration: ${(performance.now() - startTime).toFixed(2)}ms`,
     );
+
+    console.log("🚀 ~ callLLM ~ response:", response)
+    
     return response;
   } catch (error) {
     console.error(`[LLM ${requestId}] Fatal error in LLM call:`, error);
