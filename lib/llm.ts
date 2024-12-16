@@ -2,24 +2,6 @@ import { callAIWithPrompt as callGrokAI } from "./modelProviders/grok";
 import { callAIWithPrompt as callGroqAI } from "./modelProviders/groq";
 import { callAIWithPrompt as callTogetherAI } from "./modelProviders/together";
 
-interface AIError extends Error {
-  provider: string;
-  statusCode?: number;
-  timestamp: string;
-}
-
-function createAIError(
-  message: string,
-  provider: string,
-  statusCode?: number,
-): AIError {
-  const error = new Error(message) as AIError;
-  error.provider = provider;
-  error.statusCode = statusCode;
-  error.timestamp = new Date().toISOString();
-  return error;
-}
-
 export async function callLLM(prompt: string): Promise<string> {
   const requestId = Math.random().toString(36).substring(7);
   console.log(

@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+import { HeaderSection } from "../shared/header-section";
+
 export const InfiniteMovingCards = ({
   items,
   direction = "left",
@@ -161,12 +163,20 @@ const products = [
 
 export default function ProductShowcase() {
   return (
-    <div className="dark:bg-grid-white/[0.05] relative flex h-[40rem] flex-col items-center justify-center overflow-hidden rounded-md bg-white antialiased dark:bg-black">
-      <div className="flex flex-col items-center justify-center">
-        <h2 className="z-10 mb-8 text-center font-urban text-3xl font-bold">
-          Everything You Need to Land Your Dream Tech Role
-        </h2>
-        <InfiniteMovingCards items={products} direction="right" speed="slow" />
+    <div className="mt-16">
+      <HeaderSection
+        label="Showcase"
+        title="Everything you need to land your next tech role"
+        subtitle="We've got you covered from start to finish, junior developers to senior engineers, and everything in between."
+      />
+      <div className="relative flex h-[40rem] flex-col items-center justify-center overflow-hidden rounded-md">
+        <div className="flex flex-col items-center justify-center">
+          <InfiniteMovingCards
+            items={products}
+            direction="right"
+            speed="slow"
+          />
+        </div>
       </div>
     </div>
   );

@@ -18,12 +18,17 @@ export const BLOG_CATEGORIES: {
 export const BLOG_AUTHORS = {
   rayen: {
     name: "Rayen Fassatoui",
-    image: "/_static/avatars/mickasmt.png",
+    image: "https://avatars.githubusercontent.com/u/93385261?v=4",
     twitter: "rayen",
   },
   ashref: {
     name: "Ashref Ben Abdallah",
-    image: "/_static/avatars/shadcn.jpeg",
+    image: "https://avatars.githubusercontent.com/u/109633107?v=4",
     twitter: "ashref",
+  },
+  balti: {
+    name: "AhmedBalti",
+    image: "https://avatars.githubusercontent.com/u/85387641?v=4",
+    twitter: "balti",
   },
 };
