@@ -1,3 +1,7 @@
+# Entretien AI - land your dream job with our interview prep.
+
+Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
+
 Code Style and Structure:
 - Write concise, technical TypeScript code with accurate examples
 - Use functional and declarative programming patterns; avoid classes
@@ -44,4 +48,4 @@ Key Conventions:
   - Use only for Web API access in small components
   - Avoid for data fetching or state management
 
-Follow Next.js docs for Data Fetching, Rendering, and Routing
+Follow Next.js docs for Data Fetching, Rendering, and Routing.

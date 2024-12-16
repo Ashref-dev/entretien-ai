@@ -67,9 +67,7 @@ interface InterviewProcessProps {
   interview: Interview;
 }
 
-export default function InterviewProcess({
-  interview,
-}: InterviewProcessProps) {
+export default function InterviewProcess({ interview }: InterviewProcessProps) {
   const router = useRouter();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -127,28 +125,35 @@ export default function InterviewProcess({
   }, [questions.length]);
 
   useEffect(() => {
+    let currentVideo = videoRef.current;
+    let currentStream: MediaStream | null = null;
+
     if (isVideoOn) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((mediaStream) => {
+          currentStream = mediaStream;
           setStream(mediaStream);
-          if (videoRef.current) {
-            videoRef.current.srcObject = mediaStream;
+          if (currentVideo) {
+            currentVideo.srcObject = mediaStream;
           }
         })
         .catch((err) => console.error("Error accessing webcam:", err));
-    } else {
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
-      }
     }
 
-    const currentVideoRef = videoRef.current;
-
     return () => {
-      if (!currentVideoRef) {
-        stream?.getTracks().forEach((track) => track.stop());
+      if (currentStream) {
+        currentStream.getTracks().forEach((track) => track.stop());
       }
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      if (currentVideo?.srcObject) {
+        const tracks = currentVideo.srcObject as MediaStream;
+        tracks?.getTracks().forEach((track) => track.stop());
+        currentVideo.srcObject = null;
+      }
+      setStream(null);
     };
   }, [isVideoOn]);
 
@@ -255,16 +260,16 @@ export default function InterviewProcess({
   };
 
   const toggleVideo = () => {
-    setIsVideoOn(!isVideoOn);
-    if (!isVideoOn) {
-      if (stream && videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } else {
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
-      }
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
     }
+    if (videoRef.current?.srcObject) {
+      const tracks = videoRef.current.srcObject as MediaStream;
+      tracks?.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setStream(null);
+    setIsVideoOn(!isVideoOn);
   };
 
   const finishInterview = async () => {
@@ -275,10 +280,16 @@ export default function InterviewProcess({
       toggleRecording();
     }
 
-    if (isVideoOn) {
-      console.log("Turning off video...");
-      toggleVideo();
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
     }
+    if (videoRef.current?.srcObject) {
+      const tracks = videoRef.current.srcObject as MediaStream;
+      tracks?.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setStream(null);
+    setIsVideoOn(false);
 
     if (timerRef.current) {
       console.log(`Stopping timer at ${elapsedTime} seconds...`);

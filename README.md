@@ -152,33 +152,6 @@ https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColo
 
 # Entretien AI TO DOs
 
-## Feature 1: Add LinkedIn Job Import to Interview Creation Modal
-
-### Steps:
-1. **Add LinkedIn Import State**:
-   - Create initial modal state showing LinkedIn import option
-   - Add message: "Import job details from LinkedIn"
-   - Include URL input field and "Import" button
-   - Add "Fill Form Manually" button below
-
-2. **Import Flow**:
-   - When "Import" clicked:
-     - Parse LinkedIn URL and extract job details
-     - Pre-fill existing interview form with parsed data
-     - Show validation/error messages if import fails
-   
-3. **Manual Flow**:
-   - When "Fill Form Manually" clicked:
-     - Switch modal to show existing interview creation form
-     - Preserve all current form functionality
-
-4. **Test Both Flows**:
-   - Verify LinkedIn import works correctly
-   - Ensure manual form entry functions as before
-   - Test error handling for invalid LinkedIn URLs
-   - Validate smooth transition between states
-
----
 
 
 ## Feature 3: Add Steps and Guidance to "Get Ready" Page
