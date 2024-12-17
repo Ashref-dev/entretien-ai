@@ -22,13 +22,10 @@ export default function ProcessingView() {
       }
 
       try {
-        console.log("Processing interview...");
-
         // If all validations pass, proceed to results
         toast.success("Interview data validated successfully");
-        router.push(`/interviews/${interviewData.id}`);
+        router.push(`/interviews/${interviewData.id}/getready`);
       } catch (error) {
-        console.error("Error processing interview:", error);
         toast.error("Error processing interview, please try again.");
         setError(true);
       }

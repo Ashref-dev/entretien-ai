@@ -68,14 +68,6 @@ const resumes: Resume[] = [
   },
 ];
 
-interface InterviewResponse {
-  success: boolean;
-  data: {
-    interviewData: Interview["interviewData"];
-  };
-  error?: string;
-}
-
 type FormValues = z.infer<typeof formSchema>;
 
 interface CreateInterviewFormProps {
@@ -136,22 +128,17 @@ export function CreateInterviewForm({
       });
 
       const initialResult = await response.json();
-      console.log("🚀 ~ onSubmit ~ initialResult:", initialResult);
 
       if (!initialResult.success) {
         throw new Error(initialResult.error || "Failed to create interview");
       }
 
       // Start polling for status
-      const pollInterval = 2000; // 2 seconds
+      const pollInterval = 1000; // 1 second
       const pollTimeout = 120000; // 120 seconds
-      const startTime = Date.now();
 
       const checkStatus = async (): Promise<Interview> => {
         const pollStartTime = Date.now();
-        console.log(
-          `[Poll] Starting status check for interview: ${initialResult.interviewId}`,
-        );
 
         const poll = async (): Promise<Interview> => {
           try {
@@ -159,7 +146,6 @@ export function CreateInterviewForm({
               `/api/interview?id=${initialResult.interviewId}`,
             );
             const result = await statusResponse.json();
-            console.log(`[Poll] Status check result:`, result);
 
             if (!result.success) {
               throw new Error(
@@ -169,7 +155,6 @@ export function CreateInterviewForm({
 
             switch (result.status) {
               case "COMPLETED":
-                console.log("[Poll] Interview completed successfully");
                 return result.data;
               case "ERROR":
                 console.error(
@@ -205,8 +190,6 @@ export function CreateInterviewForm({
       };
 
       const finalResult: Interview = await checkStatus();
-
-      console.log("🚀 ~ onSubmit ~ finalResult:", finalResult);
 
       onSubmitInterview({
         ...values,

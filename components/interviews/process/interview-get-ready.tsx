@@ -142,7 +142,7 @@ function getArrowPosition(placement: string | undefined) {
 // Add a function to get highlight styles for tour targets
 function getHighlightStyle(isTarget: boolean) {
   return isTarget
-    ? "ring-2 ring-primary ring-offset-2 ring-offset-background transition-all duration-200"
+    ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg shadow-primary transition-all duration-200"
     : "";
 }
 
@@ -345,15 +345,6 @@ export default function InterviewGetReady({
     return isRecording ? "Stop Test Recording" : "Start Test Recording";
   };
 
-  useEffect(() => {
-    console.log({
-      currentTourStep,
-      totalSteps: tourSteps.length,
-      isTourActive,
-      currentTarget: currentTargetRef().current,
-    });
-  }, [currentTourStep, isTourActive]);
-
   return (
     <div className="container relative mx-auto space-y-4">
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -363,11 +354,17 @@ export default function InterviewGetReady({
       <div
         ref={welcomeRef}
         className={cn(
-          "animate-fade-up text-center opacity-0 [animation-delay:100ms]",
+          "mx-auto w-fit animate-fade-up space-y-1 rounded-md px-2 py-1 text-center opacity-0 [animation-delay:100ms]",
           getHighlightStyle(currentTourStep === 0 && isTourActive),
         )}
       >
-        <h1 className="text-4xl font-bold tracking-tight">Get Ready</h1>
+        <h1
+          className={cn(
+            "mx-auto w-fit rounded-md text-4xl font-bold tracking-tight",
+          )}
+        >
+          Get Ready
+        </h1>
         <p className="text-lg text-muted-foreground">
           Let&apos;s make sure everything works perfectly for your interview
         </p>

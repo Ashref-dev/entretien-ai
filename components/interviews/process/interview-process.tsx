@@ -273,10 +273,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
   };
 
   const finishInterview = async () => {
-    console.log("Starting interview finish process...");
-
     if (isRecording) {
-      console.log("Stopping active recording...");
       toggleRecording();
     }
 
@@ -292,32 +289,17 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
     setIsVideoOn(false);
 
     if (timerRef.current) {
-      console.log(`Stopping timer at ${elapsedTime} seconds...`);
       clearInterval(timerRef.current);
     }
 
-    console.log("Preparing interview data for submission...");
     const updatedInterviewData = questions.map((question, index) => ({
       ...question,
       userAnswer: transcripts[index] || "",
     }));
-    console.log("Interview data prepared:", {
-      questionCount: updatedInterviewData.length,
-      answeredQuestions: updatedInterviewData.filter((q) => q.userAnswer)
-        .length,
-    });
 
     setLoading(true);
-    console.log("Starting evaluation process...");
 
     try {
-      console.log("Sending initial evaluation request...", {
-        interviewId: interview.id,
-        difficulty: interview.difficulty,
-        yearsOfExperience: interview.yearsOfExperience,
-        duration: elapsedTime,
-      });
-
       const response = await fetch("/api/interview/evaluate", {
         method: "POST",
         headers: {
@@ -333,29 +315,24 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
       });
 
       const initialResult = await response.json();
-      console.log("Initial evaluation response:", initialResult);
 
       if (!initialResult.success) {
         console.error("Initial evaluation failed:", initialResult.error);
         throw new Error(initialResult.error);
       }
 
-      console.log("Starting status polling...");
       let pollCount = 0;
       const pollInterval = setInterval(async () => {
         pollCount++;
-        console.log(`Polling attempt ${pollCount}...`);
 
         try {
           const statusResponse = await fetch(
             `/api/interview?id=${interview.id}`,
           );
           const result = await statusResponse.json();
-          console.log(`Poll ${pollCount} result:`, result);
 
           if (result.success) {
             if (result.status === "COMPLETED") {
-              console.log("Interview processing completed successfully");
               clearInterval(pollInterval);
               setLoading(false);
               router.push(`/interviews/${interview.id}/results`);
@@ -365,7 +342,6 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
               setLoading(false);
               toast.error(result.error || "Failed to process interview");
             } else {
-              console.log(`Current status: ${result.status}`);
             }
           } else {
             console.warn("Poll returned unsuccessful response:", result);
@@ -373,15 +349,9 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
         } catch (pollError) {
           console.error("Error during polling:", pollError);
         }
-      }, 2000);
+      }, 1000); // 1 second
 
-      console.log("Setting up timeout failsafe...");
-      setTimeout(() => {
-        console.log("Interview processing timed out after 5 minutes");
-        clearInterval(pollInterval);
-        setLoading(false);
-        toast.error("Interview processing timed out. Please try again.");
-      }, 300000);
+     
     } catch (error) {
       console.error("Fatal error in finishInterview:", error);
       setLoading(false);

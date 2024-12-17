@@ -3,6 +3,7 @@ import { InterviewDifficulty } from "@/types";
 
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
+import { evaluateInterviewPrompt } from "@/lib/prompts";
 import { getCurrentUser } from "@/lib/session";
 
 type InterviewRequestBody = {
@@ -38,93 +39,75 @@ async function evaluateAnswers(
   }>,
   difficulty: string,
   yearsOfExperience: number,
+  maxRetries = 3,
 ): Promise<BatchEvaluationResult> {
   // Early return for empty questions
-  if (!questions.length) {
-    return { evaluations: [] };
+  if (!questions.length) return { evaluations: [] };
+
+  let attempts = 0;
+
+  // prompt is geenratedf fro ma specific template in project config
+  const prompt = evaluateInterviewPrompt({
+    difficulty,
+    yearsOfExperience,
+    questions,
+  });
+
+  while (attempts < maxRetries) {
+    try {
+      const response = await callLLM(prompt);
+      const cleanedResponse = response
+        .trim()
+        .replace(/```json\s*|\s*```/g, "")
+        .replace(/^[^{]*({.*})[^}]*$/, "$1")
+        .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":')
+        .replace(/"(\d+)"/g, "$1");
+
+      const result = JSON.parse(cleanedResponse) as BatchEvaluationResult;
+
+      // Validate result structure
+      if (!result.evaluations?.length) {
+        throw new Error("Invalid evaluation structure");
+      }
+
+      // Validate and sanitize results
+      return {
+        evaluations: result.evaluations.map((evaluation) => ({
+          score: evaluation.score || 0,
+          technicalScore: evaluation.technicalScore || 0,
+          communicationScore: evaluation.communicationScore || 0,
+          problemSolvingScore: evaluation.problemSolvingScore || 0,
+          feedback: evaluation.feedback || "Error processing feedback.",
+        })),
+      };
+    } catch (error) {
+      attempts++;
+      console.error(`Attempt ${attempts} failed:`, error);
+
+      // If we've exhausted all retries, return default evaluations
+      if (attempts === maxRetries) {
+        console.error("All retry attempts failed for evaluation");
+
+        return {
+          evaluations: questions.map(() => ({
+            score: 0,
+            technicalScore: 0,
+            communicationScore: 0,
+            problemSolvingScore: 0,
+            feedback: "Failed to process response after multiple attempts.",
+          })),
+        };
+      }
+
+      // Wait before retrying (exponential backoff)
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.pow(2, attempts) * 1000),
+      );
+    }
   }
 
-  const prompt = `
-  You are an expert technical interviewer evaluating a candidate with a difficulty level of ${difficulty} and ${yearsOfExperience} years of experience.
-  Analyze the following technical interview responses and provide detailed scores and feedback for each answer.
-
-  Consider these evaluation criteria for each answer:
-  1. Technical Knowledge: Assess depth, accuracy, and relevance of concepts
-  2. Communication: Evaluate clarity, structure, and effectiveness
-  3. Problem Solving: Rate approach, critical thinking, and methodology
-
-  Scoring Rules:
-  - Exact/close match to expected answer: score 100
-  - Question repetition or minimal response: score 0
-  - Informative but imperfect answers: moderate score
-
-  Questions and Answers to Evaluate:
-  ${questions
-    .map(
-      (q, i) => `
-    Question ${i + 1}: ${q.aiQuestion}
-    Expected Answer: ${q.aiAnswer}
-    User's Answer: ${q.userAnswer}
-  `,
-    )
-    .join("\n")}
-
-  Provide your response in the following JSON format only:
-  {
-    "evaluations": [
-      {
-        "score": <number 0-100>,
-        "technicalScore": <number 0-100>,
-        "communicationScore": <number 0-100>,
-        "problemSolvingScore": <number 0-100>,
-        "feedback": "Constructive feedback, and speak in first person like you're directly talking to the candidate."
-      },
-      // ... one object for each question
-    ]
-  }
-
-  IMPORTANT:
-  1. Use double quotes only
-  2. Feedback must be plain text, single line, no special characters, and in first person, talking to the candidate.
-  3. All scores must be numbers without quotes
-  4. Return only the JSON object
-  5. Zero score for question repetition or yes/no answers
-  `;
-
-  try {
-    const response = await callLLM(prompt);
-    const cleanedResponse = response
-      .trim()
-      .replace(/```json\s*|\s*```/g, "")
-      .replace(/^[^{]*({.*})[^}]*$/, "$1")
-      .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":')
-      .replace(/"(\d+)"/g, "$1");
-
-    const result = JSON.parse(cleanedResponse) as BatchEvaluationResult;
-
-    // Validate and sanitize results
-    return {
-      evaluations: result.evaluations.map((evaluation) => ({
-        score: evaluation.score || 0,
-        technicalScore: evaluation.technicalScore || 0,
-        communicationScore: evaluation.communicationScore || 0,
-        problemSolvingScore: evaluation.problemSolvingScore || 0,
-        feedback: evaluation.feedback || "Error processing feedback.",
-      })),
-    };
-  } catch (error) {
-    console.error("Error evaluating answers:", error);
-    // Return default evaluations for all questions
-    return {
-      evaluations: questions.map(() => ({
-        score: 0,
-        technicalScore: 0,
-        communicationScore: 0,
-        problemSolvingScore: 0,
-        feedback: "Error processing response.",
-      })),
-    };
-  }
+  // TypeScript requires this, but it should never be reached
+  return { evaluations: [] };
 }
 
 async function extractTechnologies(
@@ -208,48 +191,6 @@ async function generateOverallFeedback(
   } catch (error) {
     console.error("Error generating overall feedback:", error);
     return "Unable to generate overall feedback.";
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
-    const data = (await request.json()) as InterviewRequestBody;
-    const { interviewId } = data;
-
-    // Update interview status to processing
-    await prisma.interview.update({
-      where: { id: interviewId },
-      data: { status: "PROCESSING" },
-    });
-
-    // Start background processing
-    processInterview(data).catch((error) => {
-      console.error("Error processing interview:", error);
-      prisma.interview.update({
-        where: { id: interviewId },
-        data: {
-          status: "ERROR",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-        },
-      });
-    });
-
-    return NextResponse.json({ success: true, status: "PROCESSING" });
-  } catch (error) {
-    console.error("Error initiating interview evaluation:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to process interview" },
-      { status: 500 },
-    );
   }
 }
 
@@ -369,5 +310,47 @@ async function processInterview(data: InterviewRequestBody) {
         errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
     });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
+    const data = (await request.json()) as InterviewRequestBody;
+    const { interviewId } = data;
+
+    // Update interview status to processing
+    await prisma.interview.update({
+      where: { id: interviewId },
+      data: { status: "PROCESSING" },
+    });
+
+    // Start background processing
+    processInterview(data).catch((error) => {
+      console.error("Error processing interview:", error);
+      prisma.interview.update({
+        where: { id: interviewId },
+        data: {
+          status: "ERROR",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+    });
+
+    return NextResponse.json({ success: true, status: "PROCESSING" });
+  } catch (error) {
+    console.error("Error initiating interview evaluation:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to process interview" },
+      { status: 500 },
+    );
   }
 }

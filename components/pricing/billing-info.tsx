@@ -1,8 +1,9 @@
-import Link from "next/link";
 import * as React from "react";
+import Link from "next/link";
 
-import { CustomerPortalButton } from "@/components/forms/customer-portal-button";
-import { buttonVariants } from "@/components/ui/button";
+import { UserSubscriptionPlan } from "types";
+import { formatDate } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,8 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn, formatDate } from "@/lib/utils";
-import { UserSubscriptionPlan } from "types";
+import { CustomerPortalButton } from "@/components/forms/customer-portal-button";
 
 interface BillingInfoProps extends React.HTMLAttributes<HTMLFormElement> {
   userSubscriptionPlan: UserSubscriptionPlan;
@@ -33,10 +33,13 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
       <CardHeader>
         <CardTitle>Subscription Plan</CardTitle>
         <CardDescription>
-          You are currently on the <strong>{title}</strong> plan.
+          You are currently on the{" "}
+          <strong className="text-gradient">{title}</strong> plan.
         </CardDescription>
       </CardHeader>
-      <CardContent>{description}</CardContent>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </CardContent>
       <CardFooter className="flex flex-col items-center space-y-2 border-t bg-accent py-2 md:flex-row md:justify-between md:space-y-0">
         {isPaid ? (
           <p className="text-sm font-medium text-muted-foreground">
@@ -50,8 +53,8 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
         {isPaid && stripeCustomerId ? (
           <CustomerPortalButton userStripeId={stripeCustomerId} />
         ) : (
-          <Link href="/pricing" className={cn(buttonVariants())}>
-            Choose a plan
+          <Link href="/pricing">
+            <Button>Choose a plan</Button>
           </Link>
         )}
       </CardFooter>
