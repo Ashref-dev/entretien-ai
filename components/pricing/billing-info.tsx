@@ -12,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CustomerPortalButton } from "@/components/forms/customer-portal-button";
 
 interface BillingInfoProps extends React.HTMLAttributes<HTMLFormElement> {
   userSubscriptionPlan: UserSubscriptionPlan;
@@ -33,12 +32,15 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
       <CardHeader>
         <CardTitle>Subscription Plan</CardTitle>
         <CardDescription>
-          You are currently on the{" "}
-          <strong className="text-gradient">{title}</strong> plan.
+          You are currently on the only plan, which is{" "}
+          <strong className="text-gradient">FREE</strong> for everyone.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground">
+          Entretien AI is free thanks to donations, please support us to keep
+          the project running.
+        </p>
       </CardContent>
       <CardFooter className="flex flex-col items-center space-y-2 border-t bg-accent py-2 md:flex-row md:justify-between md:space-y-0">
         {isPaid ? (
@@ -50,13 +52,17 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
           </p>
         ) : null}
 
-        {isPaid && stripeCustomerId ? (
+        {/* {isPaid && stripeCustomerId ? (
           <CustomerPortalButton userStripeId={stripeCustomerId} />
         ) : (
           <Link href="/pricing">
             <Button>Choose a plan</Button>
           </Link>
-        )}
+        )} */}
+
+        <Link href="/pricing">
+          <Button>Donate</Button>
+        </Link>
       </CardFooter>
     </Card>
   );

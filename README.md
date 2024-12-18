@@ -42,7 +42,7 @@ Master the art of interviewing with Entretien AI. Our cutting-edge platform uses
 
 ### Frontend
 - [Next.js 15](https://nextjs.org/) - React Framework
-- [React 19](https://react.dev/) - UI Library
+- [React](https://react.dev/) - UI Library
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [shadcn/ui](https://ui.shadcn.com/) - UI Components
@@ -58,16 +58,12 @@ Master the art of interviewing with Entretien AI. Our cutting-edge platform uses
 - [Resend](https://resend.com/) - Email Infrastructure
 - [React Email](https://react.email/) - Email Templates
 
-### Payments
-- [Stripe](https://stripe.com/) - Payment Processing
-
 ## Getting Started
 
 ### Prerequisites
 
 - Deno, bun or node.js 18.x or higher
 - PostgreSQL database
-- Stripe account
 - Resend API key
 - Together.ai API key
 
@@ -110,6 +106,10 @@ bun prisma db push
 bun dev
 ```
 
+## Code of Conduct
+
+We are committed to fostering an open and welcoming environment. Please read our [Code of Conduct](CODE_OF_CONDUCT.md) for details on our community behavior standards and how to report unacceptable behavior.
+
 ## Contributing
 
 We welcome contributions! Please see our contribution guidelines for details.
@@ -127,7 +127,15 @@ We take your privacy seriously. See our [Privacy Policy](https://entretien-ai.co
 
 ## License
 
-Open Source but you can't sell it, but you can use it for free for non commercial use.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See the [LICENSE](LICENSE) file for details.
+
+The AGPL-3.0 license ensures that:
+- You can use this software freely
+- You can modify and distribute this software
+- If you modify and share this software, you must:
+  - Make your modifications available under the same license
+  - Share the source code when you deploy modified versions
+  - Preserve copyright notices and license information
 
 ## Environment Variables in production
 
@@ -149,36 +157,87 @@ https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColo
 
 ```
 
-
 # Entretien AI TO DOs
 
-
-
-## Feature 3: Add Steps and Guidance to "Get Ready" Page
+## Feature 1: Multiple Language Support using i18n Next
 
 ### Steps:
-1. **Design the Guidance Section**:
-   - Create an ordered list or cards showing the steps:
-     1. Receive the question.
-     2. Answer via voice or text.
-     3. Optionally enable video to observe yourself.
+1. **Setup i18n Configuration**:
+   - Install and configure next-i18next package
+   - Create language TypeScript files for supported languages
+   - Set up language detection and routing
 
-2. **Integrate with Video Feed**:
-   - Ensure the video preview can be toggled on or off seamlessly.
-   - Add UI elements to enable/disable voice and text input options.
+2. **Implement Language Files**:
+   - Create translation files for each supported language
+   - Organize translations by feature/component
+   - Include metadata like language name and direction
 
-3. **Enhance User Experience**:
-   - Use tooltips or small animations to make steps more engaging.
-   - Include a brief introductory message about the interview flow.
+3. **Add Language Switching**:
+   - Create language selector component
+   - Implement language switching logic
+   - Persist language preference
 
-4. **Test End-to-End Flow**:
-   - Navigate through the "Get Ready" page and validate each step and feature.
-   - Check video feed usability and text/voice input functionality.
+4. **Translate Content**:
+   - Update components to use translation keys
+   - Add translations for all static text
+   - Handle dynamic content translation
+
+5. **Test Localization**:
+   - Verify translations in all supported languages
+   - Test RTL language support
+   - Validate language switching functionality
 
 ---
 
 ## Notes:
-- Ensure proper error handling and edge case testing for all features.
-- Use consistent UI/UX design patterns to match the rest of the app.
-- Collect user feedback after implementing the features to refine the experience.
+- Follow Next.js i18n best practices and documentation
+- Ensure proper fallback handling for missing translations
+- Consider cultural differences in UI/UX design
+- Test performance impact of language bundles
 
+
+## Feature 2: Newsletter Subscription System
+
+### Steps:
+1. **Database Schema Setup**:
+   - Create newsletter subscriber table in Prisma schema
+   ```prisma
+   model NewsletterSubscriber {
+     id        String   @id @default(cuid())
+     email     String   @unique
+     status    String   @default("active") // active, unsubscribed
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+   }
+   ```
+
+2. **Email Validation & Processing**:
+   - Implement Zod schema for email validation
+   - Create server action for subscription handling
+   - Set up rate limiting for form submissions
+   ```typescript
+   const newsletterSchema = z.object({
+     email: z.string().email("Please enter a valid email address")
+   });
+   ```
+
+3. **Email Service Integration**:
+   - Configure Resend for confirmation emails (it's there but not working)
+   - Create React Email template for welcome message
+   - Implement double opt-in confirmation
+
+### Technical Requirements:
+- Resend API integration
+- PostgreSQL database
+- Rate limiting middleware
+- Email templating system
+- Error handling and logging
+
+### Security Considerations:
+- Email validation and sanitization
+- CSRF protection
+- Rate limiting
+- GDPR compliance
+- Secure storage of subscriber data
+
+---

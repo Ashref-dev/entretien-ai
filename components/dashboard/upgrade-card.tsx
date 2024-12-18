@@ -16,15 +16,16 @@ export function UpgradeCard() {
     <Card className="md:max-xl:rounded-none md:max-xl:border-none md:max-xl:shadow-none">
       <CardHeader className="md:max-xl:px-4">
         <AnimatedIcon icon="coins" className="mx-auto size-20 lg:size-32" />
-        <CardTitle>Upgrade to Pro</CardTitle>
+        <CardTitle>Buy us a coffee</CardTitle>
         <CardDescription>
-          Unlock all features and get unlimited access to our support team.
+          Entretien AI is free thanks to donations, please support us to keep
+          the project running.
         </CardDescription>
-      </CardHeader>
+      </CardHeader>&
       <CardContent className="md:max-xl:px-4">
         <Link href="/pricing">
           <Button size="sm" className="w-full" variant="default" rounded="full">
-            Upgrade
+            Donate
           </Button>
         </Link>
       </CardContent>

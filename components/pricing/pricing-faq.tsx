@@ -10,33 +10,34 @@ import { HeaderSection } from "../shared/header-section";
 const pricingFaqData = [
   {
     id: "item-1",
-    question: "What is the cost of the free plan?",
+    question: "Is Entretien AI really free to use?",
     answer:
-      "Our free plan is completely free, with no monthly or annual charges. It's a great way to get started and explore our basic features.",
+      "Yes! Entretien AI is completely free and open-source. We believe everyone should have access to quality interview preparation tools, regardless of their financial situation.",
   },
   {
     id: "item-2",
-    question: "How much does the Basic Monthly plan cost?",
+    question: "How does Entretien AI work?",
     answer:
-      "The Basic Monthly plan is priced at $10 per month. It provides access to our core features and is billed on a monthly basis.",
+      "Our AI-powered platform creates personalized interview questions based on your resume. You'll receive detailed feedback and ideal answers for each question, helping you prepare effectively for your interviews.",
   },
   {
     id: "item-3",
-    question: "What is the price of the Pro Monthly plan?",
+    question: "Are there any hidden costs or premium features?",
     answer:
-      "The Pro Monthly plan is available for $25 per month. It offers advanced features and is billed on a monthly basis for added flexibility.",
+      "No hidden costs! All features are freely available. As an open-source project, we're supported by the community through voluntary donations via Buy Me a Coffee.",
   },
   {
     id: "item-4",
-    question: "Do you offer any annual subscription plans?",
+    question: "How can I support Entretien AI?",
     answer:
-      "Yes, we offer annual subscription plans for even more savings. The Basic Annual plan is $144 per year, and the Pro Annual plan is $300 per year.",
+      "If you find our service valuable, you can support us by making a donation through Buy Me a Coffee. Your contribution helps us maintain and improve the platform while keeping it free for everyone.",
   },
   {
     id: "item-5",
-    question: "Is there a trial period for the paid plans?",
+    question:
+      "What makes Entretien AI different from other interview prep tools?",
     answer:
-      "We offer a 14-day free trial for both the Pro Monthly and Pro Annual plans. It's a great way to experience all the features before committing to a paid subscription.",
+      "We offer personalized AI-generated questions based on your actual resume, provide detailed feedback, and suggest ideal answers - all completely free. Plus, being open-source means our community can contribute to making the platform even better.",
   },
 ];
 
