@@ -264,32 +264,36 @@ export default function InterviewGetReady({
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
-      recognitionRef.current.continuous = true;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      // Disable continuous mode on mobile
+      recognitionRef.current.continuous = !isMobile;
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        // Handle mobile differently
         if (isMobile) {
-          const result = event.results[event.results.length - 1];
+          const result = event.results[0];
           if (result.isFinal) {
             setTranscript((prev) => prev + result[0].transcript + " ");
+            // Restart recognition on mobile after each final result
+            if (recognitionRef.current && isRecording) {
+              recognitionRef.current.stop();
+              setTimeout(() => {
+                recognitionRef.current?.start();
+              }, 100);
+            }
           }
         } else {
-          // Keep existing desktop behavior
+          // Desktop behavior remains the same
           let finalTranscript = "";
-          let interimTranscript = "";
-
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
               finalTranscript += event.results[i][0].transcript + " ";
-            } else {
-              interimTranscript += event.results[i][0].transcript;
             }
           }
-
-          setTranscript((prev) => prev + finalTranscript);
+          if (finalTranscript) {
+            setTranscript((prev) => prev + finalTranscript);
+          }
         }
       };
     }
@@ -299,7 +303,7 @@ export default function InterviewGetReady({
         recognitionRef.current.stop();
       }
     };
-  }, []);
+  }, [isRecording]);
 
   const toggleMic = () => {
     setIsMicOn(!isMicOn);
