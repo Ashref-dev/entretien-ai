@@ -268,18 +268,29 @@ export default function InterviewGetReady({
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = "";
-        let interimTranscript = "";
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + " ";
-          } else {
-            interimTranscript += event.results[i][0].transcript;
+        // Handle mobile differently
+        if (isMobile) {
+          const result = event.results[event.results.length - 1];
+          if (result.isFinal) {
+            setTranscript((prev) => prev + result[0].transcript + " ");
           }
-        }
+        } else {
+          // Keep existing desktop behavior
+          let finalTranscript = "";
+          let interimTranscript = "";
 
-        setTranscript((prev) => prev + finalTranscript);
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript + " ";
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+
+          setTranscript((prev) => prev + finalTranscript);
+        }
       };
     }
 

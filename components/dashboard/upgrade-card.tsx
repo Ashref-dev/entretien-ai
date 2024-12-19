@@ -21,7 +21,7 @@ export function UpgradeCard() {
           Entretien AI is free thanks to donations, please support us to keep
           the project running.
         </CardDescription>
-      </CardHeader>&
+      </CardHeader>
       <CardContent className="md:max-xl:px-4">
         <Link href="/pricing">
           <Button size="sm" className="w-full" variant="default" rounded="full">
