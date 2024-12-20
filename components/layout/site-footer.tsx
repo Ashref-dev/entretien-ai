@@ -6,16 +6,18 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/layout/mode-toggle";
 
-import { NewsletterForm } from "../forms/newsletter-form";
 import { Icons } from "../shared/icons";
+import { ProductHuntBadge } from "../shared/product-hunt-badge";
 
 export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
     <footer className={cn("border-t bg-background", className)}>
       <div className="mx-auto w-full max-w-7xl px-4 py-16">
         <div className="flex flex-col items-center gap-16">
+          <ProductHuntBadge />
+
           {/* Newsletter Section - Centered */}
-          <div className="w-full max-w-lg space-y-4 text-center">
+          {/* <div className="w-full max-w-lg space-y-4 text-center">
             <h3 className="text-sm font-semibold tracking-wider">
               Stay Updated
             </h3>
@@ -23,7 +25,8 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               Subscribe to our newsletter for updates and exclusive content.
             </p>
             <NewsletterForm />
-          </div>
+          </div> */}
+
           {/* Main Footer Content - Two Columns */}
           <div className="flex w-full max-w-2xl flex-col gap-14 sm:flex-row">
             {/* Brand Section */}
@@ -38,18 +41,26 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
                 {siteConfig.description}
               </p>
               <div className="flex items-center space-x-3">
-                <Button variant="outline" size="icon" className="rounded-full">
-                  <Link href={siteConfig.links.github}>
-                    <Icons.gitHub className="size-4" />
-                    <span className="sr-only">GitHub</span>
-                  </Link>
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full">
-                  <Link href={siteConfig.links.twitter}>
-                    <Icons.xTwitter className="size-4" />
-                    <span className="sr-only">Twitter</span>
-                  </Link>
-                </Button>
+                {Object.entries(siteConfig.links).map(([platform, url]) => {
+                  const Icon = Icons[platform as keyof typeof Icons];
+                  return (
+                    <Link
+                      href={url}
+                      key={platform}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full"
+                      >
+                        <Icon className="size-4" />
+                        <span className="sr-only">{platform}</span>
+                      </Button>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 

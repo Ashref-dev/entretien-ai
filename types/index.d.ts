@@ -12,7 +12,10 @@ export type SiteConfig = {
   mailSupport: string;
   links: {
     twitter: string;
-    github: string;
+    gitHub: string;
+    facebook: string;
+    instagram: string;
+    bluesky: string;
   };
 };
 

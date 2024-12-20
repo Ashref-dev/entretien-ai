@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -25,7 +26,7 @@ export default function HeroLanding() {
 
           <div className="relative z-50 flex max-w-5xl flex-col items-center gap-5 text-center">
             <Link
-              href="https://www.linkedin.com/in/rayenfassatoui/"
+              href={siteConfig.links.bluesky}
               className={cn(
                 "z-50 flex items-center gap-1 rounded-full border px-3 py-2 backdrop-blur-md transition-colors duration-300",
                 "border-black/20 bg-white/10 hover:bg-black/20",
@@ -36,7 +37,7 @@ export default function HeroLanding() {
             >
               <div className="flex items-center gap-2">
                 <Badge className="gap-1.5 bg-primary/80 text-white transition-colors">
-                  <Icons.xTwitter className="size-3 text-black dark:text-white sm:size-4" />
+                  <Icons.bluesky className="size-3 text-black dark:text-white sm:size-4" />
                 </Badge>
               </div>
               <p className="text-xs font-medium text-black/90 dark:text-white/90 sm:text-sm">

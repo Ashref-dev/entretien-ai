@@ -10,8 +10,11 @@ export const siteConfig: SiteConfig = {
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {
-    twitter: "https://www.linkedin.com/in/rayenfassatoui/",
-    github: "https://github.com/rayenfassatoui",
+    gitHub: "https://github.com/Ashref-dev/entretien-ai",
+    twitter: "https://x.com/enretien_ai",
+    instagram: "https://www.instagram.com/entretien_ai/",
+    facebook: "https://facebook.com/513241155206826",
+    bluesky: "https://bsky.app/profile/entretien-ai.com",
   },
   mailSupport: "support@entretien-ai.com",
 };
