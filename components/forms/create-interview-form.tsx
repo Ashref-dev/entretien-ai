@@ -317,7 +317,7 @@ export function CreateInterviewForm({
                   name="yearsOfExperience"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Required Job Experience</FormLabel>
+                      <FormLabel>Required Experience</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}

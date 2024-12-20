@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Interview } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,6 +13,9 @@ import {
   Code,
   MessageCircle,
   MessageSquare,
+  ThumbsUpIcon,
+  TriangleAlert,
+  Trophy,
   X,
 } from "lucide-react";
 
@@ -62,6 +66,14 @@ function formatDuration(seconds: number) {
     return `${minutes}m ${remainingSeconds}s`;
   }
   return `${remainingSeconds}s`;
+}
+
+function getScoreIcon(score: number) {
+  if (score >= 90) return <Trophy className="ml-2 size-5 text-green-500" />;
+  if (score > 60) return <ThumbsUpIcon className="ml-2 size-5 text-cyan-500" />;
+  if (score > 30)
+    return <TriangleAlert className="ml-2 size-5 text-yellow-500" />;
+  return <X className="ml-2 size-5 text-red-500" />;
 }
 
 export default function InterviewResults({ interview }: InterviewResultsProps) {
@@ -234,7 +246,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
               <CardHeader>
                 <CardTitle className="flex items-center text-base">
                   Your Answer
-                  <X className="ml-2 size-5 text-red-500" />
+                  {getScoreIcon(
+                    interview.interviewData[currentQuestionIndex]
+                      .questionsScore || 0,
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="min-h-[100px] text-muted-foreground">

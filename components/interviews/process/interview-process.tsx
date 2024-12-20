@@ -162,32 +162,52 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
-      recognitionRef.current.continuous = true;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      // Disable continuous mode on mobile
+      recognitionRef.current.continuous = !isMobile;
       recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = ""; // Store only finalized text here
-        let interimTranscript = ""; // Clear interim text each cycle
+        if (isMobile) {
+          const result = event.results[0];
+          if (result.isFinal) {
+            setTranscripts(prev => {
+              const newTranscripts = [...prev];
+              newTranscripts[currentQuestionIndex] = 
+                (newTranscripts[currentQuestionIndex] || '').trim() + ' ' + 
+                result[0].transcript.trim();
+              return newTranscripts;
+            });
+            
+            // Restart recognition on mobile after each final result
+            if (recognitionRef.current && isRecording) {
+              recognitionRef.current.stop();
+              setTimeout(() => {
+                recognitionRef.current?.start();
+              }, 100);
+            }
+          }
+        } else {
+          // Desktop behavior
+          let finalTranscript = '';
+          
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript + ' ';
+            }
+          }
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + " ";
-          } else {
-            interimTranscript += event.results[i][0].transcript;
+          if (finalTranscript) {
+            setTranscripts(prev => {
+              const newTranscripts = [...prev];
+              newTranscripts[currentQuestionIndex] = 
+                (newTranscripts[currentQuestionIndex] || '').trim() + ' ' + 
+                finalTranscript.trim();
+              return newTranscripts;
+            });
           }
         }
-
-        // Only update state once per result, adding a space before appending finalTranscript
-        setTranscripts((prev) => {
-          const newTranscripts = [...prev];
-          newTranscripts[currentQuestionIndex] =
-            (newTranscripts[currentQuestionIndex] || "").trim() +
-            " " +
-            finalTranscript.trim(); // Add a space before the new final text
-          return newTranscripts;
-        });
-
-        // Optionally: Set interimTranscript to state if you need a real-time view
       };
     }
 
@@ -196,7 +216,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
         recognitionRef.current.stop();
       }
     };
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, isRecording]);
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
