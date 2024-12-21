@@ -241,3 +241,47 @@ https://shadergradient-web.vercel.app/customize?animate=on&axesHelper=off&bgColo
 - Secure storage of subscriber data
 
 ---
+
+## Feature 3: Question-Specific Learning Resources
+
+### Overview
+Enhance interview feedback by providing curated learning resources for each evaluated question. The AI will generate 1-5 relevant links to technical articles, documentation, and learning materials specific to each question topic.
+
+### Data Structure
+The links will be in an array that's geenrated with the question evaluation JSOn from the ai evaluation.
+
+### Implementation Steps
+
+1. **AI Prompt Engineering**:
+   - Enhance AI evaluation prompt to include returning a list of resources in the JSON response in the shape of an array, the resources will be 1-5 relevant links to technical articles, documentation, and learning materials specific to each question topic.
+
+   - Define criteria for resource selection:
+     - Relevance to question topic
+     - Resource freshness
+
+
+2. **Resource Validation**:
+   - Implement URL validation and status checking
+   - Verify resource availability
+   - Filter out paywalled content
+  
+
+3. **UI Implementation**:
+   - Add resource section to question evaluation card
+   - Create expandable resource list component
+   - Add resource type indicators and icons
+   - Implement loading states for resource fetching
+
+4. **Resource Management**:
+   - Cache frequently recommended resources
+   - Track resource click-through rates
+   - Implement resource rating system
+   - Monitor dead links
+
+
+### Technical Considerations:
+- Validate URLs before displaying
+- Handle resource unavailability gracefully
+- Monitor resource freshness
+
+---

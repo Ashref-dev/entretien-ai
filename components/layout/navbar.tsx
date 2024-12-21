@@ -96,7 +96,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
               </div>
               <div className="flex space-x-4">
                 <Link
-                  href={siteConfig.links.github}
+                  href={siteConfig.links.gitHub}
                   target="_blank"
                   rel="noreferrer"
                 >
