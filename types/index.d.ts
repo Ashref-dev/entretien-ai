@@ -139,5 +139,12 @@ export type Interview = {
     userAnswer: string;
     questionFeedback: string | null;
     questionsScore: number | null;
+    learningResources?: {
+      id: string;
+      title: string;
+      url: string;
+      type: string;
+      description: string;
+    }[];
   }[];
 };

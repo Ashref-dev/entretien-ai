@@ -137,6 +137,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     const selectedDocuments = docs.filter(
       (doc) => doc.pageContent !== undefined,
     );
+    
     console.log(
       `[${interviewId}] Filtered documents: ${selectedDocuments.length}`,
     );

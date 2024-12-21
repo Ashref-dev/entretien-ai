@@ -19,12 +19,20 @@ type InterviewRequestBody = {
 };
 
 // First, let's define a clear interface for our evaluation results
+interface LearningResource {
+  title: string;
+  url: string;
+  type: "documentation" | "article" | "tutorial" | "video";
+  description: string;
+}
+
 interface QuestionEvaluation {
   score: number;
   technicalScore: number;
   communicationScore: number;
   problemSolvingScore: number;
   feedback: string;
+  learningResources: LearningResource[];
 }
 
 interface BatchEvaluationResult {
@@ -78,6 +86,7 @@ async function evaluateAnswers(
           communicationScore: evaluation.communicationScore || 0,
           problemSolvingScore: evaluation.problemSolvingScore || 0,
           feedback: evaluation.feedback || "Error processing feedback.",
+          learningResources: evaluation.learningResources || [],
         })),
       };
     } catch (error) {
@@ -95,6 +104,7 @@ async function evaluateAnswers(
             communicationScore: 0,
             problemSolvingScore: 0,
             feedback: "Failed to process response after multiple attempts.",
+            learningResources: [],
           })),
         };
       }
@@ -246,7 +256,7 @@ async function processInterview(data: InterviewRequestBody) {
       ...evaluations[index],
     }));
 
-    // Calculate average scores across all questions
+    // Calculate average scores
     const interviewScore =
       processedData.reduce((acc, curr) => acc + curr.score, 0) /
       processedData.length;
@@ -294,22 +304,42 @@ async function processInterview(data: InterviewRequestBody) {
             userAnswer: item.userAnswer,
             questionFeedback: item.feedback,
             questionsScore: item.score,
+            learningResources: {
+              create:
+                item.learningResources?.map((resource) => ({
+                  title: resource.title,
+                  url: resource.url,
+                  type: resource.type,
+                  description: resource.description,
+                })) || [],
+            },
           })),
         },
       },
-      include: { interviewData: true },
+      include: {
+        interviewData: {
+          include: {
+            learningResources: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json({ success: true, data: updatedInterview });
   } catch (error) {
     console.error("Error processing interview:", error);
-    prisma.interview.update({
+    await prisma.interview.update({
       where: { id: interviewId },
       data: {
         status: "ERROR",
         errorMessage: error instanceof Error ? error.message : "Unknown error",
       },
     });
+
+    return NextResponse.json(
+      { success: false, error: "Failed to process interview" },
+      { status: 500 },
+    );
   }
 }
 

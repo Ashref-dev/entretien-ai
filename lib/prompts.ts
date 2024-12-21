@@ -48,7 +48,15 @@ export function evaluateInterviewPrompt({
         "technicalScore": <number 0-100>,
         "communicationScore": <number 0-100>,
         "problemSolvingScore": <number 0-100>,
-        "feedback": "Constructive feedback with details about the improvements that should be made, mention the areas that need to be studied if applicable, and speak in first person like you're directly talking to the candidate, and make it concise but with detailed explanations (atleast 4 sentences)."
+        "feedback": "Constructive feedback with details about the improvements that should be made, mention the areas that need to be studied if applicable, and speak in first person like you're directly talking to the candidate, and make it concise but with detailed explanations (atleast 4 sentences).",
+        "learningResources": [
+          {
+            "title": "Resource title",
+            "url": "Resource URL",
+            "type": "documentation|article|tutorial|video",
+            "description": "Brief description of what this resource covers"
+          }
+        ]
       },
       // ... one object for each question
     ]
@@ -60,5 +68,11 @@ export function evaluateInterviewPrompt({
   3. All scores must be numbers without quotes
   4. Return only the JSON object
   5. Zero score for question repetition or yes/no answers
+  6. For learningResources:
+     - Provide 1-5 high-quality resources per question
+     - Focus on recent articles, tutorials and interview related resources
+     - Ensure resources are directly relevant to the question topic
+     - Avoid paywalled content
+     - Include a mix of resource types when appropriate
   `;
 }

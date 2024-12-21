@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Interview } from "@prisma/client";
+import { Interview } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
+  Book,
   Brain,
   Check,
   ChevronLeft,
   ChevronRight,
   Clock,
   Code,
+  ExternalLink,
+  FileText,
   MessageCircle,
   MessageSquare,
+  PlayCircle,
   ThumbsUpIcon,
   TriangleAlert,
   Trophy,
@@ -22,6 +26,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
@@ -33,7 +42,7 @@ interface ScoreCardProps {
 }
 
 interface InterviewResultsProps {
-  interview: Interview & { interviewData: any[] };
+  interview: Interview;
 }
 
 function ScoreCard({ icon, title, score, color }: ScoreCardProps) {
@@ -76,7 +85,97 @@ function getScoreIcon(score: number) {
   return <X className="ml-2 size-5 text-red-500" />;
 }
 
+function ResourceTypeIcon({
+  type,
+}: {
+  type: NonNullable<
+    Interview["interviewData"][number]["learningResources"]
+  >[number]["type"];
+}) {
+  switch (type.toLowerCase()) {
+    case "documentation":
+      return <FileText className="size-4 text-blue-500" />;
+    case "article":
+      return <Book className="size-4 text-purple-500" />;
+    case "tutorial":
+      return <Code className="size-4 text-green-500" />;
+    case "video":
+      return <PlayCircle className="size-4 text-red-500" />;
+    default:
+      return <ExternalLink className="size-4" />;
+  }
+}
+
+function LearningResources({
+  resources,
+}: {
+  resources: Interview["interviewData"][number]["learningResources"];
+}) {
+  if (!resources?.length) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {resources.map((resource, index) => (
+        <HoverCard key={index}>
+          <HoverCardTrigger asChild>
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex rounded-md bg-muted transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <div className="flex max-w-[300px] items-center gap-3 rounded-md border border-transparent bg-background/50 px-3 py-2 transition-all hover:border-border hover:bg-background">
+                {/* Favicon */}
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${new URL(resource.url).hostname}&sz=32`}
+                  alt=""
+                  className="size-4 shrink-0 rounded-sm"
+                  loading="lazy"
+                />
+
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  <h4 className="min-w-0 flex-1 truncate text-xs font-medium group-hover:text-primary">
+                    {resource.title}
+                  </h4>
+                  <Badge
+                    variant="secondary"
+                    className="shrink-0 px-1.5 py-0 text-[10px]"
+                  >
+                    {resource.type}
+                  </Badge>
+                </div>
+              </div>
+            </a>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-80">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${new URL(resource.url).hostname}&sz=32`}
+                  alt=""
+                  className="size-4 rounded-sm"
+                />
+                <h4 className="text-sm font-medium">{resource.title}</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {resource.description}
+              </p>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">{resource.type}</Badge>
+                <span className="text-xs text-muted-foreground">
+                  {new URL(resource.url).hostname}
+                </span>
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+      ))}
+    </div>
+  );
+}
+
 export default function InterviewResults({ interview }: InterviewResultsProps) {
+  console.log("🚀 ~ InterviewResults ~ interview:", interview);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestions, setShowQuestions] = useState(false);
 
@@ -284,6 +383,13 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 "No feedback provided"}
             </CardContent>
           </Card>
+
+          {/* Learning Resources */}
+          <LearningResources
+            resources={
+              interview.interviewData[currentQuestionIndex].learningResources
+            }
+          />
 
           {/* Navigation */}
           <div className="flex items-center justify-between gap-4">

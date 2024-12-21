@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { Interview } from "@/types";
 
 import { prisma } from "@/lib/db";
 import InterviewResults from "@/components/interviews/result/interview-results";
@@ -8,10 +9,14 @@ import InterviewLoading from "./loading";
 
 async function getInterviewData(interviewId: string) {
   try {
-    const interview = await prisma.interview.findUnique({
+    const interview: Interview | null = await prisma.interview.findUnique({
       where: { id: interviewId },
       include: {
-        interviewData: true,
+        interviewData: {
+          include: {
+            learningResources: true,
+          },
+        },
       },
     });
 

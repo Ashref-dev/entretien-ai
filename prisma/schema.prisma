@@ -83,7 +83,7 @@ model Interview {
   jobTitle            String
   jobDescription      String
   difficulty          InterviewDifficulty @default(JUNIOR)
-  yearsOfExperience   String               
+  yearsOfExperience   String
   interviewScore      Float?
   targetCompany       String?
   overAllFeedback     String?
@@ -106,19 +106,33 @@ model Interview {
 }
 
 model InterviewData {
-  id               String    @id @default(cuid())
-  interviewId      String
-  aiQuestion       String
-  aiAnswer         String
-  userAnswer       String
-  questionsScore   Int?
-  questionFeedback String?
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @default(now()) @map("updated_at")
-  interview        Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  id                String             @id @default(cuid())
+  interviewId       String
+  aiQuestion        String
+  aiAnswer          String
+  userAnswer        String
+  questionsScore    Int?
+  questionFeedback  String?
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @default(now()) @map("updated_at")
+  interview         Interview          @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  learningResources LearningResource[]
 
   @@index([interviewId])
   @@map("interview_data")
+}
+
+model LearningResource {
+  id              String        @id @default(cuid())
+  interviewDataId String
+  title           String
+  url             String
+  type            String
+  description     String
+  interviewData   InterviewData @relation(fields: [interviewDataId], references: [id], onDelete: Cascade)
+
+  @@index([interviewDataId])
+  @@map("learning_resources")
 }
 
 enum UserRole {
