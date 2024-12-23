@@ -1,8 +1,10 @@
 import { NextRequest } from "next/server";
 import { InterviewDifficulty } from "@/types";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { InterviewLanguage } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
@@ -38,6 +40,7 @@ export async function POST(request: NextRequest) {
         yearsOfExperience: formData.get("yearsOfExperience") as string,
         targetCompany: (formData.get("targetCompany") as string) || "",
         resume: (formData.get("pdf") as File).name,
+        language: (formData.get("language") as InterviewLanguage) || "EN",
         userId: user.id!,
       },
     });
@@ -117,6 +120,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     const difficulty = formData.get("difficulty") as InterviewDifficulty;
     const yearsOfExperience = formData.get("yearsOfExperience") as string;
     const targetCompany = formData.get("targetCompany") as string;
+    const language = (formData.get("language") as string) || "en";
 
     if (!pdf) {
       console.error(`[${interviewId}] PDF file is missing`);
@@ -137,7 +141,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     const selectedDocuments = docs.filter(
       (doc) => doc.pageContent !== undefined,
     );
-    
+
     console.log(
       `[${interviewId}] Filtered documents: ${selectedDocuments.length}`,
     );
@@ -155,10 +159,12 @@ async function processInterview(interviewId: string, formData: FormData) {
       - Job description: "${jobDescription}"
       - Difficulty level: "${difficulty}"
       - Required years of experience: ${yearsOfExperience}
+      - Interview language: "${language}"
       ${targetCompany ? `- Target company: ${targetCompany}` : ""}
   
       Generate 4 relevant common technical interview questions, and 1 common non-technical interview question focusing specifically on the listed skills to assess.
       Adjust the complexity and depth of questions based on the difficulty level and years of experience.
+      All questions and answers should be in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name} language.
   
       Candidate Resume content:
       ${texts.join(" ")}.
@@ -169,6 +175,7 @@ async function processInterview(interviewId: string, formData: FormData) {
       3. Avoid special characters or control characters, answer in simple text only, DO NOT USE MARKDOWN
       4. All text content should be on a single line
       5. All the 5 questions should be phrased like a question, with a question mark at the end.
+      6. All questions and answers must be in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name} language.
   
       Respond with a JSON object in this exact format:
       {

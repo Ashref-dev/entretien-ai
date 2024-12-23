@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Info, Loader } from "lucide-react";
+import { Info, Languages, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { SUPPORTED_LANGUAGES } from "@/config/site";
+import { cn } from "@/lib/utils";
 import { InterviewDifficultyEnum } from "@/lib/validations/interview";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +30,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
@@ -44,6 +54,7 @@ const formSchema = z.object({
   difficulty: InterviewDifficultyEnum,
   yearsOfExperience: z.string().min(1, "Experience level is required"),
   targetCompany: z.string().optional(),
+  language: z.enum(["en", "fr", "es", "de", "ar"] as const).default("en"),
 });
 
 interface Resume {
@@ -92,6 +103,7 @@ export function CreateInterviewForm({
   setIsLoading,
 }: CreateInterviewFormProps) {
   const [resume, setResume] = useState<File | null>(null);
+  const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,6 +113,7 @@ export function CreateInterviewForm({
       difficulty: "JUNIOR",
       yearsOfExperience: "",
       targetCompany: "",
+      language: "en",
     },
   });
 
@@ -121,6 +134,7 @@ export function CreateInterviewForm({
       formData.append("yearsOfExperience", values.yearsOfExperience.toString());
       if (values.targetCompany)
         formData.append("targetCompany", values.targetCompany);
+      formData.append("language", values.language);
 
       const response = await fetch("/api/interview", {
         method: "POST",
@@ -242,19 +256,96 @@ export function CreateInterviewForm({
               transition={{ duration: 0.3 }}
               className="space-y-4"
             >
-              <FormField
-                control={form.control}
-                name="jobTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Frontend Developer" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex justify-between">
+                <FormField
+                  control={form.control}
+                  name="jobTitle"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Job Title</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. Frontend Developer"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="language"
+                  render={({ field }) => (
+                    <FormItem className="ml-2 flex flex-col gap-[0.6em]">
+                      <FormLabel>Language</FormLabel>
+                      <Sheet
+                        open={isLanguageSheetOpen}
+                        onOpenChange={setIsLanguageSheetOpen}
+                      >
+                        <SheetTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="w-[120px] gap-2"
+                          >
+                            <Languages className="size-4" />
+                            <span className="text-lg">
+                              {
+                                SUPPORTED_LANGUAGES[
+                                  field.value as keyof typeof SUPPORTED_LANGUAGES
+                                ].flag
+                              }
+                            </span>
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="bottom" className="">
+                          <SheetHeader>
+                            <SheetTitle>Select Interview Language</SheetTitle>
+                            <SheetDescription>
+                              Choose the language for your interview questions,
+                              responses and feedback.
+                            </SheetDescription>
+                          </SheetHeader>
+                          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
+                            {Object.entries(SUPPORTED_LANGUAGES).map(
+                              ([code, { name, flag, greeting }]) => (
+                                <div
+                                  key={code}
+                                  onClick={() => {
+                                    field.onChange(code);
+                                    setIsLanguageSheetOpen(false);
+                                  }}
+                                  className={cn(
+                                    "relative cursor-pointer rounded-lg border p-4 transition-all hover:bg-accent",
+                                    "flex flex-col items-center justify-center gap-2",
+                                    field.value === code &&
+                                      "border-primary bg-primary/5",
+                                    "group hover:shadow-sm",
+                                  )}
+                                >
+                                  <div className="flex flex-col items-center gap-1.5">
+                                    <span className="text-3xl transition-transform group-hover:scale-110">
+                                      {flag}
+                                    </span>
+                                    <span className="font-medium tracking-tight">
+                                      {name}
+                                    </span>
+                                    <span className="text-sm text-muted-foreground">
+                                      {greeting}
+                                    </span>
+                                  </div>
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
@@ -369,55 +460,6 @@ export function CreateInterviewForm({
           >
             <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">Upload Resume</Label>
-              {/* <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary"
-                  >
-                    <Plus className="size-4" />
-                    Add existing resume
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center space-x-2">
-                      Resumes
-                      <Badge variant="secondary" className="ml-2">
-                        {resumes.length}
-                      </Badge>
-                    </SheetTitle>
-                    <SheetDescription>
-                      Choose a resume from recent uploads to use for this
-                      interview.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="mt-4 flex flex-col gap-4">
-                    {resumes.map((resume) => (
-                      <div
-                        key={resume.id}
-                        className="flex cursor-pointer items-center justify-between gap-4 rounded-md border border-transparent px-4 py-2 transition-all duration-200 hover:border-primary/20 hover:bg-black/5 dark:hover:border-white/20 dark:hover:bg-white/5"
-                      >
-                        <div className="flex items-center gap-4">
-                          <FileIcon className="size-6" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {resume.name}
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              {resume.size} KB
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(resume.uploadedDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </SheetContent>
-              </Sheet> */}
             </div>
             <div className="group mt-[0.65em] h-[20em] rounded-md border border-dashed lg:h-[calc(100%-2rem)]">
               <FileUpload onChange={handleFileUpload} />

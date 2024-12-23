@@ -77,6 +77,14 @@ enum InterviewDifficulty {
   PRINCIPAL
 }
 
+enum InterviewLanguage {
+  EN
+  FR
+  ES
+  DE
+  AR
+}
+
 model Interview {
   id                  String              @id @default(cuid())
   userId              String
@@ -84,6 +92,7 @@ model Interview {
   jobDescription      String
   difficulty          InterviewDifficulty @default(JUNIOR)
   yearsOfExperience   String
+  language            InterviewLanguage   @default(EN)
   interviewScore      Float?
   targetCompany       String?
   overAllFeedback     String?

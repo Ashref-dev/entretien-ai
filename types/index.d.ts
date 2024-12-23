@@ -130,6 +130,7 @@ export type Interview = {
   technicalScore?: number | null;
   communicationScore?: number | null;
   problemSolvingScore?: number | null;
+  language: "EN" | "FR" | "ES" | "DE" | "AR";
   createdAt: Date;
   updatedAt: Date;
   interviewData: {

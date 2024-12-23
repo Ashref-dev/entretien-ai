@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
+import { InterviewLanguage } from "@prisma/client";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
@@ -26,6 +27,7 @@ const CreateInterview = () => {
     skillsAssessed: string[];
     targetCompany: string;
     interviewData: Interview["interviewData"];
+    language: InterviewLanguage;
   }) => {
     const interview: Interview = {
       id: data.id,
@@ -33,6 +35,7 @@ const CreateInterview = () => {
       jobTitle: data.jobTitle,
       jobDescription: data.jobDescription,
       resume: data.resume,
+      language: data.language,
       difficulty: data.difficulty || "MID_LEVEL",
       yearsOfExperience: data.yearsOfExperience,
       targetCompany: data.targetCompany,
