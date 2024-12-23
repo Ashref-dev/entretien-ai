@@ -442,7 +442,13 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
-              <p className="text-base sm:text-lg">
+              <p
+                dir={interview.language === "AR" ? "rtl" : "ltr"}
+                className={cn(
+                  "text-base sm:text-lg",
+                  "whitespace-pre-line break-words",
+                )}
+              >
                 {currentQuestion?.aiQuestion}
               </p>
             </CardContent>
@@ -490,6 +496,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
               <div className="flex h-full flex-col space-y-3 sm:space-y-4">
                 {isTypingMode ? (
                   <Textarea
+                    dir={interview.language === "AR" ? "rtl" : "ltr"}
                     placeholder="Type your answer here..."
                     className="min-h-40 flex-1 resize-none bg-white/5 backdrop-blur-sm"
                     value={transcripts[currentQuestionIndex] || ""}

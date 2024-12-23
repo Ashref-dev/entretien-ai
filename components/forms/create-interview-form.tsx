@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Interview, InterviewDifficulty } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Globe, Info, Loader } from "lucide-react";
+import { Info, Languages, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { InterviewDifficultyEnum } from "@/lib/validations/interview";
 import { Button } from "@/components/ui/button";
@@ -45,14 +46,6 @@ import {
 } from "@/components/ui/tooltip";
 
 import { FileUpload } from "../ui/file-upload";
-
-const SUPPORTED_LANGUAGES = {
-  en: { name: "English", flag: "🇺🇸", greeting: "Hello!" },
-  fr: { name: "French", flag: "🇫🇷", greeting: "Bonjour!" },
-  es: { name: "Spanish", flag: "🇪🇸", greeting: "¡Hola!" },
-  de: { name: "German", flag: "🇩🇪", greeting: "Hallo!" },
-  ar: { name: "Arabic", flag: "🇸🇦", greeting: "!مرحبا" },
-} as const;
 
 // Define the form schema
 const formSchema = z.object({
@@ -263,7 +256,7 @@ export function CreateInterviewForm({
               transition={{ duration: 0.3 }}
               className="space-y-4"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <FormField
                   control={form.control}
                   name="jobTitle"
@@ -285,7 +278,7 @@ export function CreateInterviewForm({
                   control={form.control}
                   name="language"
                   render={({ field }) => (
-                    <FormItem className="ml-2 flex flex-col gap-2">
+                    <FormItem className="ml-2 flex flex-col gap-[0.6em]">
                       <FormLabel>Language</FormLabel>
                       <Sheet
                         open={isLanguageSheetOpen}
@@ -297,8 +290,8 @@ export function CreateInterviewForm({
                             size="icon"
                             className="w-[120px] gap-2"
                           >
-                            <Globe className="size-4" />
-                            <span>
+                            <Languages className="size-4" />
+                            <span className="text-lg">
                               {
                                 SUPPORTED_LANGUAGES[
                                   field.value as keyof typeof SUPPORTED_LANGUAGES
@@ -311,8 +304,8 @@ export function CreateInterviewForm({
                           <SheetHeader>
                             <SheetTitle>Select Interview Language</SheetTitle>
                             <SheetDescription>
-                              Choose the language for your interview questions
-                              and responses
+                              Choose the language for your interview questions,
+                              responses and feedback.
                             </SheetDescription>
                           </SheetHeader>
                           <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -349,7 +342,6 @@ export function CreateInterviewForm({
                           </div>
                         </SheetContent>
                       </Sheet>
-                      
                     </FormItem>
                   )}
                 />

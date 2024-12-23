@@ -175,7 +175,6 @@ function LearningResources({
 }
 
 export default function InterviewResults({ interview }: InterviewResultsProps) {
-  console.log("🚀 ~ InterviewResults ~ interview:", interview);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestions, setShowQuestions] = useState(false);
 
@@ -264,7 +263,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 <h3 className="text-lg font-semibold">Overall Feedback</h3>
                 <Card className="bg-muted/50">
                   <CardContent className="p-4">
-                    <p className="text-muted-foreground">
+                    <p
+                      dir={interview.language === "AR" ? "rtl" : "ltr"}
+                      className="text-muted-foreground"
+                    >
                       {interview.overAllFeedback}
                     </p>
                   </CardContent>
@@ -334,7 +336,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-lg">
+            <CardContent
+              dir={interview.language === "AR" ? "rtl" : "ltr"}
+              className="text-lg"
+            >
               {interview.interviewData[currentQuestionIndex].aiQuestion}
             </CardContent>
           </Card>
@@ -351,7 +356,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="min-h-[100px] text-muted-foreground">
+              <CardContent
+                dir={interview.language === "AR" ? "rtl" : "ltr"}
+                className="min-h-[100px] text-muted-foreground"
+              >
                 {interview.interviewData[currentQuestionIndex].userAnswer ||
                   "No answer provided"}
               </CardContent>
@@ -364,7 +372,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                   <Check className="ml-2 size-5 text-green-500" />
                 </CardTitle>
               </CardHeader>
-              <CardContent className="min-h-[100px] text-muted-foreground">
+              <CardContent
+                dir={interview.language === "AR" ? "rtl" : "ltr"}
+                className="min-h-[100px] text-muted-foreground"
+              >
                 {interview.interviewData[currentQuestionIndex].aiAnswer}
               </CardContent>
             </Card>
@@ -378,7 +389,10 @@ export default function InterviewResults({ interview }: InterviewResultsProps) {
                 <MessageSquare className="ml-2 size-5 text-blue-500" />
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-muted-foreground">
+            <CardContent
+              dir={interview.language === "AR" ? "rtl" : "ltr"}
+              className="text-muted-foreground"
+            >
               {interview.interviewData[currentQuestionIndex].questionFeedback ||
                 "No feedback provided"}
             </CardContent>

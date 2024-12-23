@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES } from "@/types";
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 
 interface Question {
   aiQuestion: string;

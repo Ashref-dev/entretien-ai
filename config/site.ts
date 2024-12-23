@@ -19,6 +19,14 @@ export const siteConfig: SiteConfig = {
   mailSupport: "support@entretien-ai.com",
 };
 
+export const SUPPORTED_LANGUAGES = {
+  EN: { name: "English", flag: "🇺🇸", greeting: "Hello!" },
+  FR: { name: "French", flag: "🇫🇷", greeting: "Bonjour!" },
+  ES: { name: "Spanish", flag: "🇪🇸", greeting: "¡Hola!" },
+  DE: { name: "German", flag: "🇩🇪", greeting: "Hallo!" },
+  AR: { name: "Arabic", flag: "🇸🇦", greeting: "!مرحبا" },
+} as const;
+
 export const footerLinks: SidebarNavItem[] = [
   {
     title: "Company",

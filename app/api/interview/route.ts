@@ -1,19 +1,13 @@
 import { NextRequest } from "next/server";
 import { InterviewDifficulty } from "@/types";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { InterviewLanguage } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
 import { getCurrentUser } from "@/lib/session";
-
-const SUPPORTED_LANGUAGES = {
-  en: { name: "English", flag: "🇺🇸" },
-  fr: { name: "French", flag: "🇫🇷" },
-  es: { name: "Spanish", flag: "🇪🇸" },
-  de: { name: "German", flag: "🇩🇪" },
-  ar: { name: "Arabic", flag: "🇸🇦" },
-} as const;
 
 export async function POST(request: NextRequest) {
   const requestId = Math.random().toString(36).substring(7);
@@ -46,7 +40,7 @@ export async function POST(request: NextRequest) {
         yearsOfExperience: formData.get("yearsOfExperience") as string,
         targetCompany: (formData.get("targetCompany") as string) || "",
         resume: (formData.get("pdf") as File).name,
-        language: (formData.get("language") as string) || "en",
+        language: (formData.get("language") as InterviewLanguage) || "EN",
         userId: user.id!,
       },
     });
@@ -126,7 +120,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     const difficulty = formData.get("difficulty") as InterviewDifficulty;
     const yearsOfExperience = formData.get("yearsOfExperience") as string;
     const targetCompany = formData.get("targetCompany") as string;
-    const language = formData.get("language") as string || "en";
+    const language = (formData.get("language") as string) || "en";
 
     if (!pdf) {
       console.error(`[${interviewId}] PDF file is missing`);
@@ -147,7 +141,7 @@ async function processInterview(interviewId: string, formData: FormData) {
     const selectedDocuments = docs.filter(
       (doc) => doc.pageContent !== undefined,
     );
-    
+
     console.log(
       `[${interviewId}] Filtered documents: ${selectedDocuments.length}`,
     );

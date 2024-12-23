@@ -5,14 +5,7 @@ import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
 import { evaluateInterviewPrompt } from "@/lib/prompts";
 import { getCurrentUser } from "@/lib/session";
-
-export const SUPPORTED_LANGUAGES = {
-  en: { name: "English", flag: "🇺🇸" },
-  fr: { name: "French", flag: "🇫🇷" },
-  es: { name: "Spanish", flag: "🇪🇸" },
-  de: { name: "German", flag: "🇩🇪" },
-  ar: { name: "Arabic", flag: "🇸🇦" },
-} as const;
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 
 type InterviewRequestBody = {
   interviewData: Array<{
