@@ -1,3 +1,5 @@
+import { SUPPORTED_LANGUAGES } from "@/types";
+
 interface Question {
   aiQuestion: string;
   aiAnswer: string;
@@ -8,16 +10,20 @@ interface EvaluationPromptParams {
   difficulty: string;
   yearsOfExperience: number;
   questions: Question[];
+  language: string;
 }
 
 export function evaluateInterviewPrompt({
   difficulty,
   yearsOfExperience,
   questions,
+  language,
 }: EvaluationPromptParams): string {
   return `
   You are an expert technical interviewer evaluating a candidate with a difficulty level of ${difficulty} and ${yearsOfExperience} years of experience.
   Analyze the following technical interview responses and provide detailed scores and feedback for each answer.
+  Evaluate the following interview responses in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name} language:
+
 
   Consider these evaluation criteria for each answer:
   1. Technical Knowledge: Assess depth, accuracy, and relevance of concepts

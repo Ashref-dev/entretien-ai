@@ -106,6 +106,14 @@ export type TestimonialType = {
 };
 export type InterviewStep = "initial" | "processing" | "results";
 
+const SUPPORTED_LANGUAGES = {
+  en: { name: "English", flag: "🇺🇸", greeting: "Hello!" },
+  fr: { name: "French", flag: "🇫🇷", greeting: "Bonjour!" },
+  es: { name: "Spanish", flag: "🇪🇸", greeting: "¡Hola!" },
+  de: { name: "German", flag: "🇩🇪", greeting: "Hallo!" },
+  ar: { name: "Arabic", flag: "🇸🇦", greeting: "!مرحبا" },
+} as const;
+
 export type InterviewDifficulty =
   | "JUNIOR"
   | "MID_LEVEL"

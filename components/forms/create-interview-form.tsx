@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { cn } from "@/lib/utils";
 import { InterviewDifficultyEnum } from "@/lib/validations/interview";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,13 +46,12 @@ import {
 
 import { FileUpload } from "../ui/file-upload";
 
-// Add language map constant
 const SUPPORTED_LANGUAGES = {
-  en: { name: "English", flag: "🇺🇸" },
-  fr: { name: "French", flag: "🇫🇷" },
-  es: { name: "Spanish", flag: "🇪🇸" },
-  de: { name: "German", flag: "🇩🇪" },
-  ar: { name: "Arabic", flag: "🇸🇦" },
+  en: { name: "English", flag: "🇺🇸", greeting: "Hello!" },
+  fr: { name: "French", flag: "🇫🇷", greeting: "Bonjour!" },
+  es: { name: "Spanish", flag: "🇪🇸", greeting: "¡Hola!" },
+  de: { name: "German", flag: "🇩🇪", greeting: "Hallo!" },
+  ar: { name: "Arabic", flag: "🇸🇦", greeting: "!مرحبا" },
 } as const;
 
 // Define the form schema
@@ -307,7 +307,7 @@ export function CreateInterviewForm({
                             </span>
                           </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="h-[300px]">
+                        <SheetContent side="bottom" className="">
                           <SheetHeader>
                             <SheetTitle>Select Interview Language</SheetTitle>
                             <SheetDescription>
@@ -315,28 +315,41 @@ export function CreateInterviewForm({
                               and responses
                             </SheetDescription>
                           </SheetHeader>
-                          <div className="mt-6 grid grid-cols-2 gap-2 md:grid-cols-3">
+                          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
                             {Object.entries(SUPPORTED_LANGUAGES).map(
-                              ([code, { name, flag }]) => (
-                                <Button
+                              ([code, { name, flag, greeting }]) => (
+                                <div
                                   key={code}
-                                  variant={
-                                    field.value === code ? "default" : "ghost"
-                                  }
-                                  className="justify-start gap-2 text-left"
                                   onClick={() => {
                                     field.onChange(code);
                                     setIsLanguageSheetOpen(false);
                                   }}
+                                  className={cn(
+                                    "relative cursor-pointer rounded-lg border p-4 transition-all hover:bg-accent",
+                                    "flex flex-col items-center justify-center gap-2",
+                                    field.value === code &&
+                                      "border-primary bg-primary/5",
+                                    "group hover:shadow-sm",
+                                  )}
                                 >
-                                  <span className="text-lg">{flag}</span>
-                                  <span>{name}</span>
-                                </Button>
+                                  <div className="flex flex-col items-center gap-1.5">
+                                    <span className="text-3xl transition-transform group-hover:scale-110">
+                                      {flag}
+                                    </span>
+                                    <span className="font-medium tracking-tight">
+                                      {name}
+                                    </span>
+                                    <span className="text-sm text-muted-foreground">
+                                      {greeting}
+                                    </span>
+                                  </div>
+                                </div>
                               ),
                             )}
                           </div>
                         </SheetContent>
                       </Sheet>
+                      
                     </FormItem>
                   )}
                 />

@@ -163,7 +163,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
+
       // Disable continuous mode on mobile
       recognitionRef.current.continuous = !isMobile;
       recognitionRef.current.interimResults = true;
@@ -172,14 +172,15 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
         if (isMobile) {
           const result = event.results[0];
           if (result.isFinal) {
-            setTranscripts(prev => {
+            setTranscripts((prev) => {
               const newTranscripts = [...prev];
-              newTranscripts[currentQuestionIndex] = 
-                (newTranscripts[currentQuestionIndex] || '').trim() + ' ' + 
+              newTranscripts[currentQuestionIndex] =
+                (newTranscripts[currentQuestionIndex] || "").trim() +
+                " " +
                 result[0].transcript.trim();
               return newTranscripts;
             });
-            
+
             // Restart recognition on mobile after each final result
             if (recognitionRef.current && isRecording) {
               recognitionRef.current.stop();
@@ -190,19 +191,20 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
           }
         } else {
           // Desktop behavior
-          let finalTranscript = '';
-          
+          let finalTranscript = "";
+
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-              finalTranscript += event.results[i][0].transcript + ' ';
+              finalTranscript += event.results[i][0].transcript + " ";
             }
           }
 
           if (finalTranscript) {
-            setTranscripts(prev => {
+            setTranscripts((prev) => {
               const newTranscripts = [...prev];
-              newTranscripts[currentQuestionIndex] = 
-                (newTranscripts[currentQuestionIndex] || '').trim() + ' ' + 
+              newTranscripts[currentQuestionIndex] =
+                (newTranscripts[currentQuestionIndex] || "").trim() +
+                " " +
                 finalTranscript.trim();
               return newTranscripts;
             });
@@ -360,7 +362,9 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
               console.error("Interview processing failed:", result.error);
               clearInterval(pollInterval);
               setLoading(false);
-              toast.error(result.error || "Failed to process interview");
+              toast.error(
+                result.error || "Failed to process, please try again.",
+              );
             } else {
             }
           } else {
@@ -370,8 +374,6 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
           console.error("Error during polling:", pollError);
         }
       }, 1000); // 1 second
-
-     
     } catch (error) {
       console.error("Fatal error in finishInterview:", error);
       setLoading(false);
