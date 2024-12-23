@@ -84,6 +84,7 @@ model Interview {
   jobDescription      String
   difficulty          InterviewDifficulty @default(JUNIOR)
   yearsOfExperience   String
+  language            String              @default("en")
   interviewScore      Float?
   targetCompany       String?
   overAllFeedback     String?
