@@ -76,9 +76,9 @@ export function evaluateInterviewPrompt({
   5. Zero score for question repetition or yes/no answers
   6. For learningResources:
      - Provide 1-5 high-quality resources per question
-     - Focus on recent articles, tutorials and interview related resources
+     - Focus on recent docs, articles and interview related resources
      - Ensure resources are directly relevant to the question topic
      - Avoid paywalled content
-     - Include a mix of resource types when appropriate
+     - Include links to site that are reliable like official docs, dont include youtube videos, gamasutra articles or fullstackreact.com.
   `;
 }

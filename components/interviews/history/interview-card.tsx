@@ -13,6 +13,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DeleteInterviewModalTrigger } from "@/components/modals/delete-interview-modal-trigger";
 
 interface InterviewCardProps {
   interview: Interview;
@@ -20,6 +21,7 @@ interface InterviewCardProps {
   setHoveredId: (id: string | null) => void;
   getScoreColor: (score: number | null) => string;
   getScoreLabel: (score: number | null) => string;
+  onDelete: (interviewId: string) => void;
 }
 
 export function InterviewCard({
@@ -28,6 +30,7 @@ export function InterviewCard({
   setHoveredId,
   getScoreColor,
   getScoreLabel,
+  onDelete,
 }: InterviewCardProps) {
   const allQuestionsAnswered = interview.interviewData.every(
     (item) => item.userAnswer && item.userAnswer.trim().length > 0,
@@ -116,7 +119,12 @@ export function InterviewCard({
               ))}
             </div>
 
-            <div className="flex">
+            <div className="flex gap-2">
+              <DeleteInterviewModalTrigger
+                interviewId={interview.id}
+                interviewTitle={interview.jobTitle}
+                onDelete={onDelete}
+              />
               <Link
                 href={
                   allQuestionsAnswered

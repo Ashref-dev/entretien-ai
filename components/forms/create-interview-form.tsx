@@ -54,30 +54,8 @@ const formSchema = z.object({
   difficulty: InterviewDifficultyEnum,
   yearsOfExperience: z.string().min(1, "Experience level is required"),
   targetCompany: z.string().optional(),
-  language: z.enum(["en", "fr", "es", "de", "ar"] as const).default("en"),
+  language: z.enum(["EN", "FR", "ES", "DE", "AR"] as const).default("EN"),
 });
-
-interface Resume {
-  id: string;
-  name: string;
-  size: number;
-  uploadedDate: string;
-}
-
-const resumes: Resume[] = [
-  {
-    id: "1",
-    name: "Resume 1",
-    size: 100,
-    uploadedDate: "2024-01-01",
-  },
-  {
-    id: "2",
-    name: "Resume 2",
-    size: 200,
-    uploadedDate: "2024-01-02",
-  },
-];
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -113,7 +91,7 @@ export function CreateInterviewForm({
       difficulty: "JUNIOR",
       yearsOfExperience: "",
       targetCompany: "",
-      language: "en",
+      language: "EN",
     },
   });
 

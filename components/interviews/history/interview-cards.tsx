@@ -24,12 +24,17 @@ interface InterviewCardsProps {
   isLoading?: boolean;
 }
 
-const ANIMATION_DURATION = 0.25; // Duration in seconds for the fades
+const ANIMATION_DURATION = 0.25;
 
-export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
+export function InterviewCards({ interviews: initialInterviews, isLoading }: InterviewCardsProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("date");
+  const [interviews, setInterviews] = useState<Interview[]>(initialInterviews);
+
+  const handleDeleteInterview = useCallback((interviewId: string) => {
+    setInterviews((prev) => prev.filter((interview) => interview.id !== interviewId));
+  }, []);
 
   const getScoreColor = useCallback((score: number | null) => {
     if (!score) return "bg-gray-500";
@@ -146,6 +151,7 @@ export function InterviewCards({ interviews, isLoading }: InterviewCardsProps) {
                 setHoveredId={setHoveredId}
                 getScoreColor={getScoreColor}
                 getScoreLabel={getScoreLabel}
+                onDelete={handleDeleteInterview}
               />
             </motion.div>
           ))}

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { InterviewDifficulty } from "@/types";
 
+import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
 import { evaluateInterviewPrompt } from "@/lib/prompts";
 import { getCurrentUser } from "@/lib/session";
-import { SUPPORTED_LANGUAGES } from "@/config/site";
 
 type InterviewRequestBody = {
   interviewData: Array<{
