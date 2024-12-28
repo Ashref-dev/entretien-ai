@@ -390,6 +390,7 @@ export async function POST(request: Request) {
     }
 
     const data = (await request.json()) as InterviewRequestBody;
+
     const { interviewId } = data;
 
     await prisma.interview.update({

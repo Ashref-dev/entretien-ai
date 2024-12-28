@@ -22,7 +22,7 @@ export function evaluateInterviewPrompt({
   return `
   You are an expert technical interviewer evaluating a candidate with a difficulty level of ${difficulty} and ${yearsOfExperience} years of experience.
   Analyze the following technical interview responses and provide detailed scores and feedback for each answer.
-  Evaluate the following interview responses in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name} language:
+  Evaluate the following interview responses in ${language.toUpperCase()} language:
 
 
   Consider these evaluation criteria for each answer:
