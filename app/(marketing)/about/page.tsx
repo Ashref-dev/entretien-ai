@@ -5,6 +5,7 @@ import { constructMetadata } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MovingBorderButton } from "@/components/ui/moving-border-button";
 import { FeaturesGrid } from "@/components/sections/features-grid";
+import { AnimatedIcon } from "@/components/shared/animated-icon";
 
 export const metadata = constructMetadata({
   title: "About – Entretien AI",
@@ -48,6 +49,34 @@ export default function AboutPage() {
             Why Choose Entretien AI?
           </h2>
           <FeaturesGrid />
+        </section>
+
+        <section className="animate-fade-in-up mb-16">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-4 text-2xl font-bold">
+                <AnimatedIcon
+                  icon="engagement"
+                  className="size-12"
+                  playMode="loop"
+                  speed={0.8}
+                />
+                We Value Your Feedback
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 dark:text-gray-300">
+                Your feedback helps us improve. Have suggestions or questions?
+                Reach out to us at{" "}
+                <a
+                  href="mailto:contact@entretien-ai.com"
+                  className="text-primary hover:underline"
+                >
+                  contact@entretien-ai.com
+                </a>
+              </p>
+            </CardContent>
+          </Card>
         </section>
 
         <section className="animate-fade-in-up text-center">

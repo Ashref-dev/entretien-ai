@@ -26,14 +26,19 @@ interface InterviewCardsProps {
 
 const ANIMATION_DURATION = 0.25;
 
-export function InterviewCards({ interviews: initialInterviews, isLoading }: InterviewCardsProps) {
+export function InterviewCards({
+  interviews: initialInterviews,
+  isLoading,
+}: InterviewCardsProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("date");
   const [interviews, setInterviews] = useState<Interview[]>(initialInterviews);
 
   const handleDeleteInterview = useCallback((interviewId: string) => {
-    setInterviews((prev) => prev.filter((interview) => interview.id !== interviewId));
+    setInterviews((prev) =>
+      prev.filter((interview) => interview.id !== interviewId),
+    );
   }, []);
 
   const getScoreColor = useCallback((score: number | null) => {

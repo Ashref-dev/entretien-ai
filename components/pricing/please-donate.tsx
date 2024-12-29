@@ -6,9 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MovingBorderButton } from "@/components/ui/moving-border-button";
 import { Icons } from "@/components/shared/icons";
 
+import { AnimatedIcon } from "../shared/animated-icon";
+
 export function PleaseDonate() {
   return (
-    <section className="container relative mx-auto px-4 py-24 sm:px-6 lg:px-8">
+    <section className="container relative mx-auto px-4 py-16 sm:px-6 lg:px-8">
       {/* Background gradient effect */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div
@@ -21,7 +23,16 @@ export function PleaseDonate() {
         />
       </div>
 
-      <div className="mx-auto max-w-4xl space-y-12">
+      <div className="mx-auto max-w-4xl space-y-8">
+        <div className="flex justify-center">
+          <AnimatedIcon
+            className="size-36"
+            icon="free"
+            playMode="loop"
+            speed={0.7}
+          />
+        </div>
+
         {/* Header Section */}
         <div className="text-center">
           <h1 className="animate-fade-up bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-center font-urban text-4xl font-bold tracking-tight text-transparent opacity-0 [animation-delay:100ms] sm:text-5xl md:text-6xl">

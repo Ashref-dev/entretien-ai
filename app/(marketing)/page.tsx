@@ -1,4 +1,5 @@
 import { infos } from "@/config/landing";
+import { VelocityScroll } from "@/components/ui/scroll-based-velocity";
 import BackgroundShaderClient from "@/components/sections/background-shader-client";
 import BentoGrid from "@/components/sections/bentogrid";
 import { CompareDemo } from "@/components/sections/Compare";
@@ -29,6 +30,7 @@ export default function IndexPage() {
       <InfoLanding data={infos[1]} />
       <Features />
       <ProductShowcase />
+      <VelocityScroll defaultVelocity={3}>Did I mention it&apos;s free?</VelocityScroll>
       <Testimonials />
     </>
   );

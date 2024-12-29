@@ -74,7 +74,7 @@ export function DeleteInterviewModalTrigger({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <button className="z-10 size-10 rounded-lg text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-destructive group-hover:opacity-100 dark:hover:bg-gray-700/50">
+        <button className="z-10 size-10 rounded-lg text-muted-foreground opacity-100 transition-opacity hover:bg-muted hover:text-destructive dark:hover:bg-gray-700/50 lg:opacity-0 lg:group-hover:opacity-100">
           <Trash2 className="mx-auto size-4 text-inherit" />
         </button>
       </AlertDialogTrigger>

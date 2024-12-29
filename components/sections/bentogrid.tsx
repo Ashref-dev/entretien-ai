@@ -2,12 +2,19 @@ import Image from "next/image";
 
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
+import { AnimatedIcon } from "../shared/animated-icon";
 import { HeaderSection } from "../shared/header-section";
 
 export default function BentoGrid() {
   return (
     <>
       <div className="mx-auto max-w-2xl">
+        <AnimatedIcon
+          className="mx-auto size-24"
+          icon="rules"
+          playMode="loop"
+          speed={0.7}
+        />
         <HeaderSection
           label="AI-Powered Interview Practice"
           title="Master Your Coding Interviews with Real-Time AI Feedback & Coaching"

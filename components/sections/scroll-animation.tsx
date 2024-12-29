@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 
+import { AnimatedIcon } from "../shared/animated-icon";
 import { ContainerScroll } from "../ui/container-scroll-animation";
 
 export default function HeroScroll() {
@@ -11,12 +11,20 @@ export default function HeroScroll() {
       <ContainerScroll
         titleComponent={
           <>
-            <h1 className="text-4xl font-semibold text-black dark:text-white">
-              Ace your <br />
-              <span className="mt-1 text-4xl font-bold leading-none md:text-[6rem]">
-                Technical Interviews
-              </span>
-            </h1>
+            <div className="flex flex-col items-center justify-center">
+              <AnimatedIcon
+                className="size-20"
+                icon="suitcase"
+                playMode="loop"
+                speed={0.7}
+              />
+              <h1 className="text-4xl font-semibold text-black dark:text-white">
+                Ace your <br />
+                <span className="mt-1 text-4xl font-bold leading-none md:text-[6rem]">
+                  Technical Interviews
+                </span>
+              </h1>
+            </div>
           </>
         }
       >

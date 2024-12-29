@@ -3,13 +3,21 @@ import { HeaderSection } from "@/components/shared/header-section";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
+import { AnimatedIcon } from "../shared/animated-icon";
+
 export default function Features() {
   return (
     <section>
       <div className="pb-6 pt-28">
         <MaxWidthWrapper>
+          <AnimatedIcon
+            className="mx-auto size-24"
+            icon="barChart"
+            playMode="loop"
+            speed={0.7}
+          />
           <HeaderSection
-            label="Features"
+            label="Features to aid your success"
             title="Elevate Your Interview Game"
             subtitle="Discover our comprehensive suite of AI-powered tools designed to transform your interview preparation experience and boost your chances of landing your dream job."
           />

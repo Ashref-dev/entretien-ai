@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+import { AnimatedIcon } from "../shared/animated-icon";
 import { HeaderSection } from "../shared/header-section";
 
 export const InfiniteMovingCards = ({
@@ -164,8 +165,14 @@ const products = [
 export default function ProductShowcase() {
   return (
     <div className="mt-16">
+      <AnimatedIcon
+        className="mx-auto size-24"
+        icon="shootingStars"
+        playMode="loop"
+        speed={0.7}
+      />
       <HeaderSection
-        label="Showcase"
+        label="Junior to senior roles Interview Prep"
         title="Everything you need to land your next tech role"
         subtitle="We've got you covered from start to finish, junior developers to senior engineers, and everything in between."
       />
