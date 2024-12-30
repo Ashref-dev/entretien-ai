@@ -1,3 +1,5 @@
+import "server-only";
+
 import MagicLinkEmail from "@/emails/magic-link-email";
 import { EmailConfig } from "next-auth/providers/email";
 import { Resend } from "resend";

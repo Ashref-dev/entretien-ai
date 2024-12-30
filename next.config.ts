@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
 
   experimental: {
     serverActions: {
-      bodySizeLimit: "5mb",
+      bodySizeLimit: "6mb",
     },
   },
 
@@ -32,7 +32,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ["@prisma/client", "@react-email/tailwind"],
+  // new NEXT JS 15 naming convention
+  serverExternalPackages: [
+    "@prisma/client",
+    "@react-email/components",
+    "@react-email/tailwind",
+  ],
 };
 
 module.exports = withContentlayer(nextConfig);
