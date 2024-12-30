@@ -1,4 +1,4 @@
-import { MagicLinkEmail } from "@/emails/magic-link-email";
+import MagicLinkEmail from "@/emails/magic-link-email";
 import { EmailConfig } from "next-auth/providers/email";
 import { Resend } from "resend";
 
@@ -12,25 +12,20 @@ export const resend = new Resend(env.RESEND_API_KEY);
 export const sendVerificationRequest: EmailConfig["sendVerificationRequest"] =
   async ({ identifier, url, provider }) => {
     const user = await getUserByEmail(identifier);
-    if (!user || !user.name) return;
-
-    const userVerified = user?.emailVerified ? true : false;
-    const authSubject = userVerified
+    const isExistingUser = !!user;
+    const authSubject = isExistingUser
       ? `Sign-in link for ${siteConfig.name}`
-      : "Activate your account";
+      : "Activate your account - Welcome to Entretien AI";
 
     try {
       const { data, error } = await resend.emails.send({
         from: provider.from ?? `noreply@${siteConfig.url}`,
-        to:
-          process.env.NODE_ENV === "development"
-            ? "delivered@resend.dev"
-            : identifier,
+        to: identifier,
         subject: authSubject,
         react: MagicLinkEmail({
-          firstName: user?.name as string,
+          firstName: user?.name || "there",
           actionUrl: url,
-          mailType: userVerified ? "login" : "register",
+          mailType: isExistingUser ? "login" : "register",
           siteName: siteConfig.name,
         }),
         // Set this to prevent Gmail from threading emails.
@@ -40,12 +35,22 @@ export const sendVerificationRequest: EmailConfig["sendVerificationRequest"] =
         },
       });
 
-      if (error || !data) {
-        throw new Error(error?.message);
-      }
+      console.log("Email attempt details:", {
+        to: identifier,
+        from: provider.from ?? `noreply@${siteConfig.url}`,
+        subject: authSubject,
+        isExistingUser,
+        hasError: !!error,
+        errorDetails: error,
+        responseData: data,
+      });
 
-      // console.log(data)
+      if (error || !data) {
+        console.error("Resend API error details:", error);
+        throw new Error(error?.message || "Unknown email error");
+      }
     } catch (error) {
-      throw new Error("Failed to send verification email.");
+      console.error("Full email error details:", error);
+      throw error;
     }
   };
