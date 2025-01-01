@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // new NEXT JS 15 naming convention
+ 
   serverExternalPackages: [
     "@prisma/client",
     "@react-email/components",
