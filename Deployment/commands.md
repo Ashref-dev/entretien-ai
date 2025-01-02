@@ -1,3 +1,8 @@
+You need to have the azure cli installed and logged in.
+
+If you don't have an Azure Subscription, you can get one free from the Github Student Pack.
+
+
 # Create a resource group in the West Europe region
 az group create \
   --name entretien-ai-rg \
@@ -53,7 +58,7 @@ azaz webapp config appsettings set \
     NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID=""
 
 
-# Make sure to add the needed env variables in the App Service so it can pull the docker image
+# Make sure to add the needed registry env variables in the App Service so it can pull the docker image
  az webapp config appsettings set \
      --name entretien-ai-docker \
      --resource-group entretien-ai-rg \

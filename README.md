@@ -72,7 +72,7 @@ Master the art of interviewing with Entretien AI. Our cutting-edge platform uses
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/rayenfassatoui/entretien-ai
+git clone https://github.com/Ashref-dev/entretien-ai
 ```
 
 2. Install dependencies:
@@ -92,12 +92,12 @@ cp .env.example .env
 - NEXTAUTH_SECRET
 - NEXT_PUBLIC_APP_URL
 - DATABASE_URL
-- AI_API_KEY
+- Etc.
 
 5. Initialize the database:
 
 ```sh
-bun prisma db push
+bunx prisma db push
 ```
 
 6. Run the development server:
@@ -105,6 +105,37 @@ bun prisma db push
 ```sh
 bun dev
 ```
+
+## Deployment
+
+<div style="display: flex; gap: 4px;">
+<img src="https://img.shields.io/badge/microsoft%20azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white" alt="Azure Cloud">
+<img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Containers">
+<img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="Neon Cloud">
+</div>
+
+### This project comes with a ready-to-use Docker configuration and GitHub Actions pipeline for Azure Cloud deployment.
+
+### Docker Support
+- Includes a production-ready Dockerfile
+- Optimized multi-stage builds for smaller image size
+- Configured for Next.js and Bun
+
+### Azure Cloud Deployment
+- Pre-configured GitHub Actions workflow for CI/CD
+- Automated deployments to Azure App Service
+- For detailed deployment commands, see [Deployment Guide](Deployment/commands.md)
+
+To deploy to Azure:
+1. Set up an Azure subscription (free with GitHub Student Pack)
+2. Install Azure CLI and authenticate
+3. Follow the commands in the deployment guide to:
+   - Create resource group
+   - Set up App Service Plan
+   - Configure environment variables
+   - Deploy container image
+
+For complete deployment instructions and Azure CLI commands, check our [Deployment Guide](Deployment/commands.md).
 
 ## Code of Conduct
 
