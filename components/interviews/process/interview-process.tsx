@@ -360,6 +360,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
             `/api/interview?id=${interview.id}`,
           );
           const result = await statusResponse.json();
+          console.log("🚀 ~ pollInterval ~ result:", result);
 
           if (result.status === "COMPLETED") {
             clearInterval(pollInterval);

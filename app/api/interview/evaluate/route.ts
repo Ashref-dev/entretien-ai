@@ -205,22 +205,6 @@ async function processInterview(
       duration,
     } = data;
 
-    // Validate difficulty enum
-    const validDifficulties = [
-      "JUNIOR",
-      "MID_LEVEL",
-      "SENIOR",
-      "LEAD",
-      "PRINCIPAL",
-    ];
-
-    if (!validDifficulties.includes(difficulty)) {
-      return NextResponse.json(
-        { success: false, error: "Invalid difficulty level" },
-        { status: 400 },
-      );
-    }
-
     // Fetch the existing interview
     const existingInterview = await prisma.interview.findUnique({
       where: { id: interviewId },
@@ -350,34 +334,18 @@ export async function POST(request: Request) {
     const data = (await request.json()) as InterviewRequestBody;
     const { interviewId } = data;
 
-    // Create AbortController with timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-    }, 120000); // 120 seconds
+    // Update status to PROCESSING immediately
+    await prisma.interview.update({
+      where: { id: interviewId },
+      data: { status: "PROCESSING" },
+    });
 
-    try {
-      await prisma.interview.update({
-        where: { id: interviewId },
-        data: { status: "PROCESSING" },
-      });
-
-      // Process interview with abort signal
-      const result = await processInterview(data, controller.signal);
-
-      clearTimeout(timeoutId);
-      return NextResponse.json({ success: true, data: result });
-    } catch (error) {
-      clearTimeout(timeoutId);
-      controller.abort(); // Ensure any pending operations are cancelled
-
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      const isTimeout =
-        error instanceof Error &&
+    // Start processing in background without awaiting
+    processInterview(data, new AbortController().signal).catch(async (error) => {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const isTimeout = error instanceof Error && 
         (error.name === "AbortError" || errorMessage.includes("timed out"));
 
-      // Update interview status
       await prisma.interview.update({
         where: { id: interviewId },
         data: {
@@ -387,25 +355,19 @@ export async function POST(request: Request) {
             : errorMessage,
         },
       });
+    });
 
-      return NextResponse.json(
-        {
-          success: false,
-          status: "ERROR",
-          errorMessage: isTimeout
-            ? "Interview evaluation timed out. Please try again."
-            : "Failed to process interview",
-        },
-        { status: isTimeout ? 408 : 500 },
-      );
-    }
+    // Return immediately with success
+    return NextResponse.json({ 
+      success: true, 
+      message: "Interview evaluation started",
+      interviewId 
+    });
+
   } catch (error) {
     console.error("Error initiating interview evaluation:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to process request",
-      },
+      { success: false, error: "Failed to process request" },
       { status: 500 },
     );
   }
