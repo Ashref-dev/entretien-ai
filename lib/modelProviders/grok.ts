@@ -1,10 +1,14 @@
 import OpenAI from "openai";
+
 const key = process.env.GROK_API_KEY;
 const baseURL = "https://api.x.ai/v1";
 const GROK_MODEL = process.env.GROK_MODEL || "grok-beta";
 const grokai = new OpenAI({ apiKey: key, baseURL });
 
-export async function callAIWithPrompt(prompt: string): Promise<any> {
+export async function callAIWithPrompt(
+  prompt: string,
+  options?: { signal?: AbortSignal },
+): Promise<any> {
   if (!key) {
     throw new Error("API key is not configured");
   }
@@ -12,12 +16,13 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
 
   try {
     // Send the prompt to Together AI and get the response
-    const response = await grokai.chat.completions.create({
-     
-
-      messages: [{ role: "user", content: prompt }],
-      model: GROK_MODEL,
-    });
+    const response = await grokai.chat.completions.create(
+      {
+        messages: [{ role: "user", content: prompt }],
+        model: GROK_MODEL,
+      },
+      { signal: options?.signal },
+    );
 
     // Extract the AI response content
     const aiResponseContent = response.choices[0]?.message?.content;
@@ -32,5 +37,3 @@ export async function callAIWithPrompt(prompt: string): Promise<any> {
     throw new Error("Failed to get a valid response from AI");
   }
 }
-
-

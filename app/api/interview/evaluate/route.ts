@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { InterviewDifficulty } from "@/types";
 
-import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
-import { evaluateInterviewPrompt } from "@/lib/prompts";
+import {
+  evaluateInterviewPrompt,
+  extractTechnologiesPrompt,
+  generateOverallFeedbackPrompt,
+} from "@/lib/prompts";
 import { getCurrentUser } from "@/lib/session";
 
 type InterviewRequestBody = {
@@ -49,6 +52,7 @@ async function evaluateAnswers(
   yearsOfExperience: number,
   language: string = "en",
   maxRetries = 3,
+  signal?: AbortSignal,
 ): Promise<BatchEvaluationResult> {
   // Early return for empty questions
   if (!questions.length) return { evaluations: [] };
@@ -65,7 +69,7 @@ async function evaluateAnswers(
 
   while (attempts < maxRetries) {
     try {
-      const response = await callLLM(prompt);
+      const response = await callLLM(prompt, { signal });
       const cleanedResponse = response
         .trim()
         .replace(/```json\s*|\s*```/g, "")
@@ -92,6 +96,9 @@ async function evaluateAnswers(
         })),
       };
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw error;
+      }
       attempts++;
       console.error(`Attempt ${attempts} failed:`, error);
 
@@ -124,29 +131,13 @@ async function evaluateAnswers(
 
 async function extractTechnologies(
   questions: Array<{ aiQuestion: string; aiAnswer: string }>,
+  signal?: AbortSignal,
 ): Promise<string[]> {
-  const prompt = `
-    You are a technical interviewer analyzing interview questions and answers.
-    Based on the following interview questions and their expected answers, identify the 5 main technologies or technical skills being tested.
-    
-    Questions and Answers:
-    ${questions
-      .map(
-        (q, i) => ` 
-      Question ${i + 1}: ${q.aiQuestion}
-      Expected Answer: ${q.aiAnswer}
-    `,
-      )
-      .join("\n")}
-
-    Return ONLY a JSON array of 5 technology/skill names, no additional text.
-    Example: ["React", "TypeScript", "System Design", "REST APIs", "State Management"]
-
-    Respond in JSON Only.
-  `;
+  // prompt in config
+  const prompt = extractTechnologiesPrompt(questions);
 
   try {
-    const response = await callLLM(prompt);
+    const response = await callLLM(prompt, { signal });
 
     const cleanedResponse = response
       .trim()
@@ -168,6 +159,9 @@ async function extractTechnologies(
     }
     return ["General Programming"]; // Fallback
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
     console.error("Error extracting technologies:", error);
     return ["General Programming"]; // Fallback
   }
@@ -182,199 +176,163 @@ async function generateOverallFeedback(
     problemSolvingScore: number;
   }>,
   language: string = "en",
+  signal?: AbortSignal,
 ): Promise<string> {
-  const prompt = `
-    Analyze these interview question results and provide a brief overall feedback summary for the candidate's interview answers,
-    focusing on their strengths and areas for improvement.
-    Provide the feedback in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name} language.
-
-    Question Results:
-    ${processedData
-      .map(
-        (item, i) => `
-    Question ${i + 1}:
-    Score: ${item.score}
-    Feedback: ${item.feedback}
-    `,
-      )
-      .join("\n")}
-
-    Return only a concise paragraph of feedback in ${language === "en" ? "English" : SUPPORTED_LANGUAGES[language as keyof typeof SUPPORTED_LANGUAGES].name}, no additional formatting, and speak in first person like you're directly talking to the candidate.
-  `;
+  // prompt in config again
+  const prompt = generateOverallFeedbackPrompt(processedData, language);
 
   try {
-    return await callLLM(prompt);
+    return await callLLM(prompt, { signal });
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
     console.error("Error generating overall feedback:", error);
     return "Unable to generate overall feedback.";
   }
 }
 
-// Add timeout utility
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(
-        () => reject(new Error("Interview evaluation timed out")),
-        timeoutMs,
-      ),
-    ),
-  ]);
-}
-
-async function processInterview(data: InterviewRequestBody) {
-  const TIMEOUT_MS = 120000; // 2 minutes
-
+async function processInterview(
+  data: InterviewRequestBody,
+  signal: AbortSignal,
+) {
   try {
-    return await withTimeout(
-      (async () => {
-        const {
-          interviewId,
-          interviewData,
-          difficulty,
-          yearsOfExperience,
-          duration,
-        } = data;
+    const {
+      interviewId,
+      interviewData,
+      difficulty,
+      yearsOfExperience,
+      duration,
+    } = data;
 
-        // Validate difficulty enum
-        const validDifficulties = [
-          "JUNIOR",
-          "MID_LEVEL",
-          "SENIOR",
-          "LEAD",
-          "PRINCIPAL",
-        ];
+    // Validate difficulty enum
+    const validDifficulties = [
+      "JUNIOR",
+      "MID_LEVEL",
+      "SENIOR",
+      "LEAD",
+      "PRINCIPAL",
+    ];
 
-        if (!validDifficulties.includes(difficulty)) {
-          return NextResponse.json(
-            { success: false, error: "Invalid difficulty level" },
-            { status: 400 },
-          );
-        }
+    if (!validDifficulties.includes(difficulty)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid difficulty level" },
+        { status: 400 },
+      );
+    }
 
-        // Fetch the existing interview
-        const existingInterview = await prisma.interview.findUnique({
-          where: { id: interviewId },
-          include: { interviewData: true },
-        });
+    // Fetch the existing interview
+    const existingInterview = await prisma.interview.findUnique({
+      where: { id: interviewId },
+      include: { interviewData: true },
+    });
 
-        if (!existingInterview) {
-          return NextResponse.json(
-            { success: false, error: "Interview not found" },
-            { status: 404 },
-          );
-        }
+    if (!existingInterview) {
+      return NextResponse.json(
+        { success: false, error: "Interview not found" },
+        { status: 404 },
+      );
+    }
 
-        // Wrap the core processing logic
-        const { evaluations } = await evaluateAnswers(
-          interviewData,
-          difficulty,
-          parseInt(yearsOfExperience),
-          existingInterview.language,
-        );
+    // core processing logic
+    const { evaluations } = await evaluateAnswers(
+      interviewData,
+      difficulty,
+      parseInt(yearsOfExperience),
+      existingInterview.language,
+      3,
+      signal,
+    );
 
-        // Combine original data with evaluations
-        const processedData = interviewData.map((item, index) => ({
-          ...item,
-          ...evaluations[index],
-        }));
+    // Combine original data with evaluations
+    const processedData = interviewData.map((item, index) => ({
+      ...item,
+      ...evaluations[index],
+    }));
 
-        // Calculate average scores
-        const interviewScore =
-          processedData.reduce((acc, curr) => acc + curr.score, 0) /
-          processedData.length;
-        const technicalScore =
-          processedData.reduce((acc, curr) => acc + curr.technicalScore, 0) /
-          processedData.length;
-        const communicationScore =
-          processedData.reduce(
-            (acc, curr) => acc + curr.communicationScore,
-            0,
-          ) / processedData.length;
-        const problemSolvingScore =
-          processedData.reduce(
-            (acc, curr) => acc + curr.problemSolvingScore,
-            0,
-          ) / processedData.length;
+    // Calculate average scores
+    const interviewScore =
+      processedData.reduce((acc, curr) => acc + curr.score, 0) /
+      processedData.length;
+    const technicalScore =
+      processedData.reduce((acc, curr) => acc + curr.technicalScore, 0) /
+      processedData.length;
+    const communicationScore =
+      processedData.reduce((acc, curr) => acc + curr.communicationScore, 0) /
+      processedData.length;
+    const problemSolvingScore =
+      processedData.reduce((acc, curr) => acc + curr.problemSolvingScore, 0) /
+      processedData.length;
 
-        // Extract technologies being assessed
-        const assessedTechnologies = await extractTechnologies(
-          processedData.map((item) => ({
+    // Extract technologies with signal
+    const assessedTechnologies = await extractTechnologies(
+      processedData.map((item) => ({
+        aiQuestion: item.aiQuestion,
+        aiAnswer: item.aiAnswer,
+      })),
+      signal,
+    );
+
+    // Generate overall feedback with signal
+    const overallFeedback = await generateOverallFeedback(
+      processedData,
+      existingInterview.language,
+      signal,
+    );
+
+    // Update the interview with all scores
+    const updatedInterview = await prisma.interview.update({
+      where: { id: interviewId },
+      data: {
+        status: "COMPLETED",
+        interviewScore,
+        technicalScore,
+        communicationScore,
+        problemSolvingScore,
+        skillsAssessed: assessedTechnologies,
+        questionsAnswered: processedData.length,
+        difficulty,
+        yearsOfExperience,
+        duration: duration || 0,
+        overAllFeedback: overallFeedback,
+        interviewData: {
+          deleteMany: {},
+          create: processedData.map((item) => ({
             aiQuestion: item.aiQuestion,
             aiAnswer: item.aiAnswer,
+            userAnswer: item.userAnswer,
+            questionFeedback: item.feedback,
+            questionsScore: item.score,
+            learningResources: {
+              create:
+                item.learningResources?.map((resource) => ({
+                  title: resource.title,
+                  url: resource.url,
+                  type: resource.type,
+                  description: resource.description,
+                })) || [],
+            },
           })),
-        );
-
-        // Generate overall feedback with language
-        const overallFeedback = await generateOverallFeedback(
-          processedData,
-          existingInterview.language,
-        );
-
-        // Update the interview with all scores
-        const updatedInterview = await prisma.interview.update({
-          where: { id: interviewId },
-          data: {
-            status: "COMPLETED",
-            interviewScore,
-            technicalScore,
-            communicationScore,
-            problemSolvingScore,
-            skillsAssessed: assessedTechnologies,
-            questionsAnswered: processedData.length,
-            difficulty,
-            yearsOfExperience,
-            duration: duration || 0,
-            overAllFeedback: overallFeedback,
-            interviewData: {
-              deleteMany: {},
-              create: processedData.map((item) => ({
-                aiQuestion: item.aiQuestion,
-                aiAnswer: item.aiAnswer,
-                userAnswer: item.userAnswer,
-                questionFeedback: item.feedback,
-                questionsScore: item.score,
-                learningResources: {
-                  create:
-                    item.learningResources?.map((resource) => ({
-                      title: resource.title,
-                      url: resource.url,
-                      type: resource.type,
-                      description: resource.description,
-                    })) || [],
-                },
-              })),
-            },
-          },
+        },
+      },
+      include: {
+        interviewData: {
           include: {
-            interviewData: {
-              include: {
-                learningResources: true,
-              },
-            },
+            learningResources: true,
           },
-        });
-
-        return updatedInterview;
-      })(),
-      TIMEOUT_MS,
-    );
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    const isTimeout = errorMessage.includes("timed out");
-
-    await prisma.interview.update({
-      where: { id: data.interviewId },
-      data: {
-        status: "ERROR",
-        errorMessage: isTimeout
-          ? "Interview evaluation timed out. Please try again."
-          : errorMessage,
+        },
       },
     });
 
+    return updatedInterview;
+  } catch (error) {
+    // Check if the error is from timeout/abort
+    if (
+      error instanceof Error &&
+      (error.name === "AbortError" || error.message.includes("timed out"))
+    ) {
+      throw new Error("Interview evaluation timed out. Please try again.");
+    }
     throw error;
   }
 }
@@ -390,37 +348,64 @@ export async function POST(request: Request) {
     }
 
     const data = (await request.json()) as InterviewRequestBody;
-
     const { interviewId } = data;
 
-    await prisma.interview.update({
-      where: { id: interviewId },
-      data: { status: "PROCESSING" },
-    });
+    // Create AbortController with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 120000); // 120 seconds
 
-    // Process interview with error handling
-    processInterview(data).catch((error) => {
-      console.error("Error processing interview:", error);
+    try {
+      await prisma.interview.update({
+        where: { id: interviewId },
+        data: { status: "PROCESSING" },
+      });
+
+      // Process interview with abort signal
+      const result = await processInterview(data, controller.signal);
+
+      clearTimeout(timeoutId);
+      return NextResponse.json({ success: true, data: result });
+    } catch (error) {
+      clearTimeout(timeoutId);
+      controller.abort(); // Ensure any pending operations are cancelled
+
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      const isTimeout = errorMessage.includes("timed out");
+      const isTimeout =
+        error instanceof Error &&
+        (error.name === "AbortError" || errorMessage.includes("timed out"));
 
-      return prisma.interview.update({
+      // Update interview status
+      await prisma.interview.update({
         where: { id: interviewId },
         data: {
           status: "ERROR",
           errorMessage: isTimeout
             ? "Interview evaluation timed out. Please try again."
-            : "Failed to process interview",
+            : errorMessage,
         },
       });
-    });
 
-    return NextResponse.json({ success: true, status: "PROCESSING" });
+      return NextResponse.json(
+        {
+          success: false,
+          status: "ERROR",
+          errorMessage: isTimeout
+            ? "Interview evaluation timed out. Please try again."
+            : "Failed to process interview",
+        },
+        { status: isTimeout ? 408 : 500 },
+      );
+    }
   } catch (error) {
     console.error("Error initiating interview evaluation:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to process interview" },
+      {
+        success: false,
+        error: "Failed to process request",
+      },
       { status: 500 },
     );
   }

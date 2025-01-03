@@ -111,6 +111,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
     {
       text: "📝 Generating detailed feedback...",
     },
+
     {
       text: "🎯 Preparing your interview results...",
     },
@@ -322,6 +323,10 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
     setLoading(true);
 
     try {
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 seconds
+
       const response = await fetch("/api/interview/evaluate", {
         method: "POST",
         headers: {
@@ -334,50 +339,61 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
           yearsOfExperience: interview.yearsOfExperience,
           duration: elapsedTime,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const initialResult = await response.json();
 
       if (!initialResult.success) {
-        console.error("Initial evaluation failed:", initialResult.error);
+        setLoading(false);
+        toast.error(
+          "Failed to initialize interview processing, please try again.",
+        );
         throw new Error(initialResult.error);
       }
 
-      let pollCount = 0;
       const pollInterval = setInterval(async () => {
-        pollCount++;
-
         try {
           const statusResponse = await fetch(
             `/api/interview?id=${interview.id}`,
           );
           const result = await statusResponse.json();
 
-          if (result.success) {
-            if (result.status === "COMPLETED") {
-              clearInterval(pollInterval);
-              setLoading(false);
-              router.push(`/interviews/${interview.id}/results`);
-            } else if (result.status === "ERROR") {
-              console.error("Interview processing failed:", result.error);
-              clearInterval(pollInterval);
-              setLoading(false);
+          if (result.status === "COMPLETED") {
+            clearInterval(pollInterval);
+            setLoading(false);
+            router.push(`/interviews/${interview.id}/results`);
+          } else if (result.status === "ERROR") {
+            clearInterval(pollInterval);
+
+            setLoading(false);
+            // Check if the error is from LLM timeout
+            if (result.errorMessage?.includes("timed out")) {
               toast.error(
-                result.error || "Failed to process, please try again.",
+                "Interview processing timed out. check your internet connection and try again.",
               );
             } else {
+              toast.error(
+                result.errorMessage ||
+                  "Interview processing failed. Please try again.",
+              );
             }
-          } else {
-            console.warn("Poll returned unsuccessful response:", result);
           }
         } catch (pollError) {
-          console.error("Error during polling:", pollError);
+          clearInterval(pollInterval);
+          setLoading(false);
+          toast.error("Failed to check interview status");
         }
-      }, 1000); // 1 second
+      }, 1000);
     } catch (error) {
-      console.error("Fatal error in finishInterview:", error);
       setLoading(false);
-      toast.error("Failed to process interview");
+      if (error instanceof Error && error.name === "AbortError") {
+        toast.error("Interview processing timed out. Please try again.");
+      } else {
+        toast.error("Failed to process interview. Please try again.");
+      }
     }
   };
 
