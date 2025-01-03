@@ -347,6 +347,7 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
       const initialResult = await response.json();
 
       if (!initialResult.success) {
+        setLoading(false);
         toast.error(
           "Failed to initialize interview processing, please try again.",
         );
@@ -360,25 +361,24 @@ export default function InterviewProcess({ interview }: InterviewProcessProps) {
           );
           const result = await statusResponse.json();
 
-          if (result.success) {
-            if (result.status === "COMPLETED") {
-              clearInterval(pollInterval);
-              setLoading(false);
-              router.push(`/interviews/${interview.id}/results`);
-            } else if (result.status === "ERROR") {
-              clearInterval(pollInterval);
-              setLoading(false);
-              // Check if the error is from LLM timeout
-              if (result.errorMessage?.includes("timed out")) {
-                toast.error(
-                  "Interview processing timed out. check your internet connection and try again.",
-                );
-              } else {
-                toast.error(
-                  result.errorMessage ||
-                    "Interview processing failed. Please try again.",
-                );
-              }
+          if (result.status === "COMPLETED") {
+            clearInterval(pollInterval);
+            setLoading(false);
+            router.push(`/interviews/${interview.id}/results`);
+          } else if (result.status === "ERROR") {
+            clearInterval(pollInterval);
+
+            setLoading(false);
+            // Check if the error is from LLM timeout
+            if (result.errorMessage?.includes("timed out")) {
+              toast.error(
+                "Interview processing timed out. check your internet connection and try again.",
+              );
+            } else {
+              toast.error(
+                result.errorMessage ||
+                  "Interview processing failed. Please try again.",
+              );
             }
           }
         } catch (pollError) {

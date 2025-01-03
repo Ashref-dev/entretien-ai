@@ -192,9 +192,10 @@ async function generateOverallFeedback(
   }
 }
 
-async function processInterview(data: InterviewRequestBody) {
-  const controller = new AbortController();
-
+async function processInterview(
+  data: InterviewRequestBody,
+  signal: AbortSignal,
+) {
   try {
     const {
       interviewId,
@@ -240,7 +241,7 @@ async function processInterview(data: InterviewRequestBody) {
       parseInt(yearsOfExperience),
       existingInterview.language,
       3,
-      controller.signal,
+      signal,
     );
 
     // Combine original data with evaluations
@@ -269,14 +270,14 @@ async function processInterview(data: InterviewRequestBody) {
         aiQuestion: item.aiQuestion,
         aiAnswer: item.aiAnswer,
       })),
-      controller.signal,
+      signal,
     );
 
     // Generate overall feedback with signal
     const overallFeedback = await generateOverallFeedback(
       processedData,
       existingInterview.language,
-      controller.signal,
+      signal,
     );
 
     // Update the interview with all scores
@@ -325,21 +326,13 @@ async function processInterview(data: InterviewRequestBody) {
 
     return updatedInterview;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    const isTimeout = errorMessage.includes("timed out");
-
-    await prisma.interview.update({
-      where: { id: data.interviewId },
-      data: {
-        status: "ERROR",
-        errorMessage: isTimeout
-          ? "Interview evaluation timed out. Please try again."
-          : errorMessage,
-      },
-    });
-
-    controller.abort(); // Ensure all pending operations are cancelled
+    // Check if the error is from timeout/abort
+    if (
+      error instanceof Error &&
+      (error.name === "AbortError" || error.message.includes("timed out"))
+    ) {
+      throw new Error("Interview evaluation timed out. Please try again.");
+    }
     throw error;
   }
 }
@@ -355,37 +348,64 @@ export async function POST(request: Request) {
     }
 
     const data = (await request.json()) as InterviewRequestBody;
-
     const { interviewId } = data;
 
-    await prisma.interview.update({
-      where: { id: interviewId },
-      data: { status: "PROCESSING" },
-    });
+    // Create AbortController with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 120000); // 120 seconds
 
-    // Process interview with error handling
-    processInterview(data).catch((error) => {
-      console.error("Error processing interview:", error);
+    try {
+      await prisma.interview.update({
+        where: { id: interviewId },
+        data: { status: "PROCESSING" },
+      });
+
+      // Process interview with abort signal
+      const result = await processInterview(data, controller.signal);
+
+      clearTimeout(timeoutId);
+      return NextResponse.json({ success: true, data: result });
+    } catch (error) {
+      clearTimeout(timeoutId);
+      controller.abort(); // Ensure any pending operations are cancelled
+
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      const isTimeout = errorMessage.includes("timed out");
+      const isTimeout =
+        error instanceof Error &&
+        (error.name === "AbortError" || errorMessage.includes("timed out"));
 
-      return prisma.interview.update({
+      // Update interview status
+      await prisma.interview.update({
         where: { id: interviewId },
         data: {
           status: "ERROR",
           errorMessage: isTimeout
             ? "Interview evaluation timed out. Please try again."
-            : "Failed to process interview",
+            : errorMessage,
         },
       });
-    });
 
-    return NextResponse.json({ success: true, status: "PROCESSING" });
+      return NextResponse.json(
+        {
+          success: false,
+          status: "ERROR",
+          errorMessage: isTimeout
+            ? "Interview evaluation timed out. Please try again."
+            : "Failed to process interview",
+        },
+        { status: isTimeout ? 408 : 500 },
+      );
+    }
   } catch (error) {
     console.error("Error initiating interview evaluation:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to process interview" },
+      {
+        success: false,
+        error: "Failed to process request",
+      },
       { status: 500 },
     );
   }
