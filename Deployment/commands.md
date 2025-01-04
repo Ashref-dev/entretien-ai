@@ -1,37 +1,67 @@
-You need to have the azure cli installed and logged in.
+# Azure Deployment Guide for Entretien AI
 
-If you don't have an Azure Subscription, you can get one free from the Github Student Pack.
+## Prerequisites
 
+- Azure CLI installed and configured
+- Active Azure subscription (available free through Github Student Pack)
+- Docker registry access (GitHub Container Registry in this case)
 
-# Create a resource group in the West Europe region
+## Resource Creation
+
+### 1. Create Resource Group
+
+Create a resource group in the West Europe region:
+
+```bash
 az group create \
   --name entretien-ai-rg \
   --location westeurope
+```
 
+### 2. Create App Service Plan
 
-# Create a Linux-based service plan in the same resource group (F1 is free tier)
+Create a Linux-based service plan (F1 is free tier):
+
+```bash
 az appservice plan create \
   --resource-group entretien-ai-rg \
   --location westeurope \
   --name entretien-ai-sp \
   --is-linux \
   --sku F1
+```
 
-# Create an App Service with an nginx image as a placeholder
+### 3. Create Web App
+
+Create an App Service with nginx as placeholder:
+
+```bash
 az webapp create \
   --resource-group entretien-ai-rg \
   --plan entretien-ai-sp \
   --name entretien-ai-docker \
   --deployment-container-image-name nginx
+```
 
-# Retrieve and save the publish profile for the new App Service
+### 4. Get Publishing Profile
+
+Save the deployment credentials:
+
+```bash
 az webapp deployment list-publishing-profiles \
   --resource-group entretien-ai-rg \
   --name entretien-ai-docker \
   --xml > publishProfileDocker.xml
+```
 
-# set env variables
-azaz webapp config appsettings set \
+## Environment Configuration
+
+### 1. Application Settings
+
+Configure the application environment variables:
+
+```bash
+az webapp config appsettings set \
   --name entretien-ai-docker \
   --resource-group entretien-ai-rg \
   --settings \
@@ -56,12 +86,25 @@ azaz webapp config appsettings set \
     NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID="" \
     NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID="" \
     NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID=""
+```
 
+### 2. Docker Registry Configuration
 
-# Make sure to add the needed registry env variables in the App Service so it can pull the docker image
- az webapp config appsettings set \
-     --name entretien-ai-docker \
-     --resource-group entretien-ai-rg \
-     --settings DOCKER_REGISTRY_SERVER_URL=https://ghcr.io \
-     DOCKER_REGISTRY_SERVER_USERNAME=yourgithubusername \
-     DOCKER_REGISTRY_SERVER_PASSWORD=yourgithubpat
+Configure the GitHub Container Registry credentials:
+
+```bash
+az webapp config appsettings set \
+  --name entretien-ai-docker \
+  --resource-group entretien-ai-rg \
+  --settings \
+    DOCKER_REGISTRY_SERVER_URL=https://ghcr.io \
+    DOCKER_REGISTRY_SERVER_USERNAME=yourgithubusername \
+    DOCKER_REGISTRY_SERVER_PASSWORD=yourgithubpat
+```
+
+## Notes
+
+- Replace empty values (`""`) with your actual configuration values
+- Replace `yourgithubusername` with your GitHub username
+- Replace `yourgithubpat` with your GitHub Personal Access Token
+- Make sure your PAT has the necessary permissions for container registry access
