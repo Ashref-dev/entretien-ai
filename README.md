@@ -1,5 +1,11 @@
 <img alt="Entretien AI" src="public/_static/og.jpg">
 
+<p align="center">
+  <img src="https://img.shields.io/github/license/Ashref-dev/entretien-ai" alt="License">
+  <img src="https://img.shields.io/github/last-commit/Ashref-dev/entretien-ai" alt="Last Commit">
+
+</p>
+
 <p align="center" style="margin-top: 20px">
   <p align="center">
     Entretien AI - Master Your Interview Game
@@ -63,9 +69,58 @@ Master the art of interviewing with Entretien AI. Our cutting-edge platform uses
 ### Prerequisites
 
 - Deno, bun or node.js 18.x or higher
-- PostgreSQL database
-- Resend API key
-- Together.ai API key
+
+Important:
+This project uses `@t3-oss/env-nextjs` for runtime environment variable validation. The validation schema is defined in `env.mjs` and ensures all required environment variables are present with the correct types.
+
+### Required Environment Variables
+
+The following environment variables must be set in your `.env` file:
+
+#### Authentication
+- `AUTH_SECRET`: Secret key for authentication
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
+- `AUTH_GITHUB_ID`: GitHub OAuth app ID
+- `AUTH_GITHUB_SECRET`: GitHub OAuth app secret
+
+#### Database
+- `DATABASE_URL`: PostgreSQL connection string
+
+#### Email
+- `RESEND_API_KEY`: API key for Resend email service
+- `EMAIL_FROM`: Sender email address
+
+#### AI Services
+- `AI_API_KEY`: API key for AI services
+- `GROQ_API_KEY`: Groq API key (optional)
+- `GROK_API_KEY`: Grok API key (optional)
+
+#### Stripe Integration
+- `STRIPE_API_KEY`: Stripe secret key
+- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
+- `NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID`: Monthly pro plan ID
+- `NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID`: Yearly pro plan ID
+- `NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID`: Monthly business plan ID
+- `NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID`: Yearly business plan ID
+
+#### Application URLs
+- `NEXT_PUBLIC_APP_URL`: Public URL of your application
+- `NEXTAUTH_URL`: Auth.js URL (optional in production)
+
+### Environment Validation
+
+The project uses strict runtime validation for environment variables:
+
+- Server-side variables are validated before the server starts
+- Client-side variables are validated during build time
+- Type-safe access to environment variables throughout the application
+- Helpful error messages if required variables are missing
+
+For production builds, the application uses `.env.production` with dummy values during build time. The actual runtime values are provided by Azure App Service environment variables.
+
+Do not modify `.env.production` with real values as it's committed to the repository.
+
 
 ### Installation
 
@@ -167,12 +222,6 @@ The AGPL-3.0 license ensures that:
   - Make your modifications available under the same license
   - Share the source code when you deploy modified versions
   - Preserve copyright notices and license information
-
-## Environment Variables in production
-
-For production builds, the application uses `.env.production` with dummy values during build time. The actual runtime values are provided by Azure App Service environment variables.
-
-Do not modify `.env.production` with real values as it's committed to the repository.
 
 
 ## the shader gradients
