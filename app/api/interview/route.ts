@@ -4,7 +4,6 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { InterviewLanguage } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 
-import { SUPPORTED_LANGUAGES } from "@/config/site";
 import { prisma } from "@/lib/db";
 import { callLLM } from "@/lib/llm";
 import { generateInterviewPrompt } from "@/lib/prompts";
@@ -286,34 +285,59 @@ async function processInterview(interviewId: string, formData: FormData) {
 
 // Add status check endpoint
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const interviewId = await searchParams.get("id");
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Unauthorized" }),
+        { status: 401 },
+      );
+    }
 
-  if (!interviewId) {
+    const { searchParams } = new URL(request.url);
+    const interviewId = await searchParams.get("id");
+
+    if (!interviewId) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Interview ID required" }),
+        { status: 400 },
+      );
+    }
+
+    const interview = await prisma.interview.findUnique({
+      where: {
+        id: interviewId,
+        userId: user.id, // Ensure interview belongs to current user
+      },
+      include: { interviewData: true },
+    });
+
+    if (!interview) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Interview not found" }),
+        { status: 404 },
+      );
+    }
+
     return new Response(
-      JSON.stringify({ success: false, error: "Interview ID required" }),
-      { status: 400 },
+      JSON.stringify({
+        success: true,
+        status: interview.status,
+        data: interview.status === "COMPLETED" ? interview : null,
+        error: interview.status === "ERROR" ? interview.errorMessage : null,
+      }),
+    );
+  } catch (error) {
+    console.error("Error checking interview status:", error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to check interview status",
+      }),
+      { status: 500 },
     );
   }
-
-  const interview = await prisma.interview.findUnique({
-    where: { id: interviewId },
-    include: { interviewData: true },
-  });
-
-  if (!interview) {
-    return new Response(
-      JSON.stringify({ success: false, error: "Interview not found" }),
-      { status: 404 },
-    );
-  }
-
-  return new Response(
-    JSON.stringify({
-      success: true,
-      status: interview.status,
-      data: interview.status === "COMPLETED" ? interview : null,
-      error: interview.status === "ERROR" ? interview.errorMessage : null,
-    }),
-  );
 }
