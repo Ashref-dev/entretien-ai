@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { InterviewDifficulty } from "@/types";
 
@@ -8,7 +9,14 @@ import {
   extractTechnologiesPrompt,
   generateOverallFeedbackPrompt,
 } from "@/lib/prompts";
+import rateLimit from "@/lib/rate-limit";
 import { getCurrentUser } from "@/lib/session";
+import { EvaluateInterviewSchema } from "@/lib/validations/interview";
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500, // Max 500 users per interval
+});
 
 type InterviewRequestBody = {
   interviewData: Array<{
@@ -323,6 +331,20 @@ async function processInterview(
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
+    try {
+      await limiter.check(5, ip); // 5 requests per minute per IP
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Rate limit exceeded. Please try again later.",
+        },
+        { status: 429 },
+      );
+    }
+
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json(
@@ -331,39 +353,74 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = (await request.json()) as InterviewRequestBody;
-    const { interviewId } = data;
+    const rawData = await request.json();
+
+    // Validate input data
+    try {
+      const data = EvaluateInterviewSchema.parse(rawData);
+    } catch (error) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request data" },
+        { status: 400 },
+      );
+    }
+
+    const { interviewId } = rawData;
+
+    // Verify interview ownership
+    const interview = await prisma.interview.findUnique({
+      where: {
+        id: interviewId,
+        userId: user.id,
+      },
+    });
+
+    if (!interview) {
+      return NextResponse.json(
+        { success: false, error: "Interview not found or unauthorized" },
+        { status: 404 },
+      );
+    }
 
     // Update status to PROCESSING immediately
     await prisma.interview.update({
-      where: { id: interviewId },
+      where: {
+        id: interviewId,
+        userId: user.id,
+      },
       data: { status: "PROCESSING" },
     });
 
     // Start processing in background without awaiting
-    processInterview(data, new AbortController().signal).catch(async (error) => {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const isTimeout = error instanceof Error && 
-        (error.name === "AbortError" || errorMessage.includes("timed out"));
+    processInterview(rawData, new AbortController().signal).catch(
+      async (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        const isTimeout =
+          error instanceof Error &&
+          (error.name === "AbortError" || errorMessage.includes("timed out"));
 
-      await prisma.interview.update({
-        where: { id: interviewId },
-        data: {
-          status: "ERROR",
-          errorMessage: isTimeout
-            ? "Interview evaluation timed out. Please try again."
-            : errorMessage,
-        },
-      });
-    });
+        await prisma.interview.update({
+          where: {
+            id: interviewId,
+            userId: user.id,
+          },
+          data: {
+            status: "ERROR",
+            errorMessage: isTimeout
+              ? "Interview evaluation timed out. Please try again."
+              : errorMessage,
+          },
+        });
+      },
+    );
 
     // Return immediately with success
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: "Interview evaluation started",
-      interviewId 
+      interviewId,
     });
-
   } catch (error) {
     console.error("Error initiating interview evaluation:", error);
     return NextResponse.json(

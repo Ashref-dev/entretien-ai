@@ -1,15 +1,26 @@
 import { Suspense } from "react";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/session";
 import InterviewProcess from "@/components/interviews/process/interview-process";
 
+import InterviewError from "./error";
 import InterviewLoading from "./loading";
 
 async function getInterviewData(interviewId: string) {
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return null;
+    }
+
     const interview = await prisma.interview.findUnique({
-      where: { id: interviewId },
+      where: {
+        id: interviewId,
+        userId: user.id, // Ensure interview belongs to current user
+      },
       include: {
         interviewData: true,
       },
@@ -30,7 +41,7 @@ async function InterviewContent({ interviewId }: { interviewId: string }) {
   const interview = await getInterviewData(interviewId);
 
   if (!interview) {
-    notFound();
+    return <InterviewError />;
   }
 
   // Check if all questions have answers
