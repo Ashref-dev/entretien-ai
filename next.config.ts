@@ -1,3 +1,4 @@
+import path from "path";
 import type { NextConfig } from "next";
 import { withContentlayer } from "next-contentlayer2";
 
@@ -32,12 +33,23 @@ const nextConfig: NextConfig = {
       },
     ],
   },
- 
+
   serverExternalPackages: [
     "@prisma/client",
     "@react-email/components",
     "@react-email/tailwind",
   ],
+  transpilePackages: ["@shadergradient/react"],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@shadergradient/react": path.resolve(
+        process.cwd(),
+        "node_modules/@shadergradient/react/dist/index.mjs",
+      ),
+    };
+    return config;
+  },
 };
 
 module.exports = withContentlayer(nextConfig);
